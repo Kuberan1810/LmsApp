@@ -3,6 +3,7 @@ import React from 'react';
 import { Feather } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Notification, NotificationBing, SearchNormal1 } from 'iconsax-react-native';
 
 export default function Header() {
   return (
@@ -19,30 +20,23 @@ export default function Header() {
             />
           </View>
 
-          {/* Search Bar */}
-          <View className="flex-1 mx-4 flex-row items-center bg-white border border-gray-100 rounded-xl px-3 h-10 shadow-sm">
-            <Feather name="search" size={16} color="#A0A0A0" />
-            <TextInput
-              className="flex-1 ml-2 text-[13px] text-black"
-              placeholder="Search courses, assignments..."
-              placeholderTextColor="#A0A0A0"
-            />
-          </View>
-
-          {/* Notifications and Profile */}
-          <View className="flex-row items-center">
-            <TouchableOpacity className="mr-4 relative">
-              <Feather name="bell" size={20} color="#555" />
-              {/* Notification Dot */}
-              <View className="absolute top-0 right-0 w-2 h-2 bg-[#EE8B3A] rounded-full border border-white" />
+          {/* Header Action Buttons */}
+          <View className="flex-row items-center gap-3">
+            {/* Search Button */}
+            <TouchableOpacity className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2F2F2] bg-white items-center justify-center">
+              <SearchNormal1 size={20} color="#626262" />
             </TouchableOpacity>
 
-            <TouchableOpacity className="w-9 h-9 rounded-full overflow-hidden border border-gray-200 bg-gray-100 items-center justify-center">
-              <Image
-                source={{ uri: 'https://i.pravatar.cc/150?u=a042581f4e29026704d' }}
-                contentFit="cover"
-                style={{ width: '100%', height: '100%' }}
-              />
+            {/* Notifications Button */}
+            <TouchableOpacity className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2F2F2] bg-white items-center justify-center relative">
+              <Notification size={20} color="#626262" />
+              {/* Notification Dot */}
+              <View className="absolute top-[10px] right-[10px] w-2.5 h-2.5 bg-[#EE8B3A] rounded-full border-[1.5px] border-white" />
+            </TouchableOpacity>
+
+            {/* Profile Button */}
+            <TouchableOpacity className="w-11 h-11 rounded-[14px] overflow-hidden border-[1.5px] border-[#F2F2F2] bg-[#F4F4F4] items-center justify-center">
+              <Text className="text-[14px] font-semibold text-[#555]">PS</Text>
             </TouchableOpacity>
           </View>
         </View>
