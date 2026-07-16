@@ -4,7 +4,7 @@ import { TouchableOpacity, Text } from "react-native";
 interface BtnComProps {
     label?: string;
     onClick?: () => void;
-    icon?: React.ReactNode; 
+    icon?: React.ReactNode;
     iconPosition?: "left" | "right"
 }
 
@@ -28,5 +28,6 @@ const BtnCom: React.FC<BtnComProps> = ({
         </TouchableOpacity>
     );
 };
+
 
 export default BtnCom;

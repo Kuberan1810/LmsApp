@@ -9,6 +9,8 @@ import React from 'react';
 
 SplashScreen.preventAutoHideAsync();
 
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     Urbanist_400Regular,
@@ -28,10 +30,12 @@ export default function RootLayout() {
   }
 
   return (
+
     <ThemeProvider value={DefaultTheme}>
       {/* <View className="flex-1 m-5"> */}
         <Stack screenOptions={{ headerShown: false }} />
       {/* </View> */}
     </ThemeProvider>
+
   );
 }
