@@ -1,6 +1,7 @@
 
 import { SafeAreaView } from 'react-native-safe-area-context'
 import LoginCom from '@/features/auth/loginCom'
+import React from 'react'
 
 export default function Login() {
  

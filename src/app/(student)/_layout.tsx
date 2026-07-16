@@ -1,42 +1,43 @@
-import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import { CalendarTick, ClipboardText, DocumentText, DocumentText1, Home2, NoteText, Profile } from 'iconsax-react-native';
+import React from 'react';
 
 export default function StudentLayout() {
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: '#2563eb', headerShown: false }}>
+    <Tabs screenOptions={{ tabBarActiveTintColor: '#F67300', headerShown: false }}>
       <Tabs.Screen
         name="dashboard/dashboard"
         options={{
           title: 'Dashboard',
-          tabBarIcon: ({ color }) => <Ionicons name="home" size={24} color={color} />,
+          tabBarIcon: ({ color, focused }) => <Home2 size={24} color={color as string} variant={focused ? "Bold" : "Linear"} />,
         }}
       />
       <Tabs.Screen
         name="courses/courses"
         options={{
           title: 'Courses',
-          tabBarIcon: ({ color }) => <Ionicons name="book" size={24} color={color} />,
+           tabBarIcon: ({ color, focused }) => focused ? <DocumentText size={24} color={color as string} variant="Bold" /> : <DocumentText1 size={24} color={color as string} variant="Linear" />,
         }}
       />
       <Tabs.Screen
         name="assignments/assignments"
         options={{
-          title: 'Tasks',
-          tabBarIcon: ({ color }) => <Ionicons name="document-text" size={24} color={color} />,
+          title: 'Assignments',
+          tabBarIcon: ({ color, focused }) => <NoteText size={24} color={color as string} variant={focused ? "Bold" : "Linear"} />,
         }}
       />
       <Tabs.Screen
         name="attendance/attendance"
         options={{
           title: 'Attendance',
-          tabBarIcon: ({ color }) => <Ionicons name="calendar" size={24} color={color} />,
+          tabBarIcon: ({ color, focused }) => <CalendarTick size={24} color={color as string} variant={focused ? "Bold" : "Linear"} />,
         }}
       />
       <Tabs.Screen
         name="tests/tests"
         options={{
           title: 'Tests',
-          tabBarIcon: ({ color }) => <Ionicons name="create" size={24} color={color} />,
+          tabBarIcon: ({ color, focused }) => <ClipboardText size={24} color={color as string} variant={focused ? "Bold" : "Linear"} />,
         }}
       />
       <Tabs.Screen
@@ -44,7 +45,7 @@ export default function StudentLayout() {
         options={{
           href: null,
           title: 'Profile',
-          tabBarIcon: ({ color }) => <Ionicons name="person" size={24} color={color} />,
+          tabBarIcon: ({ color, focused }) => <Profile size={24} color={color as string} variant={focused ? "Bold" : "Linear"} />,
         }}
       />
     </Tabs>

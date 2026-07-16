@@ -4,18 +4,17 @@
     "slug": "LMS",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/coirei-cirlce-logo.png",
     "scheme": "lms",
     "userInterfaceStyle": "light",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/images/coirei-cirlce-logo.png"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#FFFFFF",
+        "foregroundImage": "./assets/images/coirei-cirlce-logo.png",
+       
       },
       "predictiveBackGestureEnabled": false
     },
@@ -29,7 +28,7 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#208AEF",
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/coirei-cirlce-logo.png",
           "imageWidth": 76
         }
       ],

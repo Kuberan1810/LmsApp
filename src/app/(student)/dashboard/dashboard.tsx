@@ -12,7 +12,7 @@ import DashboardAssignmentsSection from '@/features/student/dashboard/DashboardA
 export default function dashboard() {
   return (
     <SafeAreaView className="flex-1 bg-[#FAFAFA]">
-      <ScrollView 
+      <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 }}
