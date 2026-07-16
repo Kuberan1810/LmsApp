@@ -48,6 +48,18 @@ export default function StudentLayout() {
           tabBarIcon: ({ color, focused }) => <Profile size={24} color={color as string} variant={focused ? "Bold" : "Linear"} />,
         }}
       />
+      <Tabs.Screen
+        name="courses/[id]"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="courses/lesson/[id]"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="courses/recording/[id]"
+        options={{ href: null }}
+      />
     </Tabs>
   );
 }

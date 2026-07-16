@@ -1,11 +1,5 @@
+import { MyCoursesScreen } from '../../../features/student/courses/MyCoursesScreen';
 
-import { View, Text } from 'react-native'
-import React from 'react'
-
-export default function courses() {
-  return (
-    <View>
-      <Text>courses</Text>
-    </View>
-  )
-}
+export default function CoursesTab() {
+  return <MyCoursesScreen />;
+}
