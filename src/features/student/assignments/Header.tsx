@@ -1,0 +1,68 @@
+import React from 'react';
+import { View, Text, TouchableOpacity, Image, ImageSourcePropType } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+
+interface HeaderProps {
+  title?: string;
+  subtitle?: string;
+  onBackPress?: () => void;
+  showSearchAndNotify?: boolean;
+  profileSource?: ImageSourcePropType;
+}
+
+export default function Header({
+  title = 'Assignments',
+  subtitle = 'Track your coursework and upcoming deadlines.',
+  onBackPress,
+  showSearchAndNotify = false,
+  profileSource = require('../../../../assets/images/avatarLms.png'),
+}: HeaderProps) {
+  return (
+    <View className="px-5 pt-3 pb-2 flex-row justify-between items-start">
+      <View className="flex-row items-start flex-1 mr-4">
+        {onBackPress && (
+          <TouchableOpacity onPress={onBackPress} className="mt-1 mr-1.5 p-1 rounded-lg">
+            <Ionicons name="chevron-back" size={26} color="#1F2937" />
+          </TouchableOpacity>
+        )}
+        <View className="flex-1">
+          <Text className="text-[20px] font-medium text-[#333333] leading-tight">{title}</Text>
+          <Text className="text-[#626262] text-[12px] mt-0.5 leading-normal">
+            {subtitle}
+          </Text>
+        </View>
+      </View>
+
+      {/* Right Content */}
+      <View className="flex-row items-center mt-1">
+        {showSearchAndNotify && (
+          <>
+            {/* Search Button */}
+            <TouchableOpacity
+              className="rounded-full bg-white border border-gray-100 items-center justify-center shadow-sm mr-2"
+              style={{ width: 38, height: 38 }}
+            >
+              <Ionicons name="search-outline" size={17} color="#4B5563" />
+            </TouchableOpacity>
+
+            {/* Notification Bell Button */}
+            <TouchableOpacity
+              className="rounded-full bg-white border border-gray-100 items-center justify-center shadow-sm mr-2 relative"
+              style={{ width: 38, height: 38 }}
+            >
+              <Ionicons name="notifications-outline" size={17} color="#4B5563" />
+              <View className="absolute top-2.5 right-2.5 w-1.5 h-1.5 rounded-full bg-[#EE8B3A]" />
+            </TouchableOpacity>
+          </>
+        )}
+
+        {/* Profile Avatar */}
+        <Image
+          source={profileSource}
+          className="rounded-full border border-gray-100 shadow-sm"
+          style={{ width: 38, height: 38 }}
+        />
+      </View>
+    </View>
+  );
+}
