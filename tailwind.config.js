@@ -4,7 +4,14 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['Urbanist_400Regular'],
+        medium: ['Urbanist_500Medium'],
+        semibold: ['Urbanist_600SemiBold'],
+        bold: ['Urbanist_700Bold'],
+      },
+    },
   },
   plugins: [],
 }
