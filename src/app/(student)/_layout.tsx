@@ -1,3 +1,4 @@
+import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 
@@ -46,6 +47,18 @@ export default function StudentLayout() {
           title: 'Profile',
           tabBarIcon: ({ color }) => <Ionicons name="person" size={24} color={color} />,
         }}
+      />
+      <Tabs.Screen
+        name="courses/[id]"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="courses/lesson/[id]"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="courses/recording/[id]"
+        options={{ href: null }}
       />
     </Tabs>
   );
