@@ -182,7 +182,7 @@ export default function AssignmentsScreen() {
           onCoursePress={handleCoursePress}
         />
 
-        <View className="mx-5 bg-white rounded-[10px] px-4 py-3 mb-4 flex-row justify-between items-center">
+        <View className="mx-5 bg-white border border-[#F2EEF4] rounded-[10px] px-4 py-3 mb-4 flex-row justify-between items-center">
           <Text className="text-[14px] font-medium text-[#333333] pr-4 flex-1" numberOfLines={2}>
             {selectedCourse
               ? `${selectedCourse} - ${MOCK_COURSES.find((c) => c.code === selectedCourse)?.name}`
@@ -199,7 +199,7 @@ export default function AssignmentsScreen() {
         </View>
 
         {showStatusDropdown && (
-          <View className="mx-5 mb-5 bg-white rounded-2xl p-2 flex-row flex-wrap justify-between">
+          <View className="mx-5 mb-5 bg-white border border-[#F2EEF4] rounded-2xl p-2 flex-row flex-wrap justify-between">
             {(['All', 'In Progress', 'Submitted', 'Overdue'] as FilterType[]).map((filter) => (
               <TouchableOpacity
                 key={filter}
@@ -250,7 +250,7 @@ export default function AssignmentsScreen() {
               ))
             ) : (
               // Empty State
-              <View className="bg-white border border-gray-100 rounded-2xl p-10 items-center justify-center mt-4 shadow-sm">
+              <View className="bg-white border border-[#F2EEF4] rounded-2xl p-10 items-center justify-center mt-4 shadow-sm">
                 <Ionicons name="document-text-outline" size={48} color="#9CA3AF" />
                 <Text className="text-gray-800 font-semibold mt-4 text-base">No assignments found</Text>
                 <Text className="text-gray-400 text-xs text-center mt-1">
