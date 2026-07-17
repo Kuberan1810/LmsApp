@@ -31,13 +31,16 @@ export const CourseDetailsScreen = () => {
               <View className="absolute top-[6px] right-[8px] w-1.5 h-1.5 bg-orange-500 rounded-full z-10" />
               <Ionicons name="notifications-outline" size={14} color="black" />
             </TouchableOpacity>
-            <View className="w-[30px] h-[30px] rounded-lg overflow-hidden bg-orange-500">
+            <TouchableOpacity 
+              onPress={() => router.push('/(student)/profile/profile' as any)}
+              className="w-[30px] h-[30px] rounded-lg overflow-hidden bg-orange-500"
+            >
               <Image
                 source={{ uri: 'https://i.pravatar.cc/150?img=11' }}
                 className="w-full h-full"
                 resizeMode="cover"
               />
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -105,17 +108,17 @@ export const CourseDetailsScreen = () => {
                         key={idx} 
                         onPress={() => setExpandedModule(isExpanded ? null : idx)}
                         activeOpacity={0.8}
-                        className={`mb-3 border rounded-xl overflow-hidden ${isExpanded ? 'border-orange-200' : 'border-[#F1F5F9]'}`}
+                        className={`mb-3 border rounded-xl overflow-hidden border-[#F2EEF4]`}
                       >
-                        <View className={`px-4 h-[56px] flex-row items-center justify-between ${isExpanded ? 'bg-orange-50' : 'bg-[#F8FAFC]'}`}>
-                          <Text className={`font-medium text-[13px] ${isExpanded ? 'text-[#EA580C]' : 'text-[#333333]'}`}>{moduleName}</Text>
+                        <View className={`px-4 h-[56px] flex-row items-center justify-between ${isExpanded ? 'bg-gray-50' : 'bg-[#F8FAFC]'}`}>
+                          <Text className={`font-medium text-[13px] text-[#333333]`}>{moduleName}</Text>
                         </View>
                         
                         {isExpanded && (
                           <View className="bg-white px-4 py-4">
                             <Text className="text-[#6B7280] text-[12px] mb-4">3.5 AI safety & real-world use cases</Text>
                             <TouchableOpacity onPress={() => router.push('/courses/lesson/3-4' as any)}>
-                              <Text className="text-[#EA580C] text-[12px] font-medium mb-4">3.4 AI Agents (LangChain, CrewAI, AutoGen)</Text>
+                              <Text className="text-[#333333] text-[12px] font-medium mb-4">3.4 AI Agents (LangChain, CrewAI, AutoGen)</Text>
                             </TouchableOpacity>
                             <Text className="text-[#333333] text-[12px] mb-4">3.3 Tool-using autonomous agents</Text>
                             <Text className="text-[#333333] text-[12px] mb-4">3.2 API & Web App integration (FastAPI/Flask)</Text>

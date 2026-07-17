@@ -29,13 +29,16 @@ export const MyCoursesScreen = () => {
               <View className="absolute top-[6px] right-[8px] w-1.5 h-1.5 bg-orange-500 rounded-full z-10" />
               <Ionicons name="notifications-outline" size={14} color="black" />
             </TouchableOpacity>
-            <View className="w-[30px] h-[30px] rounded-lg overflow-hidden bg-orange-500">
+            <TouchableOpacity 
+              onPress={() => router.push('/(student)/profile/profile' as any)}
+              className="w-[30px] h-[30px] rounded-lg overflow-hidden bg-orange-500"
+            >
               <Image 
                 source={{ uri: 'https://i.pravatar.cc/150?img=11' }} 
                 className="w-full h-full"
                 resizeMode="cover"
               />
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -48,14 +51,14 @@ export const MyCoursesScreen = () => {
                 title="AM101 - AI / ML Frontier AI Engineer" 
                 duration="3 Months" 
                 lessons="05 Lessons" 
-                bgColorClass="bg-teal-100" 
+                bgColorClass="bg-[#D2E4E2]" 
                 onPress={() => router.push('/(student)/courses/details' as any)}
               />
               <CourseCard 
                 title="SS102 - System Architecture" 
                 duration="3 Months" 
                 lessons="12 Lessons" 
-                bgColorClass="bg-purple-200" 
+                bgColorClass="bg-[#D8CAE8]" 
               />
             </ScrollView>
           </View>

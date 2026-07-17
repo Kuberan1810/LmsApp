@@ -2,8 +2,11 @@ import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { Feather } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
 
 export default function DashboardHeader() {
+  const router = useRouter();
+  
   return (
     <View className="px-5 pt-4 pb-2">
       {/* Top Navigation Row */}
@@ -35,7 +38,10 @@ export default function DashboardHeader() {
             <View className="absolute top-0 right-0 w-2 h-2 bg-[#EE8B3A] rounded-full border border-white" />
           </TouchableOpacity>
           
-          <TouchableOpacity className="w-9 h-9 rounded-full overflow-hidden border border-gray-200 bg-gray-100 items-center justify-center">
+          <TouchableOpacity 
+            onPress={() => router.push('/(student)/profile/profile' as any)}
+            className="w-9 h-9 rounded-full overflow-hidden border border-gray-200 bg-gray-100 items-center justify-center"
+          >
             <Image 
               source={{ uri: 'https://i.pravatar.cc/150?u=a042581f4e29026704d' }} 
               contentFit="cover"

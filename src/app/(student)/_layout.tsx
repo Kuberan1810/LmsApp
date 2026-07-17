@@ -60,6 +60,10 @@ export default function StudentLayout() {
         name="courses/recording/[id]"
         options={{ href: null }}
       />
+      <Tabs.Screen
+        name="profile/settings"
+        options={{ href: null }}
+      />
     </Tabs>
   );
 }

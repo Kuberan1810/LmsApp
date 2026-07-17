@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, ImageSourcePropType } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 interface HeaderProps {
   title?: string;
@@ -17,6 +18,7 @@ export default function Header({
   showSearchAndNotify = false,
   profileSource = require('../../../../assets/images/avatarLms.png'),
 }: HeaderProps) {
+  const router = useRouter();
   return (
     <View className="px-5 pt-3 pb-2 flex-row justify-between items-start">
       <View className="flex-row items-start flex-1 mr-4">
@@ -57,11 +59,13 @@ export default function Header({
         )}
 
         {/* Profile Avatar */}
-        <Image
-          source={profileSource}
-          className="rounded-full border border-gray-100 shadow-sm"
-          style={{ width: 38, height: 38 }}
-        />
+        <TouchableOpacity onPress={() => router.push('/(student)/profile/profile' as any)}>
+          <Image
+            source={profileSource}
+            className="rounded-full border border-gray-100 shadow-sm"
+            style={{ width: 38, height: 38 }}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );
