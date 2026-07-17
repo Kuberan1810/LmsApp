@@ -140,7 +140,7 @@ export default function TestCard() {
 
                     {/* ── TIMER SLIDE ── */}
                     <View style={isTimerSlide ? undefined : hidden}>
-                        <View className="bg-white rounded-[20px] py-10 px-6 min-h-[250px]  justify-center relative">
+                        <View className="bg-white rounded-[20px] py-10 px-6 min-h-[270px]   justify-center relative">
 
                             <Text className="text-[#666] text-[13px] text-center mb-3">
                                 {INSTRUCTIONS_SLIDES[0].title}
@@ -171,47 +171,43 @@ export default function TestCard() {
 
 
                             {/* Chevrons */}
-                            <TouchableOpacity
-                                style={styles.chevronRight}
-                                onPress={nextSlide}
-                            >
-                                <Feather name="chevron-right" size={24} color="#999" />
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.chevronLeft}
-                                onPress={prevSlide}
-                            >
-                                <Feather name="chevron-left" size={24} color="#999" />
-                            </TouchableOpacity>
+                            <View style={styles.chevronRightWrap} pointerEvents="box-none">
+                                <TouchableOpacity style={styles.chevronBtn} onPress={nextSlide}>
+                                    <Feather name="chevron-right" size={22} color="#999" />
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.chevronLeftWrap} pointerEvents="box-none">
+                                <TouchableOpacity style={styles.chevronBtn} onPress={prevSlide}>
+                                    <Feather name="chevron-left" size={22} color="#999" />
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
 
                     {/* ── INFO SLIDES ── */}
                     <View style={!isTimerSlide ? undefined : hidden}>
-                        <View className="bg-white rounded-[20px] py-10 px-6c min-h-[250px]  justify-center relative">
+                        <View className="bg-white rounded-[20px] py-10 px-6c min-h-[270px]  justify-center relative">
 
                             <View className="items-center px-6">
                                 <Text className="text-[#222] text-[18px] font-semibold text-center mb-3">
                                     {INSTRUCTIONS_SLIDES[slide].title}
                                 </Text>
-                                <Text className="text-[#666] text-[14px] text-center leading-6">
+                                <Text className="text-[#666] text-[14px] text-center leading-6 max-w-[260px]">
                                     {INSTRUCTIONS_SLIDES[slide].desc}
                                 </Text>
                             </View>
 
                             {/* Chevrons */}
-                            <TouchableOpacity
-                                style={styles.chevronRight}
-                                onPress={nextSlide}
-                            >
-                                <Feather name="chevron-right" size={24} color="#999" />
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.chevronLeft}
-                                onPress={prevSlide}
-                            >
-                                <Feather name="chevron-left" size={24} color="#999" />
-                            </TouchableOpacity>
+                            <View style={styles.chevronRightWrap} pointerEvents="box-none">
+                                <TouchableOpacity style={styles.chevronBtn} onPress={nextSlide}>
+                                    <Feather name="chevron-right" size={22} color="#999" />
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.chevronLeftWrap} pointerEvents="box-none">
+                                <TouchableOpacity style={styles.chevronBtn} onPress={prevSlide}>
+                                    <Feather name="chevron-left" size={22} color="#999" />
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
 
@@ -255,15 +251,18 @@ export default function TestCard() {
 const hidden = StyleSheet.create({ h: { display: 'none' } }).h;
 
 const styles = StyleSheet.create({
-    chevronRight: { position: 'absolute', right: 16, top: '50%', padding: 8 },
-    chevronLeft:  { position: 'absolute', left: 16,  top: '50%', padding: 8 },
+    // Wrapper: full-height strip pinned to left/right edge, centered vertically
+    chevronRightWrap: { position: 'absolute', right: 12, top: 0, bottom: 0, justifyContent: 'center' },
+    chevronLeftWrap:  { position: 'absolute', left: 12,  top: 0, bottom: 0, justifyContent: 'center' },
+    // The actual tappable icon box
+    chevronBtn: { padding: 6, borderRadius: 8, borderWidth: 1, borderColor: '#F2EEF4', backgroundColor: '#FAFAFA' },
 });
 
 const btn = StyleSheet.create({
     active:       { backgroundColor: '#F67300', borderRadius: 12, alignSelf: 'center' },
     disabled:     { backgroundColor: '#F4F4F4', borderRadius: 12, alignSelf: 'center' },
-    textActive:   { color: '#FFFFFF', fontSize: 15, fontWeight: '600', paddingHorizontal: 48, paddingVertical: 14 },
-    textDisabled: { color: '#999999', fontSize: 15, fontWeight: '600', paddingHorizontal: 48, paddingVertical: 14 },
+    textActive:   { color: '#FFFFFF', fontSize: 15, fontWeight: '400', paddingHorizontal: 40, paddingVertical: 12 },
+    textDisabled: { color: '#999999', fontSize: 15, fontWeight: '400', paddingHorizontal: 40, paddingVertical: 12 },
 });
 
 const dot = StyleSheet.create({
