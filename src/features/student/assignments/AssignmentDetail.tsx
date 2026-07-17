@@ -108,7 +108,7 @@ export default function AssignmentDetail({ assignment, onBack, onSubmit }: Assig
         </View>
 
         {/* Resources Card */}
-        <View className="bg-white border border-[#F2EEF4] p-5 rounded-[15px] mb-5 shadow-xs">
+        <View className="bg-white border border-[#F2EEF4] p-4 rounded-[10px] mb-5 shadow-xs">
           <Text className="text-[20px] font-medium text-[#333333] mb-4">Resources</Text>
 
           {/* Resources List */}
@@ -117,32 +117,34 @@ export default function AssignmentDetail({ assignment, onBack, onSubmit }: Assig
               title: 'Project_Guidelines.pdf',
               subtitle: '2.4MB',
               iconBg: 'bg-[#FEE2E2]',
-              icon: <MaterialCommunityIcons name="file-pdf-box" size={22} color="#EF4444" />,
-              actionIcon: <Feather name="download" size={14} color="#808080" />,
+              icon: <MaterialCommunityIcons name="file-pdf-box" size={24} color="#EF4444" />,
+              actionIcon: <Feather name="download" size={18} color="#000000" />,
             },
             {
               title: 'RAG Architecture Overview',
               subtitle: 'external-link.com',
               iconBg: 'bg-blue-50',
-              icon: <Ionicons name="link-outline" size={20} color="#3B82F6" />,
-              actionIcon: <Ionicons name="open-outline" size={14} color="#808080" />,
+              icon: <Ionicons name="link-outline" size={24} color="#3B82F6" />,
+              actionIcon: <Ionicons name="open-outline" size={18} color="#000000" />,
             }
           ].map((res, index, arr) => (
             <View
               key={index}
-              className={`flex-row justify-between items-center bg-white border border-[#F3F5F7] p-3 rounded-xl ${index < arr.length - 1 ? 'mb-4' : ''
+              className={`flex-row justify-between items-center ${index < arr.length - 1 ? 'mb-[30px]' : ''
                 }`}
             >
               <View className="flex-row items-center flex-1 pr-4">
-                <View className={`w-[38px] h-[38px] ${res.iconBg} rounded-xl justify-center items-center`}>
+                <View className={`w-[44px] h-[44px] ${res.iconBg} rounded-[10px] justify-center items-center`}>
                   {res.icon}
                 </View>
-                <View className="ml-3">
-                  <Text className="text-[14px] font-medium text-[#4D4D4D]">{res.title}</Text>
+                <View className="ml-3 flex-1">
+                  <Text className="text-[16px] font-medium text-[#333333]" numberOfLines={1}>
+                    {res.title}
+                  </Text>
                   <Text className="text-[12px] text-[#808080] mt-0.5">{res.subtitle}</Text>
                 </View>
               </View>
-              <TouchableOpacity className="p-2">
+              <TouchableOpacity className="p-1">
                 {res.actionIcon}
               </TouchableOpacity>
             </View>

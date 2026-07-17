@@ -77,6 +77,7 @@ export default function AssignmentsScreen() {
   const [assignments, setAssignments] = useState<Assignment[]>(MOCK_ASSIGNMENTS);
   const [currentView, setCurrentView] = useState<'list' | 'detail' | 'submit' | 'success'>('list');
   const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const handleCoursePress = (courseCode: string) => {
     if (selectedCourse === courseCode) {
@@ -100,7 +101,8 @@ export default function AssignmentsScreen() {
       );
       setSelectedAssignment((prev) => prev ? { ...prev, status: 'Submitted' } : null);
     }
-    setCurrentView('success');
+    setCurrentView('detail');
+    setShowSuccessPopup(true);
   };
 
   const getFilteredAssignments = () => {
@@ -134,6 +136,25 @@ export default function AssignmentsScreen() {
     },
   ];
 
+  const renderSuccessModal = () => {
+    if (!showSuccessPopup || !selectedAssignment) return null;
+    return (
+      <SubmissionSuccess
+        visible={showSuccessPopup}
+        assignment={selectedAssignment}
+        onViewSubmission={() => {
+          setShowSuccessPopup(false);
+          setCurrentView('detail');
+        }}
+        onBackToDashboard={() => {
+          setShowSuccessPopup(false);
+          setCurrentView('list');
+          router.replace('/(student)/dashboard/dashboard');
+        }}
+      />
+    );
+  };
+
   if (currentView === 'detail' && selectedAssignment) {
     return (
       <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
@@ -142,6 +163,7 @@ export default function AssignmentsScreen() {
           onBack={() => setCurrentView('list')}
           onSubmit={() => setCurrentView('submit')}
         />
+        {renderSuccessModal()}
       </SafeAreaView>
     );
   }
@@ -154,18 +176,7 @@ export default function AssignmentsScreen() {
           onBack={() => setCurrentView('detail')}
           onSuccess={handleSubmissionSuccess}
         />
-      </SafeAreaView>
-    );
-  }
-
-  if (currentView === 'success' && selectedAssignment) {
-    return (
-      <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
-        <SubmissionSuccess
-          assignment={selectedAssignment}
-          onViewSubmission={() => setCurrentView('detail')}
-          onBackToDashboard={() => setCurrentView('list')}
-        />
+        {renderSuccessModal()}
       </SafeAreaView>
     );
   }
@@ -182,43 +193,63 @@ export default function AssignmentsScreen() {
           onCoursePress={handleCoursePress}
         />
 
-        <View className="mx-5 bg-white border border-[#F2EEF4] rounded-[10px] px-4 py-3 mb-4 flex-row justify-between items-center">
+        <View style={{ zIndex: 10 }} className="mx-5 bg-white border border-[#F2EEF4] rounded-[10px] px-4 py-3 mb-4 flex-row justify-between items-center relative">
           <Text className="text-[14px] font-medium text-[#333333] pr-4 flex-1" numberOfLines={2}>
             {selectedCourse
               ? `${selectedCourse} - ${MOCK_COURSES.find((c) => c.code === selectedCourse)?.name}`
               : (activeFilter === 'All' ? 'All Assignments' : `${activeFilter} Assignments`)}
           </Text>
 
-          <TouchableOpacity
-            onPress={() => setShowStatusDropdown(!showStatusDropdown)}
-            className="flex-row items-center bg-white border border-[#F2EEF4] px-3.5 py-1.5 rounded-full"
-          >
-            <Ionicons name="options-outline" size={14} color="#4B5563" style={{ marginRight: 6 }} />
-            <Text className="text-[#333333] text-xs font-semibold mr-1">Status</Text>
-          </TouchableOpacity>
-        </View>
+          <View className="relative">
+            <TouchableOpacity
+              onPress={() => setShowStatusDropdown(!showStatusDropdown)}
+              className="flex-row items-center bg-white border border-[#F2EEF4] px-3.5 py-1.5 rounded-full"
+            >
+              <Ionicons name="options-outline" size={14} color="#4B5563" style={{ marginRight: 6 }} />
+              <Text className="text-[#333333] text-xs font-semibold mr-1">Status</Text>
+              <Ionicons name={showStatusDropdown ? "chevron-up" : "chevron-down"} size={14} color="#4B5563" />
+            </TouchableOpacity>
 
-        {showStatusDropdown && (
-          <View className="mx-5 mb-5 bg-white border border-[#F2EEF4] rounded-2xl p-2 flex-row flex-wrap justify-between">
-            {(['All', 'In Progress', 'Submitted', 'Overdue'] as FilterType[]).map((filter) => (
-              <TouchableOpacity
-                key={filter}
-                onPress={() => {
-                  setActiveFilter(filter);
-                  setShowStatusDropdown(false);
-                }}
-                className={`px-4 py-2 rounded-xl mb-1 mt-1 ${activeFilter === filter ? 'bg-[#EE8B3A]' : 'bg-gray-50'}`}
-                style={{ width: '48%' }}
+            {showStatusDropdown && (
+              <View 
+                style={{ 
+                  position: 'absolute', 
+                  top: 36, 
+                  right: 0, 
+                  width: 140, 
+                  zIndex: 100,
+                  elevation: 5,
+                  shadowColor: '#000000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 4,
+                }} 
+                className="bg-white border border-[#F2EEF4] rounded-xl overflow-hidden"
               >
-                <Text
-                  className={`text-center text-xs font-bold ${activeFilter === filter ? 'text-white' : 'text-gray-600'}`}
-                >
-                  {filter}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                {(['All', 'In Progress', 'Submitted', 'Overdue'] as FilterType[]).map((filter) => (
+                  <TouchableOpacity
+                    key={filter}
+                    onPress={() => {
+                      setActiveFilter(filter);
+                      setShowStatusDropdown(false);
+                    }}
+                    className={`flex-row justify-between items-center px-3.5 py-2.5 ${
+                      activeFilter === filter ? 'bg-[#EE8B3A]/5' : ''
+                    }`}
+                  >
+                    <Text
+                      className={`text-xs ${
+                        activeFilter === filter ? 'text-[#EE8B3A] font-bold' : 'text-gray-600 font-medium'
+                      }`}
+                    >
+                      {filter}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
           </View>
-        )}
+        </View>
 
 
         {/* Assignment Lists  */}
@@ -262,6 +293,7 @@ export default function AssignmentsScreen() {
         </View>
 
       </ScrollView>
+      {renderSuccessModal()}
     </SafeAreaView>
   );
 }

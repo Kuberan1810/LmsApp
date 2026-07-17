@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, ImageSourcePropType } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, Feather } from '@expo/vector-icons';
 
 interface HeaderProps {
   title?: string;
@@ -34,34 +34,30 @@ export default function Header({
       </View>
 
       {/* Right Content */}
-      <View className="flex-row items-center mt-1">
+      <View className="flex-row items-center gap-[10px] mt-1">
         {showSearchAndNotify && (
           <>
             {/* Search Button */}
-            <TouchableOpacity
-              className="rounded-full bg-white border border-gray-100 items-center justify-center shadow-sm mr-2"
-              style={{ width: 38, height: 38 }}
-            >
-              <Ionicons name="search-outline" size={17} color="#4B5563" />
+            <TouchableOpacity className="w-[30px] h-[30px] rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] items-center justify-center">
+              <Feather name="search" size={14} color="black" />
             </TouchableOpacity>
 
             {/* Notification Bell Button */}
-            <TouchableOpacity
-              className="rounded-full bg-white border border-gray-100 items-center justify-center shadow-sm mr-2 relative"
-              style={{ width: 38, height: 38 }}
-            >
-              <Ionicons name="notifications-outline" size={17} color="#4B5563" />
-              <View className="absolute top-2.5 right-2.5 w-1.5 h-1.5 rounded-full bg-[#EE8B3A]" />
+            <TouchableOpacity className="w-[30px] h-[30px] rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] items-center justify-center relative">
+              <View className="absolute top-[6px] right-[8px] w-1.5 h-1.5 bg-[#F67300] rounded-full z-10" />
+              <Ionicons name="notifications-outline" size={14} color="black" />
             </TouchableOpacity>
           </>
         )}
 
         {/* Profile Avatar */}
-        <Image
-          source={profileSource}
-          className="rounded-full border border-gray-100 shadow-sm"
-          style={{ width: 38, height: 38 }}
-        />
+        <View className="w-[30px] h-[30px] rounded-lg overflow-hidden border border-[#E5E5E5]">
+          <Image
+            source={profileSource}
+            className="w-full h-full"
+            resizeMode="cover"
+          />
+        </View>
       </View>
     </View>
   );
