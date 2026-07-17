@@ -7,7 +7,7 @@ import {
   Dimensions,
 } from 'react-native';
 import Animated from 'react-native-reanimated';
-import { useTabBarScroll } from '@/context/TabBarVisibilityContext';
+import { useTabBarScroll, useTabBarVisibility } from '@/context/TabBarVisibilityContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Filter, ArrowUp2, ArrowDown2, DocumentText } from 'iconsax-react-native';
@@ -77,6 +77,7 @@ type FilterType = 'All' | 'In Progress' | 'Submitted' | 'Overdue';
 
 export default function AssignmentsScreen() {
   const scrollHandler = useTabBarScroll();
+  const { setIsTabBarVisible } = useTabBarVisibility();
 
   const [activeFilter, setActiveFilter] = useState<FilterType>('All');
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
@@ -86,6 +87,10 @@ export default function AssignmentsScreen() {
   const [currentView, setCurrentView] = useState<'list' | 'detail' | 'submit' | 'success' | 'viewSubmission'>('list');
   const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+
+  React.useEffect(() => {
+    setIsTabBarVisible(currentView === 'list');
+  }, [currentView, setIsTabBarVisible]);
 
   const handleCoursePress = (courseCode: string) => {
     if (selectedCourse === courseCode) {

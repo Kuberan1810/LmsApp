@@ -18,7 +18,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 }
 
 function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
-  const { tabBarOffset } = useTabBarVisibility();
+  const { tabBarOffset, isTabBarVisible } = useTabBarVisibility();
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -26,9 +26,15 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     };
   });
 
+  const currentRouteName = state.routes[state.index].name;
+  const isMainRoute = ['dashboard/dashboard', 'courses/courses', 'assignments/assignments', 'attendance/attendance', 'tests/index'].includes(currentRouteName);
+
+  if (!isMainRoute || !isTabBarVisible) {
+    return null;
+  }
+
   const visibleRoutes = state.routes.filter(r =>
     ['dashboard/dashboard', 'courses/courses', 'assignments/assignments', 'attendance/attendance', 'tests/index'].includes(r.name)
-
   );
 
   const tabContent = visibleRoutes.map((route, index) => {

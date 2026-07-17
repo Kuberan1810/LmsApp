@@ -3,15 +3,18 @@ import { useSharedValue, SharedValue, withTiming, useAnimatedScrollHandler, Easi
 
 interface TabBarVisibilityContextType {
   tabBarOffset: SharedValue<number>;
+  isTabBarVisible: boolean;
+  setIsTabBarVisible: (visible: boolean) => void;
 }
 
 const TabBarVisibilityContext = createContext<TabBarVisibilityContextType | null>(null);
 
 export function TabBarVisibilityProvider({ children }: { children: ReactNode }) {
   const tabBarOffset = useSharedValue(0);
+  const [isTabBarVisible, setIsTabBarVisible] = React.useState(true);
 
   return (
-    <TabBarVisibilityContext.Provider value={{ tabBarOffset }}>
+    <TabBarVisibilityContext.Provider value={{ tabBarOffset, isTabBarVisible, setIsTabBarVisible }}>
       {children}
     </TabBarVisibilityContext.Provider>
   );
