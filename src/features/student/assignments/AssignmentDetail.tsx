@@ -64,7 +64,7 @@ export default function AssignmentDetail({ assignment, onBack, onSubmit }: Assig
 
       {/* Main Content */}
       <ScrollView className="flex-1 px-5 pt-4" contentContainerStyle={{ paddingBottom: 100 }}>
-        <View className="bg-white rounded-2xl p-6 mb-5 border border-gray-50 shadow-xs">
+        <View className="bg-white rounded-2xl p-6 mb-5 border border-[#F2EEF4] shadow-xs">
           {getStatusBadge()}
 
           <Text className="text-[20px] font-semibold text-[#333333] mt-4 mb-1">
@@ -99,7 +99,7 @@ export default function AssignmentDetail({ assignment, onBack, onSubmit }: Assig
             }
           ].map((sec, index) => (
             <React.Fragment key={index}>
-              <Text className="text-[18px] font-medium text-[#64748B] mb-2">{sec.title}:</Text>
+              <Text className="text-[18px] font-medium text-[#333333] mb-2">{sec.title}:</Text>
               <Text className="text-[13px] text-[#4D4D4D] leading-relaxed mb-5 textAlign-justify">
                 {sec.content}
               </Text>
@@ -177,7 +177,7 @@ export default function AssignmentDetail({ assignment, onBack, onSubmit }: Assig
               onPress={onSubmit}
               className="w-full bg-[#F67300] py-3 rounded-xl items-center"
             >
-              <Text className="text-white text-[14px] font-bold">Submit Assignment</Text>
+              <Text className="text-white text-[14px] font-medium">Submit Assignment</Text>
             </TouchableOpacity>
           ) : (
             <View className="w-full bg-[#F2F2F2] py-3 rounded-xl items-center">

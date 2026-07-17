@@ -22,22 +22,7 @@ interface UploadedFile {
 export default function SubmitAssignment({ assignment, onBack, onSuccess }: SubmitAssignmentProps) {
   const { title, courseCode, courseName, dateStr, status } = assignment;
 
-  const [files, setFiles] = useState<UploadedFile[]>([
-    {
-      id: '1',
-      name: 'Project_Guidelines.pdf',
-      size: '2.4MB',
-      status: 'Ready',
-      progress: 100,
-    },
-    {
-      id: '2',
-      name: 'Final_project.pdf',
-      size: '6.8MB',
-      status: 'Uploading',
-      progress: 45,
-    },
-  ]);
+  const [files, setFiles] = useState<UploadedFile[]>([]);
 
   useEffect(() => {
     const uploadingFile = files.find((f) => f.status === 'Uploading');
@@ -125,7 +110,7 @@ export default function SubmitAssignment({ assignment, onBack, onSuccess }: Subm
 
       {/* Main Content */}
       <ScrollView className="flex-1 px-5 pt-4" contentContainerStyle={{ paddingBottom: 100 }}>
-        <View className="bg-white p-5 rounded-[15px] mb-5 shadow-xs">
+        <View className="bg-white border border-[#F2EEF4] p-5 rounded-[15px] mb-5 shadow-xs">
           {/* Assignment  */}
           <Text className="text-[20px] font-semibold text-[#333333] mb-1">
             {title}
@@ -173,7 +158,7 @@ export default function SubmitAssignment({ assignment, onBack, onSuccess }: Subm
 
           {/* Files List */}
           {files.length > 0 && (
-            <View className="bg-white p-4 rounded-[10px] mb-5 shadow-xs">
+            <View className="bg-white border border-[#F2EEF4] p-4 rounded-[10px] mb-5 shadow-xs">
               {files.map((file, index, arr) => (
                 <View
                   key={file.id}
@@ -234,7 +219,7 @@ export default function SubmitAssignment({ assignment, onBack, onSuccess }: Subm
             className={`w-full py-3 rounded-xl items-center justify-center ${isAnyFileUploading || !hasFiles ? 'bg-[#F67300]/50' : 'bg-[#F67300]'
               }`}
           >
-            <Text className="text-white text-[14px] font-bold">
+            <Text className="text-white text-[14px] font-medium">
               {isAnyFileUploading ? 'Uploading Files...' : 'Submit Assignment'}
             </Text>
           </TouchableOpacity>
