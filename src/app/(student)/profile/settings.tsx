@@ -62,6 +62,15 @@ export default function SettingsScreen() {
   const [pushEnabled, setPushEnabled] = useState(true);
   const [emailEnabled, setEmailEnabled] = useState(false);
 
+  const studentName = "lynx";
+  const getInitials = (name: string) => {
+    const parts = name.trim().split(' ').filter(Boolean);
+    if (parts.length === 0) return 'NA';
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  };
+  const initials = getInitials(studentName);
+
   return (
     <SafeAreaView className="flex-1 bg-[#F9FAFB]">
       <View className="flex-1 px-5 pt-2">
@@ -77,17 +86,13 @@ export default function SettingsScreen() {
           {/* Profile Quick Info */}
           <View className="flex-row items-center mb-10">
             <View className="relative mr-4">
-              <View className="w-[60px] h-[60px] rounded-full overflow-hidden bg-gray-200 border-2 border-white shadow-sm">
-                <Image
-                  source={{ uri: 'https://i.pravatar.cc/150?img=47' }}
-                  style={{ width: '100%', height: '100%' }}
-                  contentFit="cover"
-                />
+              <View className="w-[60px] h-[60px] rounded-full border-2 border-white bg-[#FFE4CC] items-center justify-center shadow-sm">
+                <Text className="text-[#F67300] text-[20px] font-bold">{initials}</Text>
               </View>
               <View className="absolute bottom-0 right-0 w-[14px] h-[14px] bg-[#10B981] border-[2.5px] border-white rounded-full z-10" />
             </View>
             <View>
-              <Text className="text-[16px] font-medium text-[#333333]">Name of the student</Text>
+              <Text className="text-[16px] font-medium text-[#333333]">{studentName}</Text>
               <Text className="text-[13px] text-[#6B7280] mt-0.5">Student Id</Text>
             </View>
           </View>
@@ -97,7 +102,7 @@ export default function SettingsScreen() {
           <View className="bg-white rounded-xl border border-[#F1F5F9] mb-8 shadow-sm shadow-gray-100">
             <View className="flex-row items-center justify-between p-4 border-b border-[#F1F5F9]">
               <View className="flex-row items-center">
-                <Feather name="bell" size={18} color="#64748B" />
+                <Feather name="bell" size={18} color="#333333" />
                 <Text className="text-[14px] text-[#333333] ml-3">Push Notification</Text>
               </View>
               <CustomSwitch 
@@ -107,7 +112,7 @@ export default function SettingsScreen() {
             </View>
             <View className="flex-row items-center justify-between p-4">
               <View className="flex-row items-center">
-                <Feather name="mail" size={18} color="#64748B" />
+                <Feather name="mail" size={18} color="#333333" />
                 <Text className="text-[14px] text-[#333333] ml-3">Email Notification</Text>
               </View>
               <CustomSwitch 
@@ -122,7 +127,7 @@ export default function SettingsScreen() {
           <View className="bg-white rounded-xl border border-[#F1F5F9] mb-12 shadow-sm shadow-gray-100">
             <TouchableOpacity className="flex-row items-center justify-between p-4 border-b border-[#F1F5F9]">
               <View className="flex-row items-center">
-                <Feather name="help-circle" size={18} color="#64748B" />
+                <Feather name="help-circle" size={18} color="#333333" />
                 <Text className="text-[14px] text-[#333333] ml-3">Help Center</Text>
               </View>
               <Feather name="chevron-right" size={18} color="#94A3B8" />
@@ -130,7 +135,7 @@ export default function SettingsScreen() {
 
             <TouchableOpacity className="flex-row items-center justify-between p-4 border-b border-[#F1F5F9]">
               <View className="flex-row items-center">
-                <Feather name="headphones" size={18} color="#64748B" />
+                <Feather name="headphones" size={18} color="#333333" />
                 <Text className="text-[14px] text-[#333333] ml-3">Terms of Service</Text>
               </View>
               <Feather name="chevron-right" size={18} color="#94A3B8" />
@@ -138,7 +143,7 @@ export default function SettingsScreen() {
 
             <TouchableOpacity className="flex-row items-center justify-between p-4">
               <View className="flex-row items-center">
-                <Feather name="shield" size={18} color="#64748B" />
+                <Feather name="shield" size={18} color="#333333" />
                 <Text className="text-[14px] text-[#333333] ml-3">Privacy Policy</Text>
               </View>
               <Feather name="chevron-right" size={18} color="#94A3B8" />

@@ -64,6 +64,10 @@ export default function StudentLayout() {
         name="profile/settings"
         options={{ href: null }}
       />
+      <Tabs.Screen
+        name="notifications"
+        options={{ href: null }}
+      />
     </Tabs>
   );
 }

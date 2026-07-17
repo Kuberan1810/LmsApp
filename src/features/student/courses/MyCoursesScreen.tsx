@@ -25,19 +25,18 @@ export const MyCoursesScreen = () => {
             <TouchableOpacity className="w-[30px] h-[30px] rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] items-center justify-center">
               <Feather name="search" size={14} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity className="w-[30px] h-[30px] rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] items-center justify-center relative">
+            <TouchableOpacity 
+              className="w-[30px] h-[30px] rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] items-center justify-center relative"
+              onPress={() => router.push('/(student)/notifications' as any)}
+            >
               <View className="absolute top-[6px] right-[8px] w-1.5 h-1.5 bg-orange-500 rounded-full z-10" />
               <Ionicons name="notifications-outline" size={14} color="black" />
             </TouchableOpacity>
             <TouchableOpacity 
               onPress={() => router.push('/(student)/profile/profile' as any)}
-              className="w-[30px] h-[30px] rounded-lg overflow-hidden bg-orange-500"
+              className="w-[30px] h-[30px] rounded-lg overflow-hidden bg-[#FCE7F3] items-center justify-center"
             >
-              <Image 
-                source={{ uri: 'https://i.pravatar.cc/150?img=11' }} 
-                className="w-full h-full"
-                resizeMode="cover"
-              />
+              <Text className="text-[#BE185D] text-[12px] font-medium">PS</Text>
             </TouchableOpacity>
           </View>
         </View>

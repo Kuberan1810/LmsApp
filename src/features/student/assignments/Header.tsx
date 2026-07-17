@@ -49,6 +49,7 @@ export default function Header({
 
             {/* Notification Bell Button */}
             <TouchableOpacity
+              onPress={() => router.push('/(student)/notifications' as any)}
               className="rounded-full bg-white border border-gray-100 items-center justify-center shadow-sm mr-2 relative"
               style={{ width: 38, height: 38 }}
             >
@@ -59,12 +60,12 @@ export default function Header({
         )}
 
         {/* Profile Avatar */}
-        <TouchableOpacity onPress={() => router.push('/(student)/profile/profile' as any)}>
-          <Image
-            source={profileSource}
-            className="rounded-full border border-gray-100 shadow-sm"
-            style={{ width: 38, height: 38 }}
-          />
+        <TouchableOpacity 
+          onPress={() => router.push('/(student)/profile/profile' as any)}
+          className="rounded-full bg-[#FCE7F3] items-center justify-center border border-gray-100 shadow-sm"
+          style={{ width: 38, height: 38 }}
+        >
+          <Text className="text-[#BE185D] text-[14px] font-medium">PS</Text>
         </TouchableOpacity>
       </View>
     </View>

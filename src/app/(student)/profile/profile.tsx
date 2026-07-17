@@ -1,21 +1,28 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
+import React from 'react';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 export default function ProfileScreen() {
   const router = useRouter();
+
+  const studentName = "lynx";
+  const getInitials = (name: string) => {
+    const parts = name.trim().split(' ').filter(Boolean);
+    if (parts.length === 0) return 'NA';
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  };
+  const initials = getInitials(studentName);
 
   return (
     <View className="flex-1 bg-white">
       {/* Orange Background with Overlays */}
       <View className="pt-14 pb-32 px-5 relative">
         <View className="absolute top-0 left-0 right-0 bottom-0 overflow-hidden">
-          <Image 
-            source={require('../../../../assets/images/Rectangle 3342.svg')} 
+          <Image
+            source={require('../../../../assets/images/Rectangle 3342.svg')}
             style={{ width: '100%', height: '100%', position: 'absolute' }}
             contentFit="cover"
           />
@@ -41,18 +48,11 @@ export default function ProfileScreen() {
         {/* Profile Info */}
         <View className="items-center z-10">
           <View className="relative">
-            <View className="w-24 h-24 rounded-full border-4 border-white overflow-hidden bg-gray-200">
-              <Image 
-                source={{ uri: 'https://i.pravatar.cc/150?img=47' }} 
-                style={{ width: '100%', height: '100%' }}
-                contentFit="cover"
-              />
+            <View className="w-24 h-24 rounded-full border-4 border-white bg-[#FFE4CC] items-center justify-center">
+              <Text className="text-[#F67300] text-[32px] font-bold">{initials}</Text>
             </View>
-            <TouchableOpacity className="absolute bottom-0 right-0 w-7 h-7 bg-[#F67300] border-2 border-white rounded-full items-center justify-center">
-              <Feather name="camera" size={12} color="white" />
-            </TouchableOpacity>
           </View>
-          <Text className="text-[#333333] text-[18px] font-semibold mt-3">Name of the student</Text>
+          <Text className="text-[#333333] text-[18px] font-semibold mt-3">{studentName}</Text>
           <Text className="text-[#333333] text-[14px] mt-0.5 opacity-90">Student Id</Text>
           <Text className="text-[#333333] text-[12px] opacity-70">Student email</Text>
         </View>
@@ -61,36 +61,9 @@ export default function ProfileScreen() {
       {/* Main Content Area */}
       <View className="flex-1 bg-white rounded-t-[30px] -mt-10 px-5 pt-8">
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
-          
-          {/* Top action buttons */}
-          <View className="mb-8">
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 20, paddingRight: 20 }}>
-            
-              <LinearGradient
-                colors={['#FFD78A', '#F4762D']}
-                style={{ width: 119, height: 101, borderRadius: 20, padding: 20, justifyContent: 'center' }}
-              >
-                <TouchableOpacity className="flex-1 justify-center">
-                  <View className="mb-6">
-                    <Feather name="calendar" size={24} color="#333333" />
-                  </View>
-                  <Text className="text-[#333333] text-[14px] font-semibold mt-1">Attendance</Text>
-                </TouchableOpacity>
-              </LinearGradient>
 
-              <LinearGradient
-                colors={['#A7F3D0', '#10B981']} // Green gradient
-                style={{ width: 119, height: 101, borderRadius: 20, padding: 20, justifyContent: 'center' }}
-              >
-                <TouchableOpacity className="flex-1 justify-center">
-                  <View className="mb-6">
-                    <Feather name="file-text" size={24} color="#333333" />
-                  </View>
-                  <Text className="text-[#333333] text-[14px] font-semibold mt-1">Test</Text>
-                </TouchableOpacity>
-              </LinearGradient>
-            </ScrollView>
-          </View>
+          {/* Top action buttons */}
+
 
           {/* Personal Details */}
           <View className="bg-[#FAFAFA] rounded-3xl p-5 mb-6 border border-[#F3F4F6]">
@@ -109,7 +82,7 @@ export default function ProfileScreen() {
                 </View>
                 <Text className="text-[#333333] text-[15px] ml-6 font-medium">testmail.com</Text>
               </View>
-              
+
               <View>
                 <View className="flex-row items-center gap-2 mb-1">
                   <Feather name="phone" size={16} color="#F67300" />

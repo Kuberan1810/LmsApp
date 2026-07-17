@@ -32,7 +32,10 @@ export default function DashboardHeader() {
 
         {/* Notifications and Profile */}
         <View className="flex-row items-center">
-          <TouchableOpacity className="mr-4 relative">
+          <TouchableOpacity 
+            className="mr-4 relative"
+            onPress={() => router.push('/(student)/notifications' as any)}
+          >
             <Feather name="bell" size={20} color="#555" />
             {/* Notification Dot */}
             <View className="absolute top-0 right-0 w-2 h-2 bg-[#EE8B3A] rounded-full border border-white" />
