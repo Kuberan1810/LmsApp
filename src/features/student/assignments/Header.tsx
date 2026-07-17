@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, ImageSourcePropType } from 'react-native';
 import { Ionicons, Feather } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+
 
 interface HeaderProps {
   title?: string;
@@ -17,6 +19,7 @@ export default function Header({
   showSearchAndNotify = false,
   profileSource = require('../../../../assets/images/avatarLms.png'),
 }: HeaderProps) {
+  const router = useRouter();
   return (
     <View className="px-5 pt-3 pb-2 flex-row justify-between items-start">
       <View className="flex-row items-start flex-1 mr-4">
@@ -43,21 +46,25 @@ export default function Header({
             </TouchableOpacity>
 
             {/* Notification Bell Button */}
+
             <TouchableOpacity className="w-[30px] h-[30px] rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] items-center justify-center relative">
               <View className="absolute top-[6px] right-[8px] w-1.5 h-1.5 bg-[#F67300] rounded-full z-10" />
               <Ionicons name="notifications-outline" size={14} color="black" />
+
             </TouchableOpacity>
           </>
         )}
 
         {/* Profile Avatar */}
-        <View className="w-[30px] h-[30px] rounded-lg overflow-hidden border border-[#E5E5E5]">
-          <Image
-            source={profileSource}
-            className="w-full h-full"
-            resizeMode="cover"
-          />
-        </View>
+
+        <TouchableOpacity 
+          onPress={() => router.push('/(student)/profile/profile' as any)}
+          className="rounded-full bg-[#FCE7F3] items-center justify-center border border-gray-100 shadow-sm"
+          style={{ width: 38, height: 38 }}
+        >
+          <Text className="text-[#BE185D] text-[14px] font-medium">PS</Text>
+        </TouchableOpacity>
+
       </View>
     </View>
   );

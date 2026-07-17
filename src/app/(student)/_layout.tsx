@@ -140,6 +140,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 
 export default function StudentLayout() {
   return (
+
     <TabBarVisibilityProvider>
       <Tabs
         tabBar={props => <CustomTabBar {...props as any} />}
@@ -158,5 +159,6 @@ export default function StudentLayout() {
 
       </Tabs>
     </TabBarVisibilityProvider>
+
   );
 }

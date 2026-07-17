@@ -1,6 +1,6 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 type CourseCardProps = {
   title: string;
@@ -12,27 +12,61 @@ type CourseCardProps = {
 
 export const CourseCard = ({ title, duration, lessons, bgColorClass, onPress }: CourseCardProps) => {
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.9} className={`w-72 h-36 rounded-3xl p-5 mr-4 justify-between overflow-hidden ${bgColorClass}`}>
-      {/* Decorative background elements */}
-      <View className="absolute -right-4 -top-4 w-24 h-24 bg-white/20 rounded-full blur-xl" />
-      <View className="absolute right-8 bottom-4 w-12 h-12 bg-white/20 rounded-full blur-md" />
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.9}
+      className={`${bgColorClass} rounded-[10px] p-5 mr-4 h-[101px] w-[260px] justify-between border shadow-sm relative overflow-hidden`}
+      style={{ borderColor: '#ffffff', borderWidth: 1 }}
+    >
+      <Ionicons
+        name="sparkles-outline"
+        size={38}
+        color="#FFFFFF"
+        style={{ position: 'absolute', right: 50, top: 0, opacity: 0.40 }}
+      />
+      <Ionicons
+        name="sparkles-outline"
+        size={20}
+        color="#FFFFFF"
+        style={{ position: 'absolute', right: 8, top: 36, opacity: 0.40 }}
+      />
+      <Ionicons
+        name="book"
+        size={50}
+        color="#FFFFFF"
+        style={{ position: 'absolute', right: 10, top: 70, opacity: 0.40, transform: [{ rotate: '-30deg' }] }}
+      />
+      <Ionicons
+        name="sparkles-outline"
+        size={30}
+        color="#FFFFFF"
+        style={{ position: 'absolute', right: 90, bottom: 8, opacity: 0.40 }}
+      />
 
-      <Text className="text-[#333333] font-semibold text-[14px] w-4/5 leading-snug" numberOfLines={2}>
+      {/* Course Title */}
+      <Text className={`text-[14px] font-semibold text-slate-800 leading-snug pr-8`} numberOfLines={2}>
         {title}
       </Text>
 
-      <View className="flex-row items-center gap-6 mt-2">
-        <View className="flex-row items-center gap-1.5">
-          <View className="bg-white rounded-full p-1">
-            <Feather name="clock" size={10} color="#8C8E90" />
+      <View className="flex-row items-center">
+        {/* Duration */}
+        <View className="flex-row items-center mr-4">
+          <View className="w-[18px] h-[18px] rounded-[5px] bg-white border border-[#F3F5F7] items-center justify-center shadow-xs">
+            <Ionicons name="time-outline" size={10} color="#626262" />
           </View>
-          <Text className="text-[#8C8E90] text-[12px] font-medium">{duration}</Text>
+          <Text className="text-[12px] font-medium text-[#626262] ml-1.5">
+            {duration}
+          </Text>
         </View>
-        <View className="flex-row items-center gap-1.5">
-          <View className="bg-white rounded-full p-1">
-            <Feather name="book-open" size={10} color="#8C8E90" />
+
+        {/* Lessons */}
+        <View className="flex-row items-center">
+          <View className="w-[18px] h-[18px] rounded-[5px] bg-white border border-[#F3F5F7] items-center justify-center shadow-xs">
+            <Ionicons name="document-text-outline" size={10} color="#626262" />
           </View>
-          <Text className="text-[#8C8E90] text-[12px] font-medium">{lessons}</Text>
+          <Text className="text-[12px] font-medium text-[#626262] ml-1.5">
+            {lessons}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
