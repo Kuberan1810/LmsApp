@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
+import Animated from 'react-native-reanimated';
+import { useTabBarScroll } from '@/context/TabBarVisibilityContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -9,6 +11,7 @@ import { UpcomingClassesCard } from './UpcomingClassesCard';
 
 export const MyCoursesScreen = () => {
   const router = useRouter();
+  const scrollHandler = useTabBarScroll();
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
@@ -40,10 +43,15 @@ export const MyCoursesScreen = () => {
         </View>
 
 
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 30 }}>
+        <Animated.ScrollView 
+          showsVerticalScrollIndicator={false} 
+          contentContainerStyle={{ paddingBottom: 100 }}
+          onScroll={scrollHandler}
+          scrollEventThrottle={16}
+        >
           {/* Horizontal Courses Scroll */}
           <View className="mb-6">
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="overflow-visible">
+            <Animated.ScrollView horizontal showsHorizontalScrollIndicator={false} className="overflow-visible">
               <CourseCard 
                 title="AM101 - AI / ML Frontier AI Engineer" 
                 duration="3 Months" 
@@ -57,7 +65,7 @@ export const MyCoursesScreen = () => {
                 lessons="12 Lessons" 
                 bgColorClass="bg-purple-200" 
               />
-            </ScrollView>
+            </Animated.ScrollView>
           </View>
 
           {/* Live Now Section */}
@@ -96,7 +104,7 @@ export const MyCoursesScreen = () => {
               reminderSet={false}
             />
           </View>
-        </ScrollView>
+        </Animated.ScrollView>
       </View>
     </SafeAreaView>
   );

@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  ScrollView,
   TouchableOpacity,
   Image,
   Dimensions,
 } from 'react-native';
+import Animated from 'react-native-reanimated';
+import { useTabBarScroll } from '@/context/TabBarVisibilityContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -70,6 +71,8 @@ const MOCK_ASSIGNMENTS: Assignment[] = [
 type FilterType = 'All' | 'In Progress' | 'Submitted' | 'Overdue';
 
 export default function AssignmentsScreen() {
+  const scrollHandler = useTabBarScroll();
+
   const [activeFilter, setActiveFilter] = useState<FilterType>('All');
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
@@ -175,7 +178,12 @@ export default function AssignmentsScreen() {
       {/* header */}
       <Header onBackPress={() => router.back()} showSearchAndNotify />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
+      <Animated.ScrollView 
+        showsVerticalScrollIndicator={false} 
+        contentContainerStyle={{ paddingBottom: 100 }}
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
+      >
         {/* EnrolledCourse */}
         <EnrolledCourse
           selectedCourse={selectedCourse}
@@ -261,7 +269,7 @@ export default function AssignmentsScreen() {
           )}
         </View>
 
-      </ScrollView>
+      </Animated.ScrollView>
     </SafeAreaView>
   );
 }

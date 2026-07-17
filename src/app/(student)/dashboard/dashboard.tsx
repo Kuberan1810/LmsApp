@@ -1,5 +1,7 @@
-import { View, ScrollView } from 'react-native';
+import { View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import React from 'react';
+import { useTabBarScroll } from '@/context/TabBarVisibilityContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DashboardHeader from '@/features/student/dashboard/DashboardHeader';
 import RecentCoursesSection from '@/features/student/dashboard/RecentCoursesSection';
@@ -10,12 +12,16 @@ import UpcomingScheduleSection from '@/features/student/dashboard/UpcomingSchedu
 import DashboardAssignmentsSection from '@/features/student/dashboard/DashboardAssignmentsSection';
 
 export default function dashboard() {
+  const scrollHandler = useTabBarScroll();
+
   return (
     <SafeAreaView className="flex-1 bg-[#FAFAFA]">
-      <ScrollView
+      <Animated.ScrollView
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
         className="flex-1"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 40 }}
+        contentContainerStyle={{ paddingBottom: 100 }}
       >
         <DashboardHeader />
         <RecentCoursesSection />
@@ -24,7 +30,7 @@ export default function dashboard() {
         <AttendanceCalendarSection />
         <UpcomingScheduleSection />
         <DashboardAssignmentsSection />
-      </ScrollView>
+      </Animated.ScrollView>
     </SafeAreaView>
   );
 }
