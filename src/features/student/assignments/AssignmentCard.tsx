@@ -88,9 +88,9 @@ export default function AssignmentCard({ assignment, onPress }: AssignmentCardPr
       return (
         <TouchableOpacity
           onPress={() => onPress(assignment)}
-          className="bg-[#F2F2F2] px-3 py-2.5 rounded-xl"
+          className="bg-[#F67300] px-3 py-2.5 rounded-xl"
         >
-          <Text className="text-[#8C8C8C] text-[14px] font-medium">
+          <Text className="text-white text-[14px] font-medium">
             View Submission
           </Text>
         </TouchableOpacity>
@@ -110,7 +110,7 @@ export default function AssignmentCard({ assignment, onPress }: AssignmentCardPr
   };
 
   return (
-    <View className="bg-white rounded-2xl p-6 mb-4">
+    <View className="bg-white border border-[#F2EEF4] rounded-2xl p-6 mb-4">
       {/* Top Badge */}
       {getStatusBadge()}
 
