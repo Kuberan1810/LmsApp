@@ -1,11 +1,11 @@
+import { TabBarVisibilityProvider, useTabBarVisibility } from '@/context/TabBarVisibilityContext';
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { BlurView } from 'expo-blur';
 import { Tabs } from 'expo-router';
 import { CalendarTick, ClipboardText, DocumentText, DocumentText1, Home2, NoteText } from 'iconsax-react-native';
 import React from 'react';
-import { View, Text, TouchableOpacity, LayoutAnimation, Platform, UIManager, LogBox } from 'react-native';
-import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { BlurView } from 'expo-blur';
+import { LayoutAnimation, LogBox, Platform, Text, TouchableOpacity, UIManager, View } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
-import { TabBarVisibilityProvider, useTabBarVisibility } from '@/context/TabBarVisibilityContext';
 
 LogBox.ignoreLogs(['setLayoutAnimationEnabledExperimental is currently a no-op']);
 
@@ -26,8 +26,8 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     };
   });
 
-  const visibleRoutes = state.routes.filter(r => 
-    ['dashboard/dashboard', 'courses/courses', 'assignments/assignments', 'attendance/attendance', 'tests/tests'].includes(r.name)
+  const visibleRoutes = state.routes.filter(r =>
+    ['dashboard/dashboard', 'courses/courses', 'assignments/assignments', 'attendance/attendance', 'tests/index'].includes(r.name)
   );
 
   const tabContent = visibleRoutes.map((route, index) => {
@@ -68,7 +68,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     if (route.name === 'courses/courses') IconComponent = isFocused ? DocumentText : DocumentText1;
     if (route.name === 'assignments/assignments') IconComponent = NoteText;
     if (route.name === 'attendance/attendance') IconComponent = CalendarTick;
-    if (route.name === 'tests/tests') IconComponent = ClipboardText;
+    if (route.name === 'tests/index') IconComponent = ClipboardText;
 
     return (
       <TouchableOpacity
@@ -141,20 +141,21 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 export default function StudentLayout() {
   return (
     <TabBarVisibilityProvider>
-      <Tabs 
+      <Tabs
         tabBar={props => <CustomTabBar {...props as any} />}
         screenOptions={{ headerShown: false }}
       >
-      <Tabs.Screen name="dashboard/dashboard" options={{ title: 'Home' }} />
-      <Tabs.Screen name="courses/courses" options={{ title: 'Courses' }} />
-      <Tabs.Screen name="assignments/assignments" options={{ title: 'Tasks' }} />
-      <Tabs.Screen name="attendance/attendance" options={{ title: 'Calendar' }} />
-      <Tabs.Screen name="tests/tests" options={{ title: 'Tests' }} />
-      
-      <Tabs.Screen name="profile/profile" options={{ href: null }} />
-      <Tabs.Screen name="courses/[id]" options={{ href: null }} />
-      <Tabs.Screen name="courses/lesson/[id]" options={{ href: null }} />
-      <Tabs.Screen name="courses/recording/[id]" options={{ href: null }} />
+        <Tabs.Screen name="dashboard/dashboard" options={{ title: 'Home' }} />
+        <Tabs.Screen name="courses/courses" options={{ title: 'Courses' }} />
+        <Tabs.Screen name="assignments/assignments" options={{ title: 'Tasks' }} />
+        <Tabs.Screen name="attendance/attendance" options={{ title: 'Calendar' }} />
+        <Tabs.Screen name="tests/index" options={{ title: 'Tests' }} />
+
+        <Tabs.Screen name="profile/profile" options={{ href: null }} />
+        <Tabs.Screen name="courses/[id]" options={{ href: null }} />
+        <Tabs.Screen name="courses/lesson/[id]" options={{ href: null }} />
+        <Tabs.Screen name="courses/recording/[id]" options={{ href: null }} />
+
       </Tabs>
     </TabBarVisibilityProvider>
   );
