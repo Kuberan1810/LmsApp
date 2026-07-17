@@ -26,7 +26,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     };
   });
 
-  const visibleRoutes = state.routes.filter(r => 
+  const visibleRoutes = state.routes.filter(r =>
     ['dashboard/dashboard', 'courses/courses', 'assignments/assignments', 'attendance/attendance', 'tests/tests'].includes(r.name)
   );
 
@@ -141,20 +141,20 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 export default function StudentLayout() {
   return (
     <TabBarVisibilityProvider>
-      <Tabs 
+      <Tabs
         tabBar={props => <CustomTabBar {...props as any} />}
         screenOptions={{ headerShown: false }}
       >
-      <Tabs.Screen name="dashboard/dashboard" options={{ title: 'Home' }} />
-      <Tabs.Screen name="courses/courses" options={{ title: 'Courses' }} />
-      <Tabs.Screen name="assignments/assignments" options={{ title: 'Tasks' }} />
-      <Tabs.Screen name="attendance/attendance" options={{ title: 'Calendar' }} />
-      <Tabs.Screen name="tests/tests" options={{ title: 'Tests' }} />
-      
-      <Tabs.Screen name="profile/profile" options={{ href: null }} />
-      <Tabs.Screen name="courses/[id]" options={{ href: null }} />
-      <Tabs.Screen name="courses/lesson/[id]" options={{ href: null }} />
-      <Tabs.Screen name="courses/recording/[id]" options={{ href: null }} />
+        <Tabs.Screen name="dashboard/dashboard" options={{ title: 'Home' }} />
+        <Tabs.Screen name="courses/courses" options={{ title: 'Courses' }} />
+        <Tabs.Screen name="assignments/assignments" options={{ title: 'Tasks' }} />
+        <Tabs.Screen name="attendance/attendance" options={{ title: 'Calendar' }} />
+        <Tabs.Screen name="tests/tests" options={{ title: 'Tests' }} />
+
+        <Tabs.Screen name="profile/profile" options={{ href: null }} />
+        <Tabs.Screen name="courses/[id]" options={{ href: null }} />
+        <Tabs.Screen name="courses/lesson/[id]" options={{ href: null }} />
+        <Tabs.Screen name="courses/recording/[id]" options={{ href: null }} />
       </Tabs>
     </TabBarVisibilityProvider>
   );

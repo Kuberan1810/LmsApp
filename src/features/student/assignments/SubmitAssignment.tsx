@@ -1,14 +1,56 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { Image as ExpoImage } from 'expo-image';
+import { Danger, CalendarRemove, DocumentUpload, Trash, CloseCircle } from 'iconsax-react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import { Assignment } from './AssignmentCard';
 import Header from './Header';
 
+const getFileIconSource = (fileName: string) => {
+  const ext = fileName.split('.').pop()?.toLowerCase();
+  switch (ext) {
+    case 'pdf':
+      return require('../../../../assets/icon/pdfIcon.svg');
+    case 'doc':
+      return require('../../../../assets/icon/docIcon.svg');
+    case 'docx':
+      return require('../../../../assets/icon/word.svg');
+    case 'xls':
+    case 'xlsx':
+      return require('../../../../assets/icon/xl.svg');
+    case 'png':
+    case 'jpg':
+    case 'jpeg':
+      return require('../../../../assets/icon/imgIcon.svg');
+    default:
+      return require('../../../../assets/icon/file.svg');
+  }
+};
+
+const getFileIconBg = (fileName: string) => {
+  const ext = fileName.split('.').pop()?.toLowerCase();
+  switch (ext) {
+    case 'pdf':
+      return 'bg-[#FEE2E2]';
+    case 'doc':
+    case 'docx':
+      return 'bg-[#E0F2FE]';
+    case 'xls':
+    case 'xlsx':
+      return 'bg-[#DCFCE7]';
+    case 'png':
+    case 'jpg':
+    case 'jpeg':
+      return 'bg-[#F3E8FF]';
+    default:
+      return 'bg-gray-100';
+  }
+};
+
 interface SubmitAssignmentProps {
   assignment: Assignment;
   onBack: () => void;
-  onSuccess: () => void;
+  onSuccess: (submittedFiles: { name: string; size: string }[], notes: string) => void;
 }
 
 interface UploadedFile {
@@ -52,6 +94,7 @@ export default function SubmitAssignment({ assignment, onBack, onSuccess }: Subm
   };
 
   const [files, setFiles] = useState<UploadedFile[]>([]);
+  const [notes, setNotes] = useState('');
 
   useEffect(() => {
     const uploadingFile = files.find((f) => f.status === 'Uploading');
@@ -122,13 +165,13 @@ export default function SubmitAssignment({ assignment, onBack, onSuccess }: Subm
     if (status === 'Overdue') {
       return (
         <View className="w-[18px] h-[18px] rounded-[5px] bg-white border border-[#F3F5F7] items-center justify-center shadow-xs">
-          <Ionicons name="warning-outline" size={12} color="#F1351B" />
+          <Danger size={12} color="#F1351B" variant="Linear" />
         </View>
       );
     }
     return (
       <View className="w-[18px] h-[18px] rounded-[5px] bg-white border border-[#F3F5F7] items-center justify-center shadow-xs">
-        <MaterialCommunityIcons name="calendar-remove-outline" size={10} color="#9CA3AF" />
+        <CalendarRemove size={10} color="#9CA3AF" variant="Linear" />
       </View>
     );
   };
@@ -158,6 +201,23 @@ export default function SubmitAssignment({ assignment, onBack, onSuccess }: Subm
           </View>
         </View>
 
+        {/* Submission Notes Card */}
+        <View className="mb-5">
+          <Text className="text-[20px] font-medium text-[#333333] mb-4">Submission Notes</Text>
+          <View className="bg-white border border-[#F2EEF4] p-4 rounded-[15px]">
+            <TextInput
+              multiline
+              numberOfLines={6}
+              value={notes}
+              onChangeText={setNotes}
+              placeholder="Type Your Assignment Answers, Notes, Or Link To External Resources Here..."
+              placeholderTextColor="#99A1AF"
+              textAlignVertical="top"
+              className="text-[14px] text-[#4D4D4D] min-h-[120px] leading-[20px] p-0"
+            />
+          </View>
+        </View>
+
         {/* Submit Assignment Card */}
         <View className="mb-5">
           <Text className="text-[20px] font-medium text-[#333333] mb-4">Submit Assignment</Text>
@@ -178,7 +238,7 @@ export default function SubmitAssignment({ assignment, onBack, onSuccess }: Subm
               }}
               className="w-[70px] h-[70px] rounded-full bg-[#F67300] items-center justify-center mb-3"
             >
-              <Ionicons name="cloud-upload" size={30} color="white" />
+              <DocumentUpload size={30} color="white" variant="Linear" />
             </View>
             <Text className="text-[18px] font-medium text-[#333333] mb-1">Upload your files</Text>
             <Text className="text-[13px] text-[#626262] text-center px-4 leading-normal">
@@ -196,11 +256,17 @@ export default function SubmitAssignment({ assignment, onBack, onSuccess }: Subm
                     }`}
                 >
                   <View className="flex-row items-center flex-1 pr-4">
-                    <View className="w-[44px] h-[44px] bg-[#FEE2E2] rounded-[10px] justify-center items-center">
-                      <MaterialCommunityIcons name="file-pdf-box" size={24} color="#EF4444" />
+                    <View
+                      className={`w-[76px] h-[69px] ${getFileIconBg(file.name)} rounded-[24px] justify-center items-center`}
+                    >
+                      <ExpoImage
+                        source={getFileIconSource(file.name)}
+                        style={{ width: 24, height: 24 }}
+                        contentFit="contain"
+                      />
                     </View>
                     <View className="ml-3 flex-1">
-                      <Text className="text-[16px] font-medium text-[#333333]" numberOfLines={1}>
+                      <Text className="text-[16px] font-medium text-[#4D4D4D]" numberOfLines={1}>
                         {file.name}
                       </Text>
                       <View className="flex-row items-center mt-0.5">
@@ -219,9 +285,9 @@ export default function SubmitAssignment({ assignment, onBack, onSuccess }: Subm
                     className="p-1"
                   >
                     {file.status === 'Ready' ? (
-                      <Ionicons name="trash-outline" size={18} color="#000000" />
+                      <Trash size={18} color="#808080" variant="Linear" />
                     ) : (
-                      <Ionicons name="close" size={18} color="#000000" />
+                      <CloseCircle size={18} color="#808080" variant="Linear" />
                     )}
                   </TouchableOpacity>
 
@@ -245,7 +311,9 @@ export default function SubmitAssignment({ assignment, onBack, onSuccess }: Subm
         <View>
           <TouchableOpacity
             disabled={isAnyFileUploading || !hasFiles}
-            onPress={onSuccess}
+            onPress={() => {
+              onSuccess(files.map((f) => ({ name: f.name, size: f.size })), notes);
+            }}
             className={`w-full py-3 rounded-xl items-center justify-center ${isAnyFileUploading || !hasFiles ? 'bg-[#F67300]/50' : 'bg-[#F67300]'
               }`}
           >

@@ -10,11 +10,12 @@ import Animated from 'react-native-reanimated';
 import { useTabBarScroll } from '@/context/TabBarVisibilityContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Filter, ArrowUp2, ArrowDown2, DocumentText } from 'iconsax-react-native';
 import AssignmentCard, { Assignment } from '@/features/student/assignments/AssignmentCard';
 import AssignmentDetail from '@/features/student/assignments/AssignmentDetail';
 import SubmitAssignment from '@/features/student/assignments/SubmitAssignment';
 import SubmissionSuccess from '@/features/student/assignments/SubmissionSuccess';
+import ViewSubmission from '@/features/student/assignments/viewSubmission';
 import Header from '@/features/student/assignments/Header';
 import EnrolledCourse, { MOCK_COURSES, Course } from '@/features/student/assignments/EnrolledCourse';
 
@@ -28,6 +29,8 @@ const MOCK_ASSIGNMENTS: Assignment[] = [
     status: 'Submitted',
     dateStr: 'Jan 16, 12:05 PM',
     mark: '75%',
+    submittedFiles: [{ name: 'task.png', size: '1.2MB' }],
+    submissionNotes: 'Submission Notes',
   },
   {
     id: '2',
@@ -56,6 +59,8 @@ const MOCK_ASSIGNMENTS: Assignment[] = [
     status: 'Submitted',
     dateStr: 'Jan 16, 2:05 PM',
     mark: '75%',
+    submittedFiles: [{ name: 'task.png', size: '1.2MB' }],
+    submissionNotes: 'Submission Notes',
   },
   {
     id: '5',
@@ -78,7 +83,7 @@ export default function AssignmentsScreen() {
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
 
   const [assignments, setAssignments] = useState<Assignment[]>(MOCK_ASSIGNMENTS);
-  const [currentView, setCurrentView] = useState<'list' | 'detail' | 'submit' | 'success'>('list');
+  const [currentView, setCurrentView] = useState<'list' | 'detail' | 'submit' | 'success' | 'viewSubmission'>('list');
   const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
@@ -92,17 +97,21 @@ export default function AssignmentsScreen() {
 
   const handleAssignmentPress = (assignment: Assignment) => {
     setSelectedAssignment(assignment);
-    setCurrentView('detail');
+    if (assignment.status === 'Submitted') {
+      setCurrentView('viewSubmission');
+    } else {
+      setCurrentView('detail');
+    }
   };
 
-  const handleSubmissionSuccess = () => {
+  const handleSubmissionSuccess = (submittedFiles: { name: string; size: string }[], notes: string) => {
     if (selectedAssignment) {
       setAssignments((prevAssignments) =>
         prevAssignments.map((a) =>
-          a.id === selectedAssignment.id ? { ...a, status: 'Submitted', mark: undefined } : a
+          a.id === selectedAssignment.id ? { ...a, status: 'Submitted', mark: undefined, submittedFiles, submissionNotes: notes } : a
         )
       );
-      setSelectedAssignment((prev) => prev ? { ...prev, status: 'Submitted' } : null);
+      setSelectedAssignment((prev) => prev ? { ...prev, status: 'Submitted', submittedFiles, submissionNotes: notes } : null);
     }
     setCurrentView('detail');
     setShowSuccessPopup(true);
@@ -147,7 +156,7 @@ export default function AssignmentsScreen() {
         assignment={selectedAssignment}
         onViewSubmission={() => {
           setShowSuccessPopup(false);
-          setCurrentView('detail');
+          setCurrentView('viewSubmission');
         }}
         onBackToDashboard={() => {
           setShowSuccessPopup(false);
@@ -184,6 +193,17 @@ export default function AssignmentsScreen() {
     );
   }
 
+  if (currentView === 'viewSubmission' && selectedAssignment) {
+    return (
+      <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
+        <ViewSubmission
+          assignment={selectedAssignment}
+          onBack={() => setCurrentView('list')}
+        />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
       {/* header */}
@@ -213,9 +233,13 @@ export default function AssignmentsScreen() {
               onPress={() => setShowStatusDropdown(!showStatusDropdown)}
               className="flex-row items-center bg-white border border-[#F2EEF4] px-3.5 py-1.5 rounded-full"
             >
-              <Ionicons name="options-outline" size={14} color="#4B5563" style={{ marginRight: 6 }} />
+              <Filter size={14} color="#4B5563" variant="Linear" style={{ marginRight: 6 }} />
               <Text className="text-[#333333] text-xs font-semibold mr-1">Status</Text>
-              <Ionicons name={showStatusDropdown ? "chevron-up" : "chevron-down"} size={14} color="#4B5563" />
+              {showStatusDropdown ? (
+                <ArrowUp2 size={14} color="#4B5563" variant="Linear" />
+              ) : (
+                <ArrowDown2 size={14} color="#4B5563" variant="Linear" />
+              )}
             </TouchableOpacity>
 
             {showStatusDropdown && (
@@ -288,7 +312,7 @@ export default function AssignmentsScreen() {
             ) : (
               // Empty State
               <View className="bg-white border border-[#F2EEF4] rounded-2xl p-10 items-center justify-center mt-4 shadow-sm">
-                <Ionicons name="document-text-outline" size={48} color="#9CA3AF" />
+                <DocumentText size={48} color="#9CA3AF" variant="Linear" />
                 <Text className="text-gray-800 font-semibold mt-4 text-base">No assignments found</Text>
                 <Text className="text-gray-400 text-xs text-center mt-1">
                   There are no {activeFilter.toLowerCase()} assignments currently.
