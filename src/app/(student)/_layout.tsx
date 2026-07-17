@@ -28,6 +28,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 
   const visibleRoutes = state.routes.filter(r =>
     ['dashboard/dashboard', 'courses/courses', 'assignments/assignments', 'attendance/attendance', 'tests/index'].includes(r.name)
+
   );
 
   const tabContent = visibleRoutes.map((route, index) => {
@@ -150,7 +151,9 @@ export default function StudentLayout() {
         <Tabs.Screen name="courses/courses" options={{ title: 'Courses' }} />
         <Tabs.Screen name="assignments/assignments" options={{ title: 'Tasks' }} />
         <Tabs.Screen name="attendance/attendance" options={{ title: 'Calendar' }} />
+
         <Tabs.Screen name="tests/index" options={{ title: 'Tests' }} />
+
 
         <Tabs.Screen name="profile/profile" options={{ href: null }} />
         <Tabs.Screen name="courses/[id]" options={{ href: null }} />

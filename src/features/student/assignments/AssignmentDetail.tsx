@@ -1,8 +1,30 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-native';
-import { Ionicons, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
+import { Image as ExpoImage } from 'expo-image';
+import { Danger, CalendarRemove, Link, EmojiHappy, DocumentDownload, Export, DocumentUpload, LinkSquare, Maximize } from 'iconsax-react-native';
 import { Assignment } from './AssignmentCard';
 import Header from './Header';
+
+const getFileIconSource = (fileName: string) => {
+  const ext = fileName.split('.').pop()?.toLowerCase();
+  switch (ext) {
+    case 'pdf':
+      return require('../../../../assets/icon/pdfIcon.svg');
+    case 'doc':
+      return require('../../../../assets/icon/docIcon.svg');
+    case 'docx':
+      return require('../../../../assets/icon/word.svg');
+    case 'xls':
+    case 'xlsx':
+      return require('../../../../assets/icon/xl.svg');
+    case 'png':
+    case 'jpg':
+    case 'jpeg':
+      return require('../../../../assets/icon/imgIcon.svg');
+    default:
+      return require('../../../../assets/icon/file.svg');
+  }
+};
 
 interface AssignmentDetailProps {
   assignment: Assignment;
@@ -47,13 +69,13 @@ export default function AssignmentDetail({ assignment, onBack, onSubmit }: Assig
     if (status === 'Overdue') {
       return (
         <View className="w-[18px] h-[18px] rounded-[5px] bg-white border border-[#F3F5F7] items-center justify-center shadow-xs">
-          <Ionicons name="warning-outline" size={14} color="#F1351B" />
+          <Danger size={14} color="#F1351B" variant="Linear" />
         </View>
       );
     }
     return (
       <View className="w-[18px] h-[18px] rounded-[5px] bg-white border border-[#F3F5F7] items-center justify-center shadow-xs">
-        <MaterialCommunityIcons name="calendar-remove-outline" size={14} color="#9CA3AF" />
+        <CalendarRemove size={14} color="#9CA3AF" variant="Linear" />
       </View>
     );
   };
@@ -107,8 +129,8 @@ export default function AssignmentDetail({ assignment, onBack, onSubmit }: Assig
           ))}
         </View>
 
-        {/* Resources Card */}
-        <View className="bg-white border border-[#F2EEF4] p-4 rounded-[10px] mb-5 shadow-xs">
+        {/* Resources Card Wrapper */}
+        <View className="bg-white border border-[#F2EEF4] p-4 rounded-[10px] mb-5">
           <Text className="text-[20px] font-medium text-[#333333] mb-4">Resources</Text>
 
           {/* Resources List */}
@@ -117,38 +139,67 @@ export default function AssignmentDetail({ assignment, onBack, onSubmit }: Assig
               title: 'Project_Guidelines.pdf',
               subtitle: '2.4MB',
               iconBg: 'bg-[#FEE2E2]',
-              icon: <MaterialCommunityIcons name="file-pdf-box" size={24} color="#EF4444" />,
-              actionIcon: <Feather name="download" size={18} color="#000000" />,
+              actionIcon: <DocumentUpload size={18} color="#808080" variant="Linear" />,
             },
             {
               title: 'RAG Architecture Overview',
               subtitle: 'external-link.com',
               iconBg: 'bg-blue-50',
-              icon: <Ionicons name="link-outline" size={24} color="#3B82F6" />,
-              actionIcon: <Ionicons name="open-outline" size={18} color="#000000" />,
+              actionIcon: <Maximize size={18} color="#808080" variant="Linear" />,
             }
-          ].map((res, index, arr) => (
-            <View
-              key={index}
-              className={`flex-row justify-between items-center ${index < arr.length - 1 ? 'mb-[30px]' : ''
-                }`}
-            >
-              <View className="flex-row items-center flex-1 pr-4">
-                <View className={`w-[44px] h-[44px] ${res.iconBg} rounded-[10px] justify-center items-center`}>
-                  {res.icon}
+          ].map((res, index, arr) => {
+            const ext = res.title.split('.').pop()?.toLowerCase();
+            const isFile = ['pdf', 'doc', 'docx', 'xls', 'xlsx'].includes(ext || '');
+
+            return (
+              <View
+                key={index}
+                style={{
+                  borderWidth: 0.5,
+                  borderColor: '#F2EEF4',
+                  shadowColor: '#F2EEF4',
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 4,
+                  elevation: 3,
+                  height: 77,
+                }}
+                className={`flex-row justify-between items-center bg-white pl-1 py-1 pr-5 rounded-[15px] ${index < arr.length - 1 ? 'mb-3.5' : ''
+                  }`}
+              >
+                <View className="flex-row items-center flex-1 pr-2">
+                  {isFile ? (
+                    <View
+                      style={{ width: 76, height: 69 }}
+                      className={`rounded-[24px] ${res.iconBg} justify-center items-center`}
+                    >
+                      <ExpoImage
+                        source={getFileIconSource(res.title)}
+                        style={{ width: 32, height: 32 }}
+                        contentFit="contain"
+                      />
+                    </View>
+                  ) : (
+                    <View
+                      style={{ width: 76, height: 69 }}
+                      className={`rounded-[24px] ${res.iconBg} justify-center items-center`}
+                    >
+                      <Link size={24} color="#3B82F6" variant="Linear" />
+                    </View>
+                  )}
+                  <View className="ml-[10px] flex-1 justify-center">
+                    <Text className="text-[15px] font-medium text-[#333333]" numberOfLines={1}>
+                      {res.title}
+                    </Text>
+                    <Text className="text-[12px] text-[#808080] mt-0.5">{res.subtitle}</Text>
+                  </View>
                 </View>
-                <View className="ml-3 flex-1">
-                  <Text className="text-[16px] font-medium text-[#333333]" numberOfLines={1}>
-                    {res.title}
-                  </Text>
-                  <Text className="text-[12px] text-[#808080] mt-0.5">{res.subtitle}</Text>
-                </View>
+                <TouchableOpacity className="p-1">
+                  {res.actionIcon}
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity className="p-1">
-                {res.actionIcon}
-              </TouchableOpacity>
-            </View>
-          ))}
+            );
+          })}
         </View>
 
         {/* Add Comment Card */}
@@ -165,10 +216,10 @@ export default function AssignmentDetail({ assignment, onBack, onSubmit }: Assig
               className="flex-1 text-[14px] text-[#4D4D4D] py-2"
             />
             <TouchableOpacity className="p-1.5 mr-1">
-              <Ionicons name="link-outline" size={20} color="#808080" />
+              <Link size={20} color="#808080" variant="Linear" />
             </TouchableOpacity>
             <TouchableOpacity className="p-1.5">
-              <Ionicons name="happy-outline" size={20} color="#808080" />
+              <EmojiHappy size={20} color="#808080" variant="Linear" />
             </TouchableOpacity>
           </View>
         </View>

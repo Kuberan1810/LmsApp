@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { CalendarRemove, Danger } from 'iconsax-react-native';
 
 export interface Assignment {
   id: string;
@@ -11,6 +11,8 @@ export interface Assignment {
   status: 'Submitted' | 'In Progress' | 'Overdue';
   dateStr: string;
   mark?: string;
+  submittedFiles?: { name: string; size: string }[];
+  submissionNotes?: string;
 }
 
 interface AssignmentCardProps {
@@ -63,7 +65,7 @@ export default function AssignmentCard({ assignment, onPress }: AssignmentCardPr
         return (
           <View className="flex-row items-center">
             <View className="w-[18px] h-[18px] rounded-[5px] bg-white border border-[#F3F5F7] items-center justify-center shadow-xs">
-              <MaterialCommunityIcons name="calendar-remove-outline" size={10} color="#9CA3AF" />
+              <CalendarRemove size={10} color="#9CA3AF" variant="Linear" />
             </View>
             <Text className="text-[#626262] text-[12px] ml-1.5">
               Due {dateStr}
@@ -73,7 +75,7 @@ export default function AssignmentCard({ assignment, onPress }: AssignmentCardPr
       case 'Overdue':
         return (
           <View className="flex-row items-center">
-            <Ionicons name="warning-outline" size={12} color="#F1351B" />
+            <Danger size={12} color="#F1351B" variant="Linear" />
 
             <Text className="text-[#F1351B] text-[14px] ml-1.5">
               Missed {dateStr}

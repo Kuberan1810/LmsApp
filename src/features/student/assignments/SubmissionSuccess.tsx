@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Modal } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { TickCircle } from 'iconsax-react-native';
 import { Assignment } from './AssignmentCard';
 
 interface SubmissionSuccessProps {
@@ -21,7 +21,7 @@ export default function SubmissionSuccess({
       <View className="flex-1 bg-black/50 items-center justify-center px-4">
         <View className="bg-white border border-[#F2EEF4] rounded-[24px] p-8 items-center w-full max-w-sm shadow-sm">
           <View className="mb-5">
-            <Ionicons name="checkmark-circle" size={72} color="#049B3D" />
+            <TickCircle size={72} color="#049B3D" variant="Bold" />
           </View>
 
           {/* Title */}

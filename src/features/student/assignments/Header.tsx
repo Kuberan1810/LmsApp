@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, ImageSourcePropType } from 'react-native';
-import { Ionicons, Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { ArrowLeft2, SearchNormal1, Notification } from 'iconsax-react-native';
 
 
 interface HeaderProps {
@@ -24,8 +24,8 @@ export default function Header({
     <View className="px-5 pt-3 pb-2 flex-row justify-between items-start">
       <View className="flex-row items-start flex-1 mr-4">
         {onBackPress && (
-          <TouchableOpacity onPress={onBackPress} className="mt-1 mr-1.5 p-1 rounded-lg">
-            <Ionicons name="chevron-back" size={26} color="#1F2937" />
+          <TouchableOpacity onPress={onBackPress} className="mt-1.5 mr-1.5 p-1 rounded-lg">
+            <ArrowLeft2 size={24} color="#1F2937" variant="Linear" />
           </TouchableOpacity>
         )}
         <View className="flex-1">
@@ -42,14 +42,15 @@ export default function Header({
           <>
             {/* Search Button */}
             <TouchableOpacity className="w-[30px] h-[30px] rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] items-center justify-center">
-              <Feather name="search" size={14} color="black" />
+              <SearchNormal1 size={14} color="black" variant="Linear" />
             </TouchableOpacity>
 
             {/* Notification Bell Button */}
 
             <TouchableOpacity className="w-[30px] h-[30px] rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] items-center justify-center relative">
               <View className="absolute top-[6px] right-[8px] w-1.5 h-1.5 bg-[#F67300] rounded-full z-10" />
-              <Ionicons name="notifications-outline" size={14} color="black" />
+
+              <Notification size={14} color="black" variant="Linear" />
 
             </TouchableOpacity>
           </>
