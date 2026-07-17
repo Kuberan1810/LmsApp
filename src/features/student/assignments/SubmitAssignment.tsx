@@ -22,6 +22,35 @@ interface UploadedFile {
 export default function SubmitAssignment({ assignment, onBack, onSuccess }: SubmitAssignmentProps) {
   const { title, courseCode, courseName, dateStr, status } = assignment;
 
+  const getStatusBadge = () => {
+    switch (status) {
+      case 'Submitted':
+        return (
+          <View className="flex-row items-center bg-[#2A9A46]/10 px-3 py-1.5 rounded-full self-start">
+            <Text className="text-[#2A9A46] text-[12px] font-medium">
+              Submitted
+            </Text>
+          </View>
+        );
+      case 'In Progress':
+        return (
+          <View className="flex-row items-center bg-[#FFEDDE] px-3 py-1.5 rounded-[1000px] self-start">
+            <Text className="text-[#F67300] text-[12px] font-medium">
+              In Progress
+            </Text>
+          </View>
+        );
+      case 'Overdue':
+        return (
+          <View className="flex-row items-center bg-[#F1351B]/10 px-3 py-1.5 rounded-full self-start">
+            <Text className="text-[#F1351B] text-[12px] font-medium">
+              Overdue
+            </Text>
+          </View>
+        );
+    }
+  };
+
   const [files, setFiles] = useState<UploadedFile[]>([]);
 
   useEffect(() => {
@@ -111,8 +140,9 @@ export default function SubmitAssignment({ assignment, onBack, onSuccess }: Subm
       {/* Main Content */}
       <ScrollView className="flex-1 px-5 pt-4" contentContainerStyle={{ paddingBottom: 100 }}>
         <View className="bg-white border border-[#F2EEF4] p-5 rounded-[15px] mb-5 shadow-xs">
+          {getStatusBadge()}
           {/* Assignment  */}
-          <Text className="text-[20px] font-semibold text-[#333333] mb-1">
+          <Text className="text-[20px] font-semibold text-[#333333] mt-3.5 mb-1">
             {title}
           </Text>
           <Text className="text-[12px] text-[#626262] mb-3">
