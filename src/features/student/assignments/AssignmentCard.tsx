@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
 import { CalendarRemove, Danger } from 'iconsax-react-native';
+import React from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 export interface Assignment {
   id: string;

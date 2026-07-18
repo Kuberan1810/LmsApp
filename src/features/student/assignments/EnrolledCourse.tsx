@@ -60,7 +60,7 @@ export default function EnrolledCourse({ selectedCourse, onCoursePress }: Enroll
                             key={idx}
                             onPress={() => onCoursePress(course.code)}
                             activeOpacity={0.7}
-                            className={`${course.bgColor} rounded-[10px] p-5 mr-4 h-[101px] justify-between border shadow-sm relative overflow-hidden`}
+                            className={`${course.bgColor} rounded-2xl p-5 mr-4 w-[260px] h-[130px] justify-between border shadow-sm relative overflow-hidden`}
                             style={
                                 isSelected
                                     ? { borderColor: '#e6e5e4ff', borderWidth: 2 }
