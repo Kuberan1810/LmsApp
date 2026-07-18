@@ -29,5 +29,4 @@ const BtnCom: React.FC<BtnComProps> = ({
     );
 };
 
-
 export default BtnCom;

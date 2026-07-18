@@ -2,6 +2,8 @@ import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import React from 'react';
 import EnrolledCoursesCard from './EnrolledCoursesCard';
 
+import BtnCom from '../../../components/BtnCom';
+
 const COURSES = [
   {
     id: '1',
@@ -24,9 +26,7 @@ export default function RecentCoursesSection() {
     <View className="mt-6">
       <View className="flex-row justify-between items-center px-5 mb-4">
         <Text className="text-[17px] font-semibold text-[#333333]">Recent enrolled courses</Text>
-        <TouchableOpacity className="border border-gray-200 rounded-full px-3 py-1">
-          <Text className="text-[11px] text-gray-500 font-medium">View all</Text>
-        </TouchableOpacity>
+        <BtnCom label="View all" />
       </View>
 
       <ScrollView 

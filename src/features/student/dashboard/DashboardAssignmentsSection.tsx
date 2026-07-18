@@ -2,6 +2,8 @@ import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import React from 'react';
 import DashboardAssignmentCard from './DashboardAssignmentCard';
 
+import BtnCom from '../../../components/BtnCom';
+
 const DATES = [
   { day: 'Sun', date: '10', bg: 'bg-[#FFF3E8]', text: 'text-[#EE8B3A]' },
   { day: 'Mon', date: '11', bg: 'bg-[#E8F8F0]', text: 'text-[#1DD75B]' },
@@ -39,9 +41,7 @@ export default function DashboardAssignmentsSection() {
           <Text className="text-[17px] font-semibold text-[#333333] mb-1">Assignments</Text>
           <Text className="text-[12px] text-gray-500">Friday, 15 Jan, 2024</Text>
         </View>
-        <TouchableOpacity className="border border-gray-200 rounded-full px-3 py-1">
-          <Text className="text-[11px] text-gray-500 font-medium">View all</Text>
-        </TouchableOpacity>
+        <BtnCom label="View all" />
       </View>
 
       {/* Dates Horizontal Scroll */}
