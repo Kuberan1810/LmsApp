@@ -79,7 +79,7 @@ export default function AttendanceCalendarSection() {
   };
 
   return (
-    <View className="bg-white mx-5 mt-6 rounded-[28px] p-5 shadow-sm border border-gray-50">
+    <View className="bg-white mx-5 mt-6 rounded-[28px] p-5 border border-[#F2EEF4]">
       {/* Header */}
       <View className="flex-row justify-between items-center mb-6">
         <Text className="text-[20px] font-semibold text-[#333333] tracking-tight">Attendance</Text>
@@ -93,7 +93,7 @@ export default function AttendanceCalendarSection() {
             <Text className="text-[#F67300] text-[14px] font-medium leading-none">15</Text>
           </View>
           <View>
-            <Text className="text-[13px] text-gray-400 mb-0.5">15-Jan-2026</Text>
+            <Text className="text-[13px] text-[#626262] mb-0.5">15-Jan-2026</Text>
             <Text className="text-[14px] font-bold text-[#333333]">Friday</Text>
           </View>
         </View>
@@ -148,15 +148,15 @@ export default function AttendanceCalendarSection() {
       <View className="flex-row justify-center items-center mt-8 gap-5">
         <View className="flex-row items-center">
           <View className="w-3.5 h-3.5 rounded-[4px] bg-[#3EA465] mr-2" />
-          <Text className="text-[14px] text-gray-500 font-medium">Present</Text>
+          <Text className="text-[14px] text-[#626262] font-medium">Present</Text>
         </View>
         <View className="flex-row items-center">
           <View className="w-3.5 h-3.5 rounded-[4px] bg-[#CE1919] mr-2" />
-          <Text className="text-[14px] text-gray-500 font-medium">Absent</Text>
+          <Text className="text-[14px] text-[#626262] font-medium">Absent</Text>
         </View>
         <View className="flex-row items-center">
           <View className="w-3.5 h-3.5 rounded-[4px] bg-[#FFBE85] mr-2" />
-          <Text className="text-[14px] text-gray-500 font-medium">Holiday</Text>
+          <Text className="text-[14px] text-[#626262] font-medium">Holiday</Text>
         </View>
       </View>
     </View>

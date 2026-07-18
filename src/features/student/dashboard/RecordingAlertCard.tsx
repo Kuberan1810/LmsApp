@@ -6,7 +6,7 @@ export default function RecordingAlertCard() {
   const [showTooltip, setShowTooltip] = useState(false);
 
   return (
-    <View className="bg-white mx-5 mt-6 rounded-[24px] p-5 shadow-sm border border-gray-50 z-10">
+    <View className="bg-white mx-5 mt-6 rounded-[24px] p-5 border border-[#F2EEF4] z-10">
       <View className="flex-row justify-between items-center mb-6 z-20">
         <Text className="text-[20px] font-semibold text-[#333333]">Recording</Text>
         
@@ -34,17 +34,21 @@ export default function RecordingAlertCard() {
         </View>
       </View>
 
-      <Text className="text-[15px] font-medium text-black mb-2">You missed a class yesterday</Text>
-      <Text className="text-[13px] text-gray-500 mb-4">AI / ML Live Class - Neural Networks</Text>
+      <Text className="text-[15px] font-medium text-[#333333] mb-2">You missed a class yesterday</Text>
+      <Text className="text-[13px] text-[#626262] mb-4">AI / ML Live Class - Neural Networks</Text>
 
-      <View className="flex-row items-center mb-6">
-        <View className="flex-row items-center mr-6">
-          <Calendar size="14" color="#888888" />
-          <Text className="text-[12px] text-gray-500 ml-1.5">Jan 14, 26</Text>
+      <View className="flex-row items-center mb-6 mt-2">
+        <View className="flex-row items-center mr-6 gap-2">
+          <View className="bg-white rounded-[10px] p-1.5 shadow-sm items-center justify-center border border-[#F2EEF4]">
+            <Calendar size="14" color="#626262" />
+          </View>
+          <Text className="text-[14px] text-[#626262] font-medium">Jan 14, 26</Text>
         </View>
-        <View className="flex-row items-center">
-          <Clock size="14" color="#888888" />
-          <Text className="text-[12px] text-gray-500 ml-1.5">01 hr 10m</Text>
+        <View className="flex-row items-center gap-2">
+          <View className="bg-white rounded-[10px] p-1.5 shadow-sm items-center justify-center border border-[#F2EEF4]">
+            <Clock size="14" color="#626262" />
+          </View>
+          <Text className="text-[14px] text-[#626262] font-medium">01 hr 10m</Text>
         </View>
       </View>
 

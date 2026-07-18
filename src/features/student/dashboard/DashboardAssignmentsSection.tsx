@@ -35,11 +35,11 @@ const ASSIGNMENTS = [
 
 export default function DashboardAssignmentsSection() {
   return (
-    <View className="bg-white mx-5 mt-6 rounded-3xl py-5 shadow-sm border border-gray-50">
+    <View className="bg-white mx-5 mt-6 rounded-3xl py-5 border border-[#F2EEF4]">
       <View className="flex-row justify-between items-start mb-6 px-5">
         <View>
           <Text className="text-[20px] font-semibold text-[#333333] mb-1">Assignments</Text>
-          <Text className="text-[12px] text-gray-500">Friday, 15 Jan, 2024</Text>
+          <Text className="text-[12px] text-[#626262]">Friday, 15 Jan, 2024</Text>
         </View>
         <BtnCom label="View all" />
       </View>
@@ -69,9 +69,9 @@ export default function DashboardAssignmentsSection() {
           return (
             <TouchableOpacity 
               key={filter}
-              className={`px-5 py-2.5 rounded-[12px] ${isActive ? 'bg-[#F67300]' : 'bg-white border border-gray-200'}`}
+              className={`px-5 py-2.5 rounded-[12px] ${isActive ? 'bg-[#F67300]' : 'bg-white border border-[#F2EEF4]'}`}
             >
-              <Text className={`text-[14px] ${isActive ? 'text-white font-semibold' : 'text-gray-500 font-medium'}`}>
+              <Text className={`text-[14px] ${isActive ? 'text-white font-semibold' : 'text-[#626262] font-medium'}`}>
                 {filter}
               </Text>
             </TouchableOpacity>
