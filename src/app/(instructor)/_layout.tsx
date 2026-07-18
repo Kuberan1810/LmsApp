@@ -1,8 +1,8 @@
 import { TabBarVisibilityProvider, useTabBarVisibility } from '@/context/TabBarVisibilityContext';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { BlurView } from 'expo-blur';
-import { Tabs } from 'expo-router';
-import {  Home2, User, Add, DocumentText1 } from 'iconsax-react-native';
+import { Tabs, useRouter } from 'expo-router';
+import {  Home2, User, Add, DocumentText1, DocumentText } from 'iconsax-react-native';
 import { LayoutAnimation, LogBox, Platform, Text, TouchableOpacity, UIManager, View } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useState } from 'react';
@@ -20,6 +20,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 
 function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: BottomTabBarProps & { onAddPress: () => void }) {
   const { tabBarOffset, isTabBarVisible } = useTabBarVisibility();
+  const router = useRouter();
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -59,13 +60,21 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
       });
 
       if (!isFocused && !event.defaultPrevented) {
-        navigation.navigate(route.name);
+        if (route.name === 'dashboard/dashboard') {
+          router.navigate('/(instructor)/dashboard/dashboard');
+        } else if (route.name === 'courses/index') {
+          router.navigate('/(instructor)/courses');
+        } else if (route.name === 'profile/index') {
+          router.navigate('/(instructor)/profile');
+        } else {
+          navigation.navigate(route.name);
+        }
       }
     };
 
-    let IconComponent = Home2;
-    if (route.name.includes('courses')) IconComponent = DocumentText1;
-    if (route.name.includes('profile')) IconComponent = User;
+    let IconComponent: any = Home2;
+    if (route.name === 'courses/index') IconComponent = isFocused ? DocumentText : DocumentText1;
+    if (route.name === 'profile/index') IconComponent = User;
 
     return (
       <TouchableOpacity
@@ -187,4 +196,5 @@ export default function InstructorLayout() {
       />
     </TabBarVisibilityProvider>
   );
+
 }
