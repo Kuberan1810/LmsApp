@@ -1,8 +1,8 @@
 import { useTabBarScroll } from '@/context/TabBarVisibilityContext';
-import { Calendar, Clock, DocumentText1, TickCircle } from 'iconsax-react-native';
+import { Calendar, Clock, DocumentText1, TickCircle, SearchNormal1, Setting4 } from 'iconsax-react-native';
 import { useRouter } from 'expo-router';
-import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import { Text, TouchableOpacity, View, TextInput, ScrollView } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '@/components/Student/Header';
@@ -10,6 +10,9 @@ import Header from '@/components/Student/Header';
 export default function TestsDashboard() {
   const router = useRouter();
   const scrollHandler = useTabBarScroll();
+  const [activeFilter, setActiveFilter] = useState('All Tests');
+
+  const filters = ['All Tests', 'Available', 'Not Attended', 'Completed'];
 
   const MOCK_TESTS = [
     {
@@ -56,7 +59,37 @@ export default function TestsDashboard() {
       >
         <Text className="text-[18px] font-semibold text-[#333] mb-5">Available Tests</Text>
         
+        {/* Search Bar */}
+        <View className="flex-row items-center bg-white border border-[#F2EEF4] rounded-[16px] px-4 py-3.5 mb-4 shadow-sm">
+          <SearchNormal1 size={18} color="#A0A0AB" />
+          <TextInput
+            placeholder="Search tests, courses..."
+            placeholderTextColor="#A0A0AB"
+            className="flex-1 ml-3 font-medium text-[14px] text-[#1E1E2D]"
+          />
+          <TouchableOpacity>
+            <Setting4 size={18} color="#A0A0AB" />
+          </TouchableOpacity>
+        </View>
 
+        {/* Filter Chips */}
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          className="mb-6"
+        >
+          {filters.map((filter) => (
+            <TouchableOpacity
+              key={filter}
+              onPress={() => setActiveFilter(filter)}
+              className={`mr-3 px-5 py-2.5 rounded-full border ${activeFilter === filter ? 'bg-[#1E1E2D] border-[#1E1E2D]' : 'bg-white border-[#F2EEF4]'}`}
+            >
+              <Text className={`text-[13px] font-medium ${activeFilter === filter ? 'text-white' : 'text-[#6B7280]'}`}>
+                {filter}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
         {MOCK_TESTS.map((test) => (
           <TouchableOpacity
             key={test.id}
