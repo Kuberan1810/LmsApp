@@ -88,7 +88,13 @@ export default function SignIn() {
 
           <View >
             <BtnMainCom
-              title="Sign In"
+              title="Sign In student"
+              onPress={() => router.replace('/(student)/dashboard/dashboard')}
+
+            />
+            <View className="h-2"></View>
+            <BtnMainCom
+              title="Sign In instructor"
               onPress={() => router.replace('/(instructor)/dashboard/dashboard')}
 
             />
