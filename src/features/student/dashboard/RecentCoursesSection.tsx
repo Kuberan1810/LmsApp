@@ -1,23 +1,24 @@
-﻿import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import React from 'react';
-import EnrolledCoursesCard from './EnrolledCoursesCard';
-
+import EnrollCourseCard, { EnrollCourseType } from '../../../components/Student/EnrollCourseCard';
 import BtnCom from '../../../components/BtnCom';
 
-const COURSES = [
+const COURSES: EnrollCourseType[] = [
   {
-    id: '1',
-    title: 'AM101 - AI / ML Frontier AI Engineer',
+    code: 'AM101',
+    name: 'AI / ML Frontier AI Engineer',
     duration: '3 Months',
     lessons: '05 Lessons',
-    bgColor: '#DDF0EB', // Light mint green
+    bgColor: 'bg-[#DDF0EB]',
+    textColor: 'text-slate-800',
   },
   {
-    id: '2',
-    title: 'SS102 - System and Software System Pro',
+    code: 'SS102',
+    name: 'System and Software System Pro',
     duration: '2 Months',
     lessons: '12 Lessons',
-    bgColor: '#E6DCF6', // Light purple
+    bgColor: 'bg-[#E6DCF6]',
+    textColor: 'text-slate-800',
   },
 ];
 
@@ -34,13 +35,10 @@ export default function RecentCoursesSection() {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 20 }}
       >
-        {COURSES.map((course) => (
-          <EnrolledCoursesCard 
-            key={course.id}
-            title={course.title}
-            duration={course.duration}
-            lessons={course.lessons}
-            bgColor={course.bgColor}
+        {COURSES.map((course, idx) => (
+          <EnrollCourseCard 
+            key={idx}
+            course={course}
           />
         ))}
       </ScrollView>

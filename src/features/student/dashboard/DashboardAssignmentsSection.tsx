@@ -1,4 +1,4 @@
-﻿import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import React from 'react';
 import DashboardAssignmentCard from './DashboardAssignmentCard';
 
@@ -51,9 +51,9 @@ export default function DashboardAssignmentsSection() {
         contentContainerStyle={{ paddingHorizontal: 20, gap: 12, paddingBottom: 20 }}
       >
         {DATES.map((item, idx) => (
-          <View key={idx} className={`w-11 h-11 rounded-full items-center justify-center ${item.bg}`}>
-            <Text className={`text-[8px] ${item.text} mb-0.5`}>{item.day}</Text>
-            <Text className={`text-[10px] font-medium ${item.text}`}>{item.date}</Text>
+          <View key={idx} className={`w-[52px] h-[52px] rounded-[16px] items-center justify-center ${item.bg}`}>
+            <Text className={`text-[12px] font-medium ${item.text} mb-0.5`}>{item.day}</Text>
+            <Text className={`text-[14px] font-medium ${item.text}`}>{item.date}</Text>
           </View>
         ))}
       </ScrollView>
@@ -69,9 +69,9 @@ export default function DashboardAssignmentsSection() {
           return (
             <TouchableOpacity 
               key={filter}
-              className={`px-4 py-2 rounded-full ${isActive ? 'bg-[#EE8B3A]' : 'bg-white border border-gray-200'}`}
+              className={`px-5 py-2.5 rounded-[12px] ${isActive ? 'bg-[#F67300]' : 'bg-white border border-gray-200'}`}
             >
-              <Text className={`text-[12px] ${isActive ? 'text-white font-medium' : 'text-gray-500'}`}>
+              <Text className={`text-[14px] ${isActive ? 'text-white font-semibold' : 'text-gray-500 font-medium'}`}>
                 {filter}
               </Text>
             </TouchableOpacity>
