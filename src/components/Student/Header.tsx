@@ -11,9 +11,18 @@ import { ArrowLeft2 } from 'iconsax-react-native';
 export interface HeaderProps {
   title?: string;
   onBackPress?: () => void;
+  showSearch?: boolean;
+  showNotification?: boolean;
+  titleAlign?: 'left' | 'center';
 }
 
-export default function Header({ title, onBackPress }: HeaderProps = {}) {
+export default function Header({ 
+  title, 
+  onBackPress,
+  showSearch = true,
+  showNotification = true,
+  titleAlign = 'left'
+}: HeaderProps = {}) {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
   return (
@@ -41,20 +50,34 @@ export default function Header({ title, onBackPress }: HeaderProps = {}) {
           <Animated.View
             entering={FadeIn.duration(200)}
             exiting={FadeOut.duration(200)}
-            className="flex-row items-center justify-between flex-1"
+            className="flex-row items-center justify-between flex-1 relative"
           >
+            {/* Centered Title Layer */}
+            {title && titleAlign === 'center' && (
+              <View className="absolute inset-0 items-center justify-center pointer-events-none z-0 px-[60px]">
+                <Text className="text-[22px] font-semibold text-[#333333] leading-tight text-center" numberOfLines={1}>
+                  {title}
+                </Text>
+              </View>
+            )}
+
             {/* Left: Title & Back OR Logo */}
-            <View className="flex-row items-center flex-1 mr-4">
+            <View className="flex-row items-center flex-1 mr-4 z-10">
               {title ? (
                 <>
                   {onBackPress && (
-                    <TouchableOpacity onPress={onBackPress} className="mr-3 p-1">
-                      <ArrowLeft2 size={24} color="#1F2937" variant="Linear" />
+                    <TouchableOpacity 
+                      onPress={onBackPress} 
+                      className="mr-3 w-11 h-11 rounded-full items-center justify-center bg-[#FAFAFA] border border-[#F2EEF4]"
+                    >
+                      <ArrowLeft2 size={20} color="#333333" variant="Linear" />
                     </TouchableOpacity>
                   )}
-                  <Text className="text-[20px] font-medium text-[#333333] leading-tight flex-1" numberOfLines={1}>
-                    {title}
-                  </Text>
+                  {titleAlign === 'left' && (
+                    <Text className="text-[22px] font-semibold text-[#333333] leading-tight flex-1" numberOfLines={1}>
+                      {title}
+                    </Text>
+                  )}
                 </>
               ) : (
                 <View className="w-24 h-8 justify-center">
@@ -70,23 +93,28 @@ export default function Header({ title, onBackPress }: HeaderProps = {}) {
             {/* Right: Actions */}
             <View className="flex-row items-center gap-2.5">
               {/* Search Button */}
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => setIsSearchExpanded(true)}
-                className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-white items-center justify-center"
-              >
-                <SearchNormal1 size={18} color="#1E1E2D" />
-              </TouchableOpacity>
+              {showSearch && (
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => setIsSearchExpanded(true)}
+                  className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-white items-center justify-center"
+                >
+                  <SearchNormal1 size={18} color="#1E1E2D" />
+                </TouchableOpacity>
+              )}
 
               {/* Notifications Button */}
-              <TouchableOpacity
-                activeOpacity={0.7}
-                className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-white items-center justify-center relative"
-              >
-                <NotificationBing size={18} color="#1E1E2D" />
-                {/* Notification Dot */}
-                <View className="absolute top-[10px] right-[10px] w-2.5 h-2.5 bg-[#EE8B3A] rounded-full border-[1.5px] border-white" />
-              </TouchableOpacity>
+              {showNotification && (
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={()=> router.push("/(student)/notification/notifications")}
+                  className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-white items-center justify-center relative"
+                >
+                  <NotificationBing size={18} color="#1E1E2D" />
+                  {/* Notification Dot */}
+                  <View className="absolute top-[10px] right-[10px] w-2.5 h-2.5 bg-[#EE8B3A] rounded-full border-[1.5px] border-white" />
+                </TouchableOpacity>
+              )}
 
               {/* Profile Button */}
               <TouchableOpacity

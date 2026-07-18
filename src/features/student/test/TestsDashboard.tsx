@@ -138,9 +138,10 @@ export default function TestsDashboard() {
 
   return (
     <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
-      <Header />
+      <Header
+        title='Available Tests'
+      />
       <View className="px-5 pt-2">
-        <Text className="text-[20px] font-semibold text-[#333] mb-5">Available Tests</Text>
 
         {/* Search Bar */}
         <View className="flex-row items-center bg-white border border-[#F2EEF4] rounded-[16px] px-4 py-1.5 mb-4 shadow-sm">
@@ -194,7 +195,7 @@ export default function TestsDashboard() {
               <View className="flex-1 ">
 
                 <View className='flex-row justify-between items-start'>
-                  <Text 
+                  <Text
                     className="flex-1 text-[12px] font-medium text-[#909090] mb-1 mr-2"
                     numberOfLines={1}
                   >

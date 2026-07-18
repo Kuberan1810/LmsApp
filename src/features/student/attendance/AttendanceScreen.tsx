@@ -11,6 +11,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Entypo } from '@expo/vector-icons';
 import { Clock, TickCircle, CloseCircle, Calendar, InfoCircle } from 'iconsax-react-native';
 import GoBack from '@/components/GoBack';
+import Header from '@/components/Student/Header';
+import { push, router } from 'expo-router/build/global-state/router';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -35,44 +37,44 @@ const MONTHS = [
 ];
 
 const ATTENDANCE_DATA: DayRecord[] = [
-  { dayName: 'Mon', date: '21', month: 'Jul', fullDate: 'Mon, 21 Jul 2025', status: 'present',  checkIn: '09:02 AM', checkOut: '05:45 PM', totalHours: '8h 43m' },
-  { dayName: 'Tue', date: '22', month: 'Jul', fullDate: 'Tue, 22 Jul 2025', status: 'present',  checkIn: '09:10 AM', checkOut: '06:00 PM', totalHours: '8h 50m' },
-  { dayName: 'Wed', date: '23', month: 'Jul', fullDate: 'Wed, 23 Jul 2025', status: 'present',  checkIn: '09:00 AM', checkOut: '05:30 PM', totalHours: '8h 30m' },
-  { dayName: 'Thu', date: '24', month: 'Jul', fullDate: 'Thu, 24 Jul 2025', status: 'late',     checkIn: '10:15 AM', checkOut: '06:30 PM', totalHours: '8h 15m' },
-  { dayName: 'Fri', date: '25', month: 'Jul', fullDate: 'Fri, 25 Jul 2025', status: 'absent',   checkIn: undefined,   checkOut: undefined },
+  { dayName: 'Mon', date: '21', month: 'Jul', fullDate: 'Mon, 21 Jul 2025', status: 'present', checkIn: '09:02 AM', checkOut: '05:45 PM', totalHours: '8h 43m' },
+  { dayName: 'Tue', date: '22', month: 'Jul', fullDate: 'Tue, 22 Jul 2025', status: 'present', checkIn: '09:10 AM', checkOut: '06:00 PM', totalHours: '8h 50m' },
+  { dayName: 'Wed', date: '23', month: 'Jul', fullDate: 'Wed, 23 Jul 2025', status: 'present', checkIn: '09:00 AM', checkOut: '05:30 PM', totalHours: '8h 30m' },
+  { dayName: 'Thu', date: '24', month: 'Jul', fullDate: 'Thu, 24 Jul 2025', status: 'late', checkIn: '10:15 AM', checkOut: '06:30 PM', totalHours: '8h 15m' },
+  { dayName: 'Fri', date: '25', month: 'Jul', fullDate: 'Fri, 25 Jul 2025', status: 'absent', checkIn: undefined, checkOut: undefined },
   { dayName: 'Sat', date: '26', month: 'Jul', fullDate: 'Sat, 26 Jul 2025', status: 'weekend' },
   { dayName: 'Sun', date: '27', month: 'Jul', fullDate: 'Sun, 27 Jul 2025', status: 'weekend' },
-  { dayName: 'Mon', date: '28', month: 'Jul', fullDate: 'Mon, 28 Jul 2025', status: 'present',  checkIn: '08:55 AM', checkOut: '05:40 PM', totalHours: '8h 45m' },
-  { dayName: 'Tue', date: '29', month: 'Jul', fullDate: 'Tue, 29 Jul 2025', status: 'present',  checkIn: '09:03 AM', checkOut: '05:50 PM', totalHours: '8h 47m' },
-  { dayName: 'Wed', date: '30', month: 'Jul', fullDate: 'Wed, 30 Jul 2025', status: 'present',  checkIn: '09:00 AM', checkOut: '05:35 PM', totalHours: '8h 35m' },
+  { dayName: 'Mon', date: '28', month: 'Jul', fullDate: 'Mon, 28 Jul 2025', status: 'present', checkIn: '08:55 AM', checkOut: '05:40 PM', totalHours: '8h 45m' },
+  { dayName: 'Tue', date: '29', month: 'Jul', fullDate: 'Tue, 29 Jul 2025', status: 'present', checkIn: '09:03 AM', checkOut: '05:50 PM', totalHours: '8h 47m' },
+  { dayName: 'Wed', date: '30', month: 'Jul', fullDate: 'Wed, 30 Jul 2025', status: 'present', checkIn: '09:00 AM', checkOut: '05:35 PM', totalHours: '8h 35m' },
   { dayName: 'Thu', date: '31', month: 'Jul', fullDate: 'Thu, 31 Jul 2025', status: 'holiday' },
-  { dayName: 'Fri', date: '01', month: 'Aug', fullDate: 'Fri, 01 Aug 2025', status: 'present',  checkIn: '09:08 AM', checkOut: '05:55 PM', totalHours: '8h 47m' },
+  { dayName: 'Fri', date: '01', month: 'Aug', fullDate: 'Fri, 01 Aug 2025', status: 'present', checkIn: '09:08 AM', checkOut: '05:55 PM', totalHours: '8h 47m' },
   { dayName: 'Sat', date: '02', month: 'Aug', fullDate: 'Sat, 02 Aug 2025', status: 'weekend' },
   { dayName: 'Sun', date: '03', month: 'Aug', fullDate: 'Sun, 03 Aug 2025', status: 'weekend' },
-  { dayName: 'Mon', date: '04', month: 'Aug', fullDate: 'Mon, 04 Aug 2025', status: 'present',  checkIn: '09:00 AM', checkOut: '05:45 PM', totalHours: '8h 45m' },
+  { dayName: 'Mon', date: '04', month: 'Aug', fullDate: 'Mon, 04 Aug 2025', status: 'present', checkIn: '09:00 AM', checkOut: '05:45 PM', totalHours: '8h 45m' },
   { dayName: 'Tue', date: '05', month: 'Aug', fullDate: 'Tue, 05 Aug 2025', status: 'absent' },
-  { dayName: 'Wed', date: '06', month: 'Aug', fullDate: 'Wed, 06 Aug 2025', status: 'present',  checkIn: '09:05 AM', checkOut: '06:00 PM', totalHours: '8h 55m' },
-  { dayName: 'Thu', date: '07', month: 'Aug', fullDate: 'Thu, 07 Aug 2025', status: 'present',  checkIn: '08:58 AM', checkOut: '05:40 PM', totalHours: '8h 42m' },
+  { dayName: 'Wed', date: '06', month: 'Aug', fullDate: 'Wed, 06 Aug 2025', status: 'present', checkIn: '09:05 AM', checkOut: '06:00 PM', totalHours: '8h 55m' },
+  { dayName: 'Thu', date: '07', month: 'Aug', fullDate: 'Thu, 07 Aug 2025', status: 'present', checkIn: '08:58 AM', checkOut: '05:40 PM', totalHours: '8h 42m' },
 ];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const statusConfig = {
-  present: { bg: '#E8F8F0', color: '#1DD75B', label: 'Present',  Icon: TickCircle },
-  absent:  { bg: '#FDE8E8', color: '#E61026', label: 'Absent',   Icon: CloseCircle },
-  late:    { bg: '#FFF3E8', color: '#EE8B3A', label: 'Late',     Icon: Clock },
-  holiday: { bg: '#EEF2FF', color: '#6366F1', label: 'Holiday',  Icon: Calendar },
-  weekend: { bg: '#F5F5F5', color: '#AAAAAA', label: 'Weekend',  Icon: InfoCircle },
-  none:    { bg: '#FFFFFF', color: '#CCCCCC', label: 'No Data',  Icon: InfoCircle },
+  present: { bg: '#E8F8F0', color: '#1DD75B', label: 'Present', Icon: TickCircle },
+  absent: { bg: '#FDE8E8', color: '#E61026', label: 'Absent', Icon: CloseCircle },
+  late: { bg: '#FFF3E8', color: '#EE8B3A', label: 'Late', Icon: Clock },
+  holiday: { bg: '#EEF2FF', color: '#6366F1', label: 'Holiday', Icon: Calendar },
+  weekend: { bg: '#F5F5F5', color: '#AAAAAA', label: 'Weekend', Icon: InfoCircle },
+  none: { bg: '#FFFFFF', color: '#CCCCCC', label: 'No Data', Icon: InfoCircle },
 };
 
 function calcSummary(data: DayRecord[]) {
   const workdays = data.filter(d => d.status !== 'weekend');
-  const present  = workdays.filter(d => d.status === 'present' || d.status === 'late').length;
-  const absent   = workdays.filter(d => d.status === 'absent').length;
-  const late     = workdays.filter(d => d.status === 'late').length;
-  const holiday  = workdays.filter(d => d.status === 'holiday').length;
-  const pct      = workdays.length > 0 ? Math.round((present / (workdays.length - holiday)) * 100) : 0;
+  const present = workdays.filter(d => d.status === 'present' || d.status === 'late').length;
+  const absent = workdays.filter(d => d.status === 'absent').length;
+  const late = workdays.filter(d => d.status === 'late').length;
+  const holiday = workdays.filter(d => d.status === 'holiday').length;
+  const pct = workdays.length > 0 ? Math.round((present / (workdays.length - holiday)) * 100) : 0;
   return { present, absent, late, holiday, total: workdays.length - holiday, pct };
 }
 
@@ -190,16 +192,18 @@ export default function AttendanceScreen() {
   return (
     <SafeAreaView className="flex-1 bg-[#F7F7FB]" edges={['top', 'left', 'right']}>
       <StatusBar backgroundColor="#F7F7FB" barStyle="dark-content" />
-
+      <Header
+        title='Attendance'
+        onBackPress={() => router.back()}
+        showSearch={false}
+        showNotification={false}
+        titleAlign="center"
+      />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 80 }}>
 
-        {/* ── HEADER ── */}
+
         <View className="px-5 pt-3 pb-4 bg-[#F7F7FB]">
-          <View className="flex-row items-center justify-between mb-4">
-            <GoBack />
-            <Text className="text-[18px] font-semibold text-[#1E1E2D]">Attendance</Text>
-            <View style={{ width: 44 }} />
-          </View>
+
 
           {/* Tabs */}
           <View className="flex-row bg-white rounded-[14px] p-1 border border-[#F2EEF4]">
@@ -221,10 +225,10 @@ export default function AttendanceScreen() {
 
         {/* ── SUMMARY CARDS ── */}
         <View className="flex-row px-4 mb-5">
-          <SummaryChip label="Present"    value={summary.present}  color="#1DD75B" bg="#E8F8F0" />
-          <SummaryChip label="Absent"     value={summary.absent}   color="#E61026" bg="#FDE8E8" />
-          <SummaryChip label="Late"       value={summary.late}     color="#EE8B3A" bg="#FFF3E8" />
-          <SummaryChip label="Attendance" value={summary.pct}      color="#6366F1" bg="#EEF2FF" />
+          <SummaryChip label="Present" value={summary.present} color="#1DD75B" bg="#E8F8F0" />
+          <SummaryChip label="Absent" value={summary.absent} color="#E61026" bg="#FDE8E8" />
+          <SummaryChip label="Late" value={summary.late} color="#EE8B3A" bg="#FFF3E8" />
+          <SummaryChip label="Attendance" value={summary.pct} color="#6366F1" bg="#EEF2FF" />
         </View>
 
         {activeTab === 'calendar' ? (

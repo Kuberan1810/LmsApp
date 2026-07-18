@@ -6,9 +6,28 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import Header from '@/components/Student/Header';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CourseCard } from './CourseCard';
 import { LiveNowCard } from './LiveNowCard';
 import { UpcomingClassesCard } from './UpcomingClassesCard';
+import EnrollCourseCard, { EnrollCourseType } from '@/components/Student/EnrollCourseCard';
+
+const COURSES: EnrollCourseType[] = [
+  {
+    code: 'AM101',
+    name: 'AI / ML Frontier AI Engineer',
+    duration: '3 Months',
+    lessons: '05 Lessons',
+    bgColor: 'bg-[#DDF0EB]',
+    textColor: 'text-slate-800',
+  },
+  {
+    code: 'SS102',
+    name: 'System and Software System Pro',
+    duration: '2 Months',
+    lessons: '12 Lessons',
+    bgColor: 'bg-[#E6DCF6]',
+    textColor: 'text-slate-800',
+  },
+];
 
 export const MyCoursesScreen = () => {
   const router = useRouter();
@@ -16,37 +35,34 @@ export const MyCoursesScreen = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
-      <View className="flex-1 px-4 pt-2">
-        {/* Header */}
-        <View className="mb-2">
-          <Header title="My Courses" />
+
+      {/* Header */}
+
+      <Header title="My Courses" />
+
+
+      <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
+      >
+        {/* Horizontal Courses Scroll */}
+        <View className="mb-6">
+          <Animated.ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false} 
+            contentContainerStyle={{ paddingHorizontal: 20 }}
+          >
+            {COURSES.map((course, idx) => (
+              <EnrollCourseCard 
+                key={idx}
+                course={course}
+              />
+            ))}
+          </Animated.ScrollView>
         </View>
-
-        <Animated.ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 100 }}
-          onScroll={scrollHandler}
-          scrollEventThrottle={16}
-        >
-          {/* Horizontal Courses Scroll */}
-          <View className="mb-6">
-            <Animated.ScrollView horizontal showsHorizontalScrollIndicator={false} className="overflow-visible">
-              <CourseCard
-                title="AM101 - AI / ML Frontier AI Engineer"
-                duration="3 Months"
-                lessons="05 Lessons"
-                bgColorClass="bg-[#D2E4E2]"
-                onPress={() => router.push('/(student)/courses/details' as any)}
-              />
-              <CourseCard
-                title="SS102 - System Architecture"
-                duration="3 Months"
-                lessons="12 Lessons"
-                bgColorClass="bg-[#D8CAE8]"
-              />
-            </Animated.ScrollView>
-          </View>
-
+        <View className="flex-1 px-4 pt-2">
           {/* Live Now Section */}
           <View className="bg-white rounded-[32px] p-5 mb-6 border border-gray-200">
             <LiveNowCard />
@@ -83,8 +99,10 @@ export const MyCoursesScreen = () => {
               reminderSet={false}
             />
           </View>
-        </Animated.ScrollView>
-      </View>
-    </SafeAreaView>
+        </View>
+      </Animated.ScrollView>
+
+
+    </SafeAreaView >
   );
 };
