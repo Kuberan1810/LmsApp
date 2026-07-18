@@ -82,7 +82,7 @@ export default function AttendanceCalendarSection() {
     <View className="bg-white mx-5 mt-6 rounded-[28px] p-5 shadow-sm border border-gray-50">
       {/* Header */}
       <View className="flex-row justify-between items-center mb-6">
-        <Text className="text-[24px] font-bold text-[#333333] tracking-tight">Attendance</Text>
+        <Text className="text-[20px] font-semibold text-[#333333] tracking-tight">Attendance</Text>
         
         <View className="flex-row items-center">
           <View 
@@ -103,16 +103,16 @@ export default function AttendanceCalendarSection() {
       <View className="flex-row justify-center items-center mb-6">
         <TouchableOpacity 
           onPress={handlePrevMonth}
-          className="bg-[#FCEDF9] w-[30px] h-[30px] items-center justify-center rounded-[8px]"
+          className="bg-[#FFEDDD] w-[30px] h-[30px] items-center justify-center rounded-[8px]"
         >
-          <Ionicons name="play" size={14} color="#C42A96" style={{ transform: [{ rotate: '180deg' }] }} />
+          <Ionicons name="play" size={14} color="#F67300" style={{ transform: [{ rotate: '180deg' }] }} />
         </TouchableOpacity>
         <Text className="mx-6 font-semibold text-[14px] text-[#333333]">{monthTitle}</Text>
         <TouchableOpacity 
           onPress={handleNextMonth}
-          className="bg-[#FCEDF9] w-[30px] h-[30px] items-center justify-center rounded-[8px]"
+          className="bg-[#FFEDDD] w-[30px] h-[30px] items-center justify-center rounded-[8px]"
         >
-          <Ionicons name="play" size={14} color="#C42A96" />
+          <Ionicons name="play" size={14} color="#F67300" />
         </TouchableOpacity>
       </View>
 
