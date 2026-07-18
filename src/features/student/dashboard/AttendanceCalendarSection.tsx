@@ -1,71 +1,96 @@
 import { View, Text, TouchableOpacity } from 'react-native';
-import React from 'react';
-import { Entypo } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 
 type Status = 'present' | 'absent' | 'holiday' | 'weekend' | 'none';
 
-const CALENDAR_DATA: { day: string; date: string; status: Status }[] = [
-  // Row 1
-  { day: 'Sun', date: '28', status: 'weekend' },
-  { day: 'Mon', date: '29', status: 'present' },
-  { day: 'Tue', date: '30', status: 'present' },
-  { day: 'Wed', date: '31', status: 'present' },
-  { day: 'Thu', date: '01', status: 'present' },
-  { day: 'Fri', date: '02', status: 'present' },
-  { day: 'Sat', date: '03', status: 'present' },
-  // Row 2
-  { day: 'Sun', date: '03', status: 'weekend' },
-  { day: 'Mon', date: '04', status: 'present' },
-  { day: 'Tue', date: '05', status: 'present' },
-  { day: 'Wed', date: '06', status: 'present' },
-  { day: 'Thu', date: '07', status: 'present' },
-  { day: 'Fri', date: '08', status: 'present' },
-  { day: 'Sat', date: '09', status: 'present' },
-  // Row 3
-  { day: 'Sun', date: '10', status: 'weekend' },
-  { day: 'Mon', date: '11', status: 'present' },
-  { day: 'Tue', date: '12', status: 'present' },
-  { day: 'Wed', date: '13', status: 'present' },
-  { day: 'Thu', date: '14', status: 'absent' },
-  { day: 'Fri', date: '15', status: 'holiday' },
-  { day: 'Sat', date: '16', status: 'none' },
-  // Row 4
-  { day: 'Sun', date: '17', status: 'weekend' },
-  { day: 'Mon', date: '18', status: 'absent' },
-  { day: 'Tue', date: '19', status: 'none' },
-  { day: 'Wed', date: '20', status: 'none' },
-  { day: 'Thu', date: '21', status: 'none' },
-  { day: 'Fri', date: '22', status: 'none' },
-  { day: 'Sat', date: '23', status: 'none' },
-];
-
 export default function AttendanceCalendarSection() {
+  const [currentDate, setCurrentDate] = useState(new Date(2026, 0, 1)); // Jan 2026
+
+  const handlePrevMonth = () => {
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+  };
+
+  const generateDays = () => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    
+    const firstDayOfMonth = new Date(year, month, 1);
+    const startOffset = firstDayOfMonth.getDay(); // 0 for Sunday
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    // Fit into 4, 5, or 6 weeks depending on offset and days
+    const totalSlots = startOffset + daysInMonth <= 28 ? 28 : (startOffset + daysInMonth <= 35 ? 35 : 42);
+    
+    const daysArray = [];
+    const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    
+    for (let i = 0; i < totalSlots; i++) {
+      const date = new Date(year, month, i - startOffset + 1);
+      
+      let status: Status = 'none';
+      if (date.getMonth() !== month) {
+         status = 'none'; // Days from prev/next month
+      } else {
+         const dayOfWeek = date.getDay();
+         if (dayOfWeek === 0 || dayOfWeek === 6) {
+            status = 'weekend';
+         } else {
+            // Mock attendance logic for demo purposes
+            const d = date.getDate();
+            if (d === 15) status = 'holiday';
+            else if (d === 14 || d === 18) status = 'absent';
+            else if (d > 23 && year === 2026 && month === 0) status = 'none'; // Replicate initial design partial attendance
+            else status = 'present';
+         }
+      }
+      
+      daysArray.push({
+        day: DAYS[date.getDay()],
+        date: date.getDate().toString().padStart(2, '0'),
+        status
+      });
+    }
+    return daysArray;
+  };
+
+  const calendarData = generateDays();
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const monthTitle = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+
   const getStatusStyles = (status: Status) => {
     switch (status) {
       case 'present': 
-        return { bg: '#E8F8F0', day: '#1DD75B', date: '#1DD75B', border: 'transparent' };
+        return { bg: '#DCFCE780', day: '#3EA465', date: '#3EA465', border: 'transparent' };
       case 'absent': 
-        return { bg: '#FDE8E8', day: '#E61026', date: '#E61026', border: 'transparent' };
+        return { bg: '#FEE2E280', day: '#CE1919', date: '#CE1919', border: 'transparent' };
       case 'holiday': 
-        return { bg: '#FFF3E8', day: '#EE8B3A', date: '#EE8B3A', border: 'transparent' };
+        return { bg: '#FFEDDD', day: '#FFBE85', date: '#FFBE85', border: 'transparent' };
       case 'weekend': 
-        return { bg: '#FFF3E8', day: '#333333', date: '#888888', border: 'transparent' };
+        return { bg: '#FFEDDD', day: '#333333', date: '#777777', border: 'transparent' };
       case 'none': 
       default: 
-        return { bg: '#FFFFFF', day: '#333333', date: '#888888', border: '#E5E7EB' };
+        return { bg: '#FFFFFF', day: '#333333', date: '#777777', border: '#E5E7EB' };
     }
   };
 
   return (
-    <View className="bg-white mx-5 mt-6 rounded-[24px] p-5 shadow-sm border border-gray-50">
+    <View className="bg-white mx-5 mt-6 rounded-[28px] p-5 shadow-sm border border-gray-50">
       {/* Header */}
       <View className="flex-row justify-between items-center mb-6">
-        <Text className="text-[22px] font-bold text-[#333333]">Attendance</Text>
+        <Text className="text-[24px] font-bold text-[#333333] tracking-tight">Attendance</Text>
         
         <View className="flex-row items-center">
-          <View className="bg-[#FFF3E8] px-3 py-2 rounded-xl mr-3 items-center">
-            <Text className="text-[#EE8B3A] text-[12px] font-bold leading-tight">Fri</Text>
-            <Text className="text-[#EE8B3A] text-[13px] font-bold leading-tight">15</Text>
+          <View 
+            style={{ width: 56, height: 52 }} 
+            className="bg-[#FFEDDD] rounded-[16px] mr-3 items-center justify-center gap-0.5"
+          >
+            <Text className="text-[#F67300] text-[14px] font-medium leading-none">Fri</Text>
+            <Text className="text-[#F67300] text-[14px] font-medium leading-none">15</Text>
           </View>
           <View>
             <Text className="text-[13px] text-gray-400 mb-0.5">15-Jan-2026</Text>
@@ -75,19 +100,25 @@ export default function AttendanceCalendarSection() {
       </View>
 
       {/* Month Selector */}
-      <View className="flex-row justify-center items-center mb-6 mt-2">
-        <TouchableOpacity className="bg-[#FCEDF9] p-1.5 rounded-lg">
-          <Entypo name="triangle-left" size={14} color="#C42A96" />
+      <View className="flex-row justify-center items-center mb-6">
+        <TouchableOpacity 
+          onPress={handlePrevMonth}
+          className="bg-[#FCEDF9] w-[30px] h-[30px] items-center justify-center rounded-[8px]"
+        >
+          <Ionicons name="play" size={14} color="#C42A96" style={{ transform: [{ rotate: '180deg' }] }} />
         </TouchableOpacity>
-        <Text className="mx-6 font-semibold text-[15px] text-[#333333]">Jan 2026</Text>
-        <TouchableOpacity className="bg-[#FCEDF9] p-1.5 rounded-lg">
-          <Entypo name="triangle-right" size={14} color="#C42A96" />
+        <Text className="mx-6 font-semibold text-[14px] text-[#333333]">{monthTitle}</Text>
+        <TouchableOpacity 
+          onPress={handleNextMonth}
+          className="bg-[#FCEDF9] w-[30px] h-[30px] items-center justify-center rounded-[8px]"
+        >
+          <Ionicons name="play" size={14} color="#C42A96" />
         </TouchableOpacity>
       </View>
 
       {/* Grid */}
       <View className="flex-row flex-wrap justify-between gap-y-3">
-        {CALENDAR_DATA.map((item, index) => {
+        {calendarData.map((item, index) => {
           const styles = getStatusStyles(item.status);
           
           return (
@@ -95,16 +126,17 @@ export default function AttendanceCalendarSection() {
               key={index}
               style={{
                 width: '13%', 
+                aspectRatio: 44 / 43,
                 backgroundColor: styles.bg,
                 borderColor: styles.border,
                 borderWidth: item.status === 'none' ? 1 : 0,
               }}
-              className="aspect-[4/5] rounded-[16px] items-center justify-center"
+              className="rounded-[14px] items-center justify-center py-1.5 gap-0.5"
             >
-              <Text style={{ color: styles.day }} className="text-[11px] font-medium mb-0.5">
+              <Text style={{ color: styles.day }} className="text-[14px] font-semibold leading-none text-center">
                 {item.day}
               </Text>
-              <Text style={{ color: styles.date }} className={`text-[12px] ${item.status === 'none' || item.status === 'weekend' ? 'font-normal' : 'font-semibold'}`}>
+              <Text style={{ color: styles.date }} className="text-[12px] font-medium leading-none text-center">
                 {item.date}
               </Text>
             </View>
@@ -113,18 +145,18 @@ export default function AttendanceCalendarSection() {
       </View>
 
       {/* Legend */}
-      <View className="flex-row justify-center items-center mt-8 gap-6">
+      <View className="flex-row justify-center items-center mt-8 gap-5">
         <View className="flex-row items-center">
-          <View className="w-3.5 h-3.5 rounded-[4px] bg-[#1DD75B] mr-2" />
-          <Text className="text-[13px] text-gray-500 font-medium">Present</Text>
+          <View className="w-3.5 h-3.5 rounded-[4px] bg-[#3EA465] mr-2" />
+          <Text className="text-[14px] text-gray-500 font-medium">Present</Text>
         </View>
         <View className="flex-row items-center">
-          <View className="w-3.5 h-3.5 rounded-[4px] bg-[#E61026] mr-2" />
-          <Text className="text-[13px] text-gray-500 font-medium">Absent</Text>
+          <View className="w-3.5 h-3.5 rounded-[4px] bg-[#CE1919] mr-2" />
+          <Text className="text-[14px] text-gray-500 font-medium">Absent</Text>
         </View>
         <View className="flex-row items-center">
-          <View className="w-3.5 h-3.5 rounded-[4px] bg-[#FFB775] mr-2" />
-          <Text className="text-[13px] text-gray-500 font-medium">Holiday</Text>
+          <View className="w-3.5 h-3.5 rounded-[4px] bg-[#FFBE85] mr-2" />
+          <Text className="text-[14px] text-gray-500 font-medium">Holiday</Text>
         </View>
       </View>
     </View>

@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
-import { AntDesign, Feather } from '@expo/vector-icons';
+import { PlayCircle, Clock } from 'iconsax-react-native';
 
 interface EnrolledCoursesCardProps {
   title: string;
@@ -20,13 +20,13 @@ export default function EnrolledCoursesCard({ title, duration, lessons, bgColor 
         {title}
       </Text>
       
-      <View className="flex-row items-center justify-between mt-4">
+      <View className="flex-row items-center justify-between">
         <View className="flex-row items-center bg-white/50 px-2 py-1.5 rounded-full">
-          <Feather name="clock" size={12} color="#555" />
+          <Clock size="12" color="#555" />
           <Text className="text-[11px] text-gray-700 ml-1.5 font-medium">{duration}</Text>
         </View>
         <View className="flex-row items-center bg-white/50 px-2 py-1.5 rounded-full">
-          <Feather name="play-circle" size={12} color="#555" />
+          <PlayCircle size="12" color="#555" />
           <Text className="text-[11px] text-gray-700 ml-1.5 font-medium">{lessons}</Text>
         </View>
       </View>

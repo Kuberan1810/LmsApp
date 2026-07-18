@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+﻿import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import React from 'react';
 import EnrolledCoursesCard from './EnrolledCoursesCard';
 
@@ -25,7 +25,7 @@ export default function RecentCoursesSection() {
   return (
     <View className="mt-6">
       <View className="flex-row justify-between items-center px-5 mb-4">
-        <Text className="text-[17px] font-semibold text-[#333333]">Recent enrolled courses</Text>
+        <Text className="text-[20px] font-semibold text-[#333333]">Recent enrolled courses</Text>
         <BtnCom label="View all" />
       </View>
 
