@@ -38,7 +38,7 @@ export default function ClassesProgressCard() {
   const upcomingOffset = -((attendedPct + absentPct) * circumference);
 
   return (
-    <View className="bg-white mx-5 mt-6 rounded-[24px] p-5 shadow-sm border border-gray-50 z-10">
+    <View className="bg-white mx-5 mt-6 rounded-[24px] p-5 border border-[#F2EEF4] z-10">
       {/* Header */}
       <View className="flex-row justify-between items-center mb-4 z-20">
         <Text className="text-[20px] font-semibold text-[#333333]">Classes</Text>
@@ -56,10 +56,10 @@ export default function ClassesProgressCard() {
                 onPress={() => setShowTooltip(false)}
               />
               {/* Tooltip Box */}
-              <View className="absolute top-8 -right-2 bg-[#333333] p-3 rounded-[12px] w-[220px] shadow-lg">
+              <View className="absolute top-8 -right-2 bg-[#333333] p-3 rounded-[12px] w-[260px] shadow-lg">
                 <View className="absolute -top-1.5 right-3 w-3 h-3 bg-[#333333] rotate-45" />
                 <Text className="text-white text-[12px] leading-[18px]">
-                  This section tracks your attendance and missed classes.
+                  Track your class attendance, attended, absent, and upcoming classes with overall attendance percentage.
                 </Text>
               </View>
             </>
@@ -71,7 +71,7 @@ export default function ClassesProgressCard() {
       <View className="flex-row items-center justify-between px-2 mb-6">
         {/* Left Side: Stats */}
         <View>
-          <Text className="text-[15px] font-medium text-gray-400 mb-1">Attended</Text>
+          <Text className="text-[15px] font-medium text-[#626262] mb-1">Attended</Text>
           <Text className="text-[20px] font-semibold text-[#333333]">21 / 38</Text>
         </View>
 
@@ -120,7 +120,7 @@ export default function ClassesProgressCard() {
           
           {/* Centered Text Overlay */}
           <View className="absolute inset-0 items-center justify-center">
-            <Text className="text-[20px] font-semibold text-gray-500">65%</Text>
+            <Text className="text-[20px] font-semibold text-[#626262]">65%</Text>
           </View>
         </View>
       </View>
@@ -129,15 +129,15 @@ export default function ClassesProgressCard() {
       <View className="flex-row justify-center items-center gap-4">
         <View className="flex-row items-center">
           <View className="w-3.5 h-3.5 rounded-[4px] bg-[#1DD75B] mr-1.5" />
-          <Text className="text-[12px] font-medium text-gray-500">Attended: {attended}</Text>
+          <Text className="text-[12px] font-medium text-[#626262]">Attended: {attended}</Text>
         </View>
         <View className="flex-row items-center">
           <View className="w-3.5 h-3.5 rounded-[4px] bg-[#E61026] mr-1.5" />
-          <Text className="text-[12px] font-medium text-gray-500">Absent: {absent.toString().padStart(2, '0')}</Text>
+          <Text className="text-[12px] font-medium text-[#626262]">Absent: {absent.toString().padStart(2, '0')}</Text>
         </View>
         <View className="flex-row items-center">
           <View className="w-3.5 h-3.5 rounded-[4px] bg-[#EBEBEB] mr-1.5" />
-          <Text className="text-[12px] font-medium text-gray-500">Upcoming: {upcoming}</Text>
+          <Text className="text-[12px] font-medium text-[#626262]">Upcoming: {upcoming}</Text>
         </View>
       </View>
     </View>

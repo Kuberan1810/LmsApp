@@ -14,7 +14,7 @@ export default function ScheduleCard({ title, time, date, instructorName, status
   const isJoin = status === 'join';
 
   return (
-    <View className="bg-[#FAFAFA] rounded-[24px] p-5 mb-4 border border-gray-100 flex-row items-center justify-between">
+    <View className="bg-[#FAFAFA] rounded-[24px] p-5 mb-4 border border-[#F2EEF4] flex-row items-center justify-between">
       
       {/* Left Content */}
       <View className="flex-1 mr-2">
@@ -26,22 +26,22 @@ export default function ScheduleCard({ title, time, date, instructorName, status
         {/* Time and Date */}
         <View className="flex-row items-center mb-4 gap-2 flex-wrap">
           <View className="flex-row items-center">
-            <View className="bg-white border border-gray-100 rounded-[8px] p-1 mr-1.5">
-              <Clock size="12" color="#888888" />
+            <View className="bg-white border border-[#F2EEF4] rounded-[8px] p-1 mr-1.5">
+              <Clock size="12" color="#626262" />
             </View>
-            <Text className="text-[12px] font-medium text-gray-500">{time}</Text>
+            <Text className="text-[12px] font-medium text-[#626262]">{time}</Text>
           </View>
           
           <View className="flex-row items-center">
-            <View className="bg-white border border-gray-100 rounded-[8px] p-1 mr-1.5">
-              <Calendar size="12" color="#888888" />
+            <View className="bg-white border border-[#F2EEF4] rounded-[8px] p-1 mr-1.5">
+              <Calendar size="12" color="#626262" />
             </View>
-            <Text className="text-[12px] font-medium text-gray-500">{date}</Text>
+            <Text className="text-[12px] font-medium text-[#626262]">{date}</Text>
           </View>
         </View>
 
         {/* Instructor */}
-        <Text className="text-[14px] font-medium text-gray-500">
+        <Text className="text-[14px] font-medium text-[#626262]">
           {instructorName}
         </Text>
       </View>
@@ -51,7 +51,7 @@ export default function ScheduleCard({ title, time, date, instructorName, status
         style={{ width: 80, height: 34 }}
         className={`rounded-[14px] justify-center items-center ${isJoin ? 'bg-[#F67300]' : 'bg-[#E5E5E5]'}`}
       >
-        <Text className={`text-[14px] font-semibold ${isJoin ? 'text-white' : 'text-gray-500'}`}>
+        <Text className={`text-[14px] font-semibold ${isJoin ? 'text-white' : 'text-[#626262]'}`}>
           {isJoin ? 'Join' : 'Soon'}
         </Text>
       </TouchableOpacity>

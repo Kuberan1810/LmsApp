@@ -13,7 +13,7 @@ export default function DashboardAssignmentCard({ title, dueDate, dueTime, statu
   const isCompleted = status === 'Completed';
 
   return (
-    <View className="bg-[#FAFAFA] rounded-[24px] p-5 mb-4 border border-gray-100 flex-row justify-between items-start">
+    <View className="bg-[#FAFAFA] rounded-[24px] p-5 mb-4 border border-[#F2EEF4] flex-row justify-between items-start">
       
       {/* Left Content */}
       <View className="flex-1 mr-4">
@@ -24,18 +24,18 @@ export default function DashboardAssignmentCard({ title, dueDate, dueTime, statu
         
         {/* Due Date */}
         <View className="flex-row items-center mb-2">
-          <View className="bg-white border border-gray-100 rounded-[8px] p-1 mr-2">
-            <Calendar size="14" color="#888888" />
+          <View className="bg-white border border-[#F2EEF4] rounded-[8px] p-1 mr-2">
+            <Calendar size="14" color="#626262" />
           </View>
-          <Text className="text-[14px] font-normal text-gray-500 leading-[17px]">Due date: {dueDate}</Text>
+          <Text className="text-[14px] font-normal text-[#626262] leading-[17px]">Due date: {dueDate}</Text>
         </View>
         
         {/* Due Time */}
         <View className="flex-row items-center">
-          <View className="bg-white border border-gray-100 rounded-[8px] p-1 mr-2">
-            <Clock size="14" color="#888888" />
+          <View className="bg-white border border-[#F2EEF4] rounded-[8px] p-1 mr-2">
+            <Clock size="14" color="#626262" />
           </View>
-          <Text className="text-[14px] font-normal text-gray-500 leading-[17px]">Due time: {dueTime}</Text>
+          <Text className="text-[14px] font-normal text-[#626262] leading-[17px]">Due time: {dueTime}</Text>
         </View>
       </View>
 
