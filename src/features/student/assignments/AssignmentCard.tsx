@@ -64,7 +64,7 @@ export default function AssignmentCard({ assignment, onPress }: AssignmentCardPr
       case 'In Progress':
         return (
           <View className="flex-row items-center">
-            <View className="w-[18px] h-[18px] rounded-[5px] bg-white border border-[#F3F5F7] items-center justify-center shadow-xs">
+            <View className="w-[18px] h-[18px] rounded-[5px] bg-white border border-[#F3F5F7] items-center justify-center">
               <CalendarRemove size={10} color="#9CA3AF" variant="Linear" />
             </View>
             <Text className="text-[#626262] text-[12px] ml-1.5">
@@ -112,7 +112,7 @@ export default function AssignmentCard({ assignment, onPress }: AssignmentCardPr
   };
 
   return (
-    <View className="bg-white border border-[#F2EEF4] rounded-2xl p-6 mb-4">
+    <View className="bg-white border border-gray-200 rounded-2xl p-6 mb-4">
       {/* Top Badge */}
       {getStatusBadge()}
 

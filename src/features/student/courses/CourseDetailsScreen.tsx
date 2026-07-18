@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Image as ExpoImage } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Import, ClipboardText } from 'iconsax-react-native';
 import BtnCom from '../../../components/BtnCom';
 
 export const CourseDetailsScreen = () => {
@@ -18,7 +19,7 @@ export const CourseDetailsScreen = () => {
         {/* Header */}
         <View className="flex-row items-center justify-between mb-6 mt-2">
           <View className="flex-row items-center gap-2">
-            <TouchableOpacity className="p-1" onPress={() => router.canGoBack() ? router.back() : router.push('/(student)/courses/courses' as any)}>
+            <TouchableOpacity className="p-1" onPress={() => router.back()}>
               <Feather name="chevron-left" size={24} color="black" />
             </TouchableOpacity>
             <Text className="text-2xl font-semibold text-black">My Courses</Text>
@@ -46,7 +47,7 @@ export const CourseDetailsScreen = () => {
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
           {/* Main Top Card (Overview, Tabs, Alert, Modules) */}
-          <View className="bg-white rounded-[24px] p-5 shadow-sm shadow-gray-200 mb-6">
+          <View className="bg-white rounded-[24px] p-5 mb-6 border border-gray-200">
             <Text className="text-[#333333] font-semibold text-[16px] mb-3">
               AM101- AI / ML Frontier AI Engineer
             </Text>
@@ -65,16 +66,16 @@ export const CourseDetailsScreen = () => {
           </View>
 
           {/* Curriculum Section (Tabs, Alert, Modules) */}
-          <View className="bg-white rounded-[24px] p-5 shadow-sm shadow-gray-200 mb-6">
+          <View className="bg-white rounded-[24px] p-5 mb-6 border border-gray-200">
             {/* Tabs */}
             <View className="flex-row items-center justify-between border-gray-100 mb-6">
               {['Curriculum', 'Resources', 'FAQs'].map((tab) => (
                 <TouchableOpacity 
                   key={tab} 
                   onPress={() => setActiveTab(tab)}
-                  className={`pb-3 border-b-2 ${activeTab === tab ? 'border-[#F67300]' : 'border-transparent'}`}
+                  className={`pb-3 border-b-2 ${activeTab === tab ? 'border-[#333333]' : 'border-transparent'}`}
                 >
-                  <Text className={`text-[14px] font-normal leading-none ${activeTab === tab ? 'text-[#F67300]' : 'text-[#6B7280]'}`}>
+                  <Text className={`text-[14px] font-normal leading-none ${activeTab === tab ? 'text-[#333333]' : 'text-[#6B7280]'}`}>
                     {tab}
                   </Text>
                 </TouchableOpacity>
@@ -120,7 +121,9 @@ export const CourseDetailsScreen = () => {
                             <TouchableOpacity onPress={() => router.push('/courses/lesson/3-4' as any)}>
                               <Text className="text-[#333333] text-[12px] font-medium mb-4">3.4 AI Agents (LangChain, CrewAI, AutoGen)</Text>
                             </TouchableOpacity>
-                            <Text className="text-[#333333] text-[12px] mb-4">3.3 Tool-using autonomous agents</Text>
+                            <TouchableOpacity onPress={() => router.push('/courses/recording/1' as any)}>
+                              <Text className="text-[#333333] text-[12px] font-medium mb-4">3.3 Tool-using autonomous agents</Text>
+                            </TouchableOpacity>
                             <Text className="text-[#333333] text-[12px] mb-4">3.2 API & Web App integration (FastAPI/Flask)</Text>
                             <Text className="text-[#333333] text-[12px]">3.1 Model deployment & basics of MLOps</Text>
                           </View>
@@ -135,21 +138,40 @@ export const CourseDetailsScreen = () => {
             {activeTab === 'Resources' && (
               <View>
                 {[1, 2, 3, 4].map((item, idx) => (
-                  <TouchableOpacity 
-                    key={item} 
-                    className={`flex-row items-center justify-between border border-[#F3F4F6] rounded-2xl p-3 ${idx < 3 ? 'mb-3' : ''}`}
+                  <TouchableOpacity
+                    key={item}
                     activeOpacity={0.7}
+                    style={{
+                      borderWidth: 0.5,
+                      borderColor: '#F2EEF4',
+                      shadowColor: '#F2EEF4',
+                      shadowOffset: { width: 0, height: 4 },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 4,
+                      elevation: 3,
+                      height: 77,
+                    }}
+                    className={`flex-row justify-between items-center bg-white pl-1 py-1 pr-5 rounded-[15px] ${idx < 3 ? 'mb-3.5' : ''}`}
                   >
-                    <View className="flex-row items-center gap-3">
-                      <View className="w-[56px] h-[49px] rounded-[24px] bg-[#FEE2E2] items-center justify-center">
-                        <ExpoImage source={require('../../../../assets/images/pdficon.svg')} contentFit="contain" style={{ width: 22, height: 24 }} />
+                    <View className="flex-row items-center flex-1 pr-2">
+                      <View
+                        style={{ width: 76, height: 69 }}
+                        className="rounded-[24px] bg-[#FEE2E2] justify-center items-center"
+                      >
+                        <ExpoImage
+                          source={require('../../../../assets/icon/pdfIcon.svg')}
+                          style={{ width: 32, height: 32 }}
+                          contentFit="contain"
+                        />
                       </View>
-                      <View>
-                        <Text className="text-[#333333] font-medium text-[13px] mb-1">Agent Architecture.pdf</Text>
-                        <Text className="text-[#9CA3AF] font-normal text-[11px]">2.4MB</Text>
+                      <View className="ml-[10px] flex-1 justify-center">
+                        <Text className="text-[15px] font-medium text-[#333333]" numberOfLines={1}>Agent Architecture.pdf</Text>
+                        <Text className="text-[12px] text-[#808080] mt-0.5">2.4MB</Text>
                       </View>
                     </View>
-                    <Feather name="download" size={16} color="#9CA3AF" />
+                    <View className="p-1">
+                      <Import size={18} color="#808080" variant="Linear" />
+                    </View>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -178,17 +200,17 @@ export const CourseDetailsScreen = () => {
                       key={idx} 
                       onPress={() => setExpandedFaq(isExpanded ? null : idx)}
                       activeOpacity={0.8}
-                      className={`mb-3 border rounded-xl overflow-hidden ${isExpanded ? 'border-orange-200' : 'border-[#F1F5F9]'}`}
+                      className={`mb-3 border rounded-xl overflow-hidden border-[#F1F5F9]`}
                     >
-                      <View className={`px-4 py-4 flex-row items-center justify-between ${isExpanded ? 'bg-orange-50' : 'bg-[#F8FAFC]'}`}>
-                        <Text className={`font-medium text-[13px] flex-1 pr-4 ${isExpanded ? 'text-[#F67300]' : 'text-[#333333]'}`}>
+                      <View className={`px-4 py-4 flex-row items-center justify-between bg-[#F8FAFC]`}>
+                        <Text className="font-medium text-[13px] flex-1 pr-4 text-[#333333]">
                           {faq.q}
                         </Text>
-                        <Feather name={isExpanded ? 'chevron-up' : 'chevron-down'} size={20} color={isExpanded ? '#F67300' : '#333333'} />
+                        <Feather name={isExpanded ? 'chevron-up' : 'chevron-down'} size={20} color="#333333" />
                       </View>
                       
                       {isExpanded && (
-                        <View className="bg-white px-4 py-4 border-t border-orange-100">
+                        <View className="bg-white px-4 py-4 border-t border-[#F1F5F9]">
                           <Text className="text-[#6B7280] text-[12px] leading-relaxed">
                             {faq.a}
                           </Text>
@@ -202,16 +224,16 @@ export const CourseDetailsScreen = () => {
           </View>
 
           {/* Assignments */}
-          <View className="bg-white rounded-[24px] p-5 shadow-sm shadow-gray-200 mb-6">
+          <View className="bg-white rounded-[24px] p-5 mb-6 border border-gray-200">
             <View className="flex-row justify-between items-center mb-4">
               <Text className="text-[#333333] font-semibold text-[16px]">Assignments</Text>
-              <BtnCom label="View All" />
+              <BtnCom label="View All" onClick={() => router.push('/(student)/assignments/assignments' as any)} />
             </View>
 
             {[1, 2, 3].map((_, idx) => (
               <View key={idx} className="flex-row items-center border border-[#F3F4F6] rounded-2xl p-4 mb-3">
                 <View className="w-[34px] h-[37px] rounded-[28px] bg-[#F67300] items-center justify-center mr-3">
-                  <Feather name="clipboard" size={18} color="white" />
+                  <ClipboardText size={18} color="white" variant="Linear" />
                 </View>
                 <View className="flex-1">
                   <Text className="text-[#333333] font-medium text-[13px] mb-1">

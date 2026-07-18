@@ -20,7 +20,7 @@ export const UpcomingClassesCard = ({
   reminderSet = false,
 }: UpcomingClassesCardProps) => {
   return (
-    <View className="flex-row items-center rounded-2xl border border-gray-100 bg-white p-4 mb-4 shadow-sm shadow-gray-100">
+    <View className="flex-row items-center rounded-2xl border border-gray-200 bg-white p-4 mb-4">
       {/* Date Badge */}
       <View className="w-16 h-16 items-center justify-center rounded-xl bg-orange-50 mr-4">
         <Text className="text-gray-500 text-xs font-semibold">{month}</Text>

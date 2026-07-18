@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { Document, ClipboardText } from 'iconsax-react-native';
 
 export const RecordingDetailsScreen = () => {
   const router = useRouter();
@@ -13,7 +14,7 @@ export const RecordingDetailsScreen = () => {
         {/* Header */}
         <View className="flex-row items-center justify-between mb-6 mt-2">
           <View className="flex-row items-center gap-2">
-            <TouchableOpacity className="p-1" onPress={() => router.canGoBack() ? router.back() : router.push('/(student)/courses/courses' as any)}>
+            <TouchableOpacity className="p-1" onPress={() => router.back()}>
               <Feather name="chevron-left" size={24} color="black" />
             </TouchableOpacity>
             <Text className="text-xl font-semibold text-black">My Courses</Text>
@@ -43,7 +44,7 @@ export const RecordingDetailsScreen = () => {
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
           
           {/* Class Content */}
-          <View className="bg-white rounded-[24px] p-5 shadow-sm shadow-gray-200 mb-4">
+          <View className="bg-white rounded-[24px] p-5 border border-gray-200 mb-4">
             <Text className="text-[#333333] font-semibold text-[14px] mb-3">Class Content :</Text>
             <Text className="text-[#6B7280] font-normal text-[12px] leading-relaxed text-justify">
               AI Agents are systems that use LLMs to plan, act, and collaborate autonomously. LangChain builds tool-using agents for workflows and RAG. CrewAI enables role-based multi-agent teamwork. AutoGen focuses on conversation-driven agents that interact with each other and humans to solve complex tasks.
@@ -51,7 +52,7 @@ export const RecordingDetailsScreen = () => {
           </View>
 
           {/* Key Topic */}
-          <View className="bg-white rounded-[24px] p-5 shadow-sm shadow-gray-200 mb-4">
+          <View className="bg-white rounded-[24px] p-5 border border-gray-200 mb-4">
             <Text className="text-[#333333] font-semibold text-[14px] mb-4">Key Topic :</Text>
             {[
               'Introduction to AI Agents',
@@ -69,22 +70,22 @@ export const RecordingDetailsScreen = () => {
           </View>
 
           {/* Resources Empty State */}
-          <View className="bg-white rounded-[24px] p-5 shadow-sm shadow-gray-200 mb-4 h-[160px]">
+          <View className="bg-white rounded-[24px] p-5 border border-gray-200 mb-4 h-[160px]">
             <Text className="text-[#333333] font-semibold text-[14px] mb-2">Resources</Text>
             <View className="flex-1 items-center justify-center pb-2">
               <View className="w-14 h-14 rounded-full bg-orange-50 items-center justify-center mb-2">
-                <Feather name="file" size={24} color="#EA580C" />
+                <Document size={24} color="#EA580C" variant="Linear" />
               </View>
               <Text className="text-[#333333] font-medium text-[11px]">No Resources</Text>
             </View>
           </View>
 
           {/* Assignments Empty State */}
-          <View className="bg-white rounded-[24px] p-5 shadow-sm shadow-gray-200 mb-6 h-[160px]">
+          <View className="bg-white rounded-[24px] p-5 border border-gray-200 mb-6 h-[160px]">
             <Text className="text-[#333333] font-semibold text-[14px] mb-2">Assignments</Text>
             <View className="flex-1 items-center justify-center pb-2">
               <View className="w-14 h-14 rounded-full bg-orange-50 items-center justify-center mb-2">
-                <Feather name="clipboard" size={24} color="#EA580C" />
+                <ClipboardText size={24} color="#EA580C" variant="Linear" />
               </View>
               <Text className="text-[#333333] font-medium text-[11px]">No Assignment</Text>
             </View>
