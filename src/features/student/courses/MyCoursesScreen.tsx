@@ -48,12 +48,12 @@ export const MyCoursesScreen = () => {
           </View>
 
           {/* Live Now Section */}
-          <View className="bg-white rounded-[32px] p-5 shadow-sm shadow-gray-200 mb-6">
+          <View className="bg-white rounded-[32px] p-5 mb-6 border border-gray-200">
             <LiveNowCard />
           </View>
 
           {/* Upcoming Classes Section */}
-          <View className="bg-white rounded-[32px] p-5 shadow-sm shadow-gray-200">
+          <View className="bg-white rounded-[32px] p-5 border border-gray-200">
             <Text className="text-black text-lg font-medium mb-4 px-1">Upcoming Classes</Text>
 
             <UpcomingClassesCard

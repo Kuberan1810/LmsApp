@@ -27,14 +27,14 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   });
 
   const currentRouteName = state.routes[state.index].name;
-  const isMainRoute = ['dashboard/dashboard', 'courses/courses', 'assignments/assignments', 'attendance/attendance', 'tests/index'].includes(currentRouteName);
+  const isMainRoute = ['dashboard/dashboard', 'courses', 'assignments/assignments', 'attendance/attendance', 'tests/index'].includes(currentRouteName);
 
   if (!isMainRoute || !isTabBarVisible) {
     return null;
   }
 
   const visibleRoutes = state.routes.filter(r =>
-    ['dashboard/dashboard', 'courses/courses', 'assignments/assignments', 'attendance/attendance', 'tests/index'].includes(r.name)
+    ['dashboard/dashboard', 'courses', 'assignments/assignments', 'attendance/attendance', 'tests/index'].includes(r.name)
   );
 
   const tabContent = visibleRoutes.map((route, index) => {
@@ -72,7 +72,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     };
 
     let IconComponent = Home2;
-    if (route.name === 'courses/courses') IconComponent = isFocused ? DocumentText : DocumentText1;
+    if (route.name === 'courses') IconComponent = isFocused ? DocumentText : DocumentText1;
     if (route.name === 'assignments/assignments') IconComponent = NoteText;
     if (route.name === 'attendance/attendance') IconComponent = CalendarTick;
     if (route.name === 'tests/index') IconComponent = ClipboardText;
@@ -154,7 +154,7 @@ export default function StudentLayout() {
         screenOptions={{ headerShown: false }}
       >
         <Tabs.Screen name="dashboard/dashboard" options={{ title: 'Home' }} />
-        <Tabs.Screen name="courses/courses" options={{ title: 'Courses' }} />
+        <Tabs.Screen name="courses" options={{ title: 'Courses' }} />
         <Tabs.Screen name="assignments/assignments" options={{ title: 'Tasks' }} />
         <Tabs.Screen name="attendance/attendance" options={{ title: 'Calendar' }} />
 
@@ -162,9 +162,6 @@ export default function StudentLayout() {
 
 
         <Tabs.Screen name="profile/profile" options={{ href: null }} />
-        <Tabs.Screen name="courses/[id]" options={{ href: null }} />
-        <Tabs.Screen name="courses/lesson/[id]" options={{ href: null }} />
-        <Tabs.Screen name="courses/recording/[id]" options={{ href: null }} />
 
       </Tabs>
     </TabBarVisibilityProvider>

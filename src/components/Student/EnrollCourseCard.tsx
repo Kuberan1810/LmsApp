@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { DocumentText1 } from 'iconsax-react-native';
 
 export type EnrollCourseType = {
     code?: string;
@@ -22,11 +23,11 @@ export default function EnrollCourseCard({ course, isSelected = false, onCourseP
         <TouchableOpacity
             onPress={() => onCoursePress?.(course.code || '')}
             activeOpacity={0.7}
-            className={`${course.bgColor} rounded-2xl p-5 mr-4 w-[260px] h-[130px] justify-between border shadow-sm relative overflow-hidden`}
+            className={`${course.bgColor} rounded-2xl p-5 mr-4 w-[260px] h-[130px] justify-between border relative overflow-hidden`}
             style={
                 isSelected
                     ? { borderColor: '#e6e5e4ff', borderWidth: 2 }
-                    : { borderColor: '#ffffff', borderWidth: 1 }
+                    : { borderColor: '#E5E7EB', borderWidth: 1 }
             }
         >
             <Ionicons
@@ -62,7 +63,7 @@ export default function EnrollCourseCard({ course, isSelected = false, onCourseP
             <View className="flex-row items-center">
                 {/* Duration */}
                 <View className="flex-row items-center mr-4">
-                    <View className="w-[18px] h-[18px] rounded-[5px] bg-white border border-[#F3F5F7] items-center justify-center shadow-xs">
+                    <View className="w-[18px] h-[18px] rounded-[5px] bg-white border border-[#F3F5F7] items-center justify-center">
                         <Ionicons name="time-outline" size={10} color="#626262" />
                     </View>
                     <Text className="text-[12px] font-medium text-[#626262] ml-1.5">
@@ -72,8 +73,8 @@ export default function EnrollCourseCard({ course, isSelected = false, onCourseP
 
                 {/* Lessons */}
                 <View className="flex-row items-center">
-                    <View className="w-[18px] h-[18px] rounded-[5px] bg-white border border-[#F3F5F7] items-center justify-center shadow-xs">
-                        <Ionicons name="document-text-outline" size={10} color="#626262" />
+                    <View className="w-[18px] h-[18px] rounded-[5px] bg-white border border-[#F3F5F7] items-center justify-center">
+                        <DocumentText1 size={10} color="#626262" variant="Linear" />
                     </View>
                     <Text className="text-[12px] font-medium text-[#626262] ml-1.5">
                         {course.lessons}
