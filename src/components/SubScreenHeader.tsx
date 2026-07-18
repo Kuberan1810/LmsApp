@@ -20,7 +20,7 @@ export default function SubScreenHeader({
     return (
         <View className="flex-row items-center justify-between">
 
-      
+
             <TouchableOpacity
                 onPress={onPress}
                 className="bg-[#f2f2f2] w-11 h-11 rounded-full items-center justify-center"
@@ -28,12 +28,12 @@ export default function SubScreenHeader({
                 <Icon size={20} color="#1E1E2D" />
             </TouchableOpacity>
 
-      
+
             <Text className="text-xl text-[#1E1E2D] font-medium">
                 {Title}
             </Text>
 
-      
+
             {Icon2 ? (
                 <TouchableOpacity
                     onPress={onPress2}

@@ -6,7 +6,14 @@ import React, { useState } from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-export default function Header() {
+import { ArrowLeft2 } from 'iconsax-react-native';
+
+export interface HeaderProps {
+  title?: string;
+  onBackPress?: () => void;
+}
+
+export default function Header({ title, onBackPress }: HeaderProps = {}) {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
   return (
@@ -36,13 +43,28 @@ export default function Header() {
             exiting={FadeOut.duration(200)}
             className="flex-row items-center justify-between flex-1"
           >
-            {/* Left: Greeting & Name (Replaces Logo) */}
-            <View className="w-24 h-8 justify-center">
-              <Image
-                source={require('../../../assets/images/header-logo.svg')}
-                contentFit="contain"
-                style={{ width: '100%', height: '100%' }}
-              />
+            {/* Left: Title & Back OR Logo */}
+            <View className="flex-row items-center flex-1 mr-4">
+              {title ? (
+                <>
+                  {onBackPress && (
+                    <TouchableOpacity onPress={onBackPress} className="mr-3 p-1">
+                      <ArrowLeft2 size={24} color="#1F2937" variant="Linear" />
+                    </TouchableOpacity>
+                  )}
+                  <Text className="text-[20px] font-medium text-[#333333] leading-tight flex-1" numberOfLines={1}>
+                    {title}
+                  </Text>
+                </>
+              ) : (
+                <View className="w-24 h-8 justify-center">
+                  <Image
+                    source={require('../../../assets/images/header-logo.svg')}
+                    contentFit="contain"
+                    style={{ width: '100%', height: '100%' }}
+                  />
+                </View>
+              )}
             </View>
 
             {/* Right: Actions */}
