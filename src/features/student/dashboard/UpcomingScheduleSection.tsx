@@ -1,6 +1,7 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
 import React from 'react';
 import ScheduleCard from './ScheduleCard';
+import BtnCom from '../../../components/BtnCom';
 
 const SCHEDULE_DATA = [
   {
@@ -29,9 +30,7 @@ export default function UpcomingScheduleSection() {
           <Text className="text-[17px] font-semibold text-[#333333] mb-1">Upcoming Schedule</Text>
           <Text className="text-[12px] text-gray-500">Friday, 15 Jan, 2024</Text>
         </View>
-        <TouchableOpacity className="border border-gray-200 rounded-full px-3 py-1">
-          <Text className="text-[11px] text-gray-500 font-medium">View all</Text>
-        </TouchableOpacity>
+        <BtnCom label="View all" />
       </View>
 
       <View>
