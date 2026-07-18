@@ -14,7 +14,7 @@ export default function SignIn() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <KeyboardAvoidingView
@@ -22,78 +22,78 @@ export default function SignIn() {
         className="flex-1"
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24, paddingTop: 20, paddingBottom: 24 }}>
-            <View className='mb-10 '>
-        {/* BACK */}
-        <View className='mb-20'>
-          <GoBack />
-        </View>
+          <View className='mb-10 '>
+            {/* BACK */}
+            <View className='mb-20'>
+              <GoBack />
+            </View>
 
-        {/* TITLE */}
-        <View className='mb-10'>
-          <Text className='font-medium text-[32px] text-[#1E1E2D]'>
-            Sign In
-          </Text>
-        </View>
+            {/* TITLE */}
+            <View className='mb-10'>
+              <Text className='font-medium text-[32px] text-[#1E1E2D]'>
+                Sign In
+              </Text>
+            </View>
 
-        {/* EMAIL */}
-        <View className='mb-6'>
-          <Text className='text-base text-[#A2A2A7] mb-2'>
-            Email Address
-          </Text>
+            {/* EMAIL */}
+            <View className='mb-6'>
+              <Text className='text-base text-[#A2A2A7] mb-2'>
+                Email Address
+              </Text>
 
-          <View className='flex-row items-center gap-3 border-b border-[#F4F4F4] pb-2'>
-            <Sms size={20} color="#A2A2A7" />
+              <View className='flex-row items-center gap-3 border-b border-[#F4F4F4] pb-2'>
+                <Sms size={20} color="#A2A2A7" />
 
-            <TextInput
-              placeholder="Enter your email"
-              className="flex-1 text-base"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
+                <TextInput
+                  placeholder="Enter your email"
+                  className="flex-1 text-base"
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+              </View>
+            </View>
+
+            {/* PASSWORD */}
+            <View className=''>
+              <Text className='text-base text-[#A2A2A7] mb-2'>
+                Password
+              </Text>
+
+              <View className='flex-row items-center gap-3 border-b border-[#F4F4F4] pb-2'>
+                <Lock size={20} color="#A2A2A7" />
+
+                <TextInput
+                  placeholder="Enter your password"
+                  className="flex-1 text-base"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                />
+
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                  className="p-2"
+                >
+                  {showPassword ? (
+                    <Eye size={20} color="#1E1E2D" />
+                  ) : (
+                    <EyeSlash size={20} color="#A2A2A7" />
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
-        </View>
 
-        {/* PASSWORD */}
-        <View className=''>
-          <Text className='text-base text-[#A2A2A7] mb-2'>
-            Password
-          </Text>
+          <View >
+            <BtnMainCom
+              title="Sign In"
+              onPress={() => router.replace('/(instructor)/dashboard/dashboard')}
 
-          <View className='flex-row items-center gap-3 border-b border-[#F4F4F4] pb-2'>
-            <Lock size={20} color="#A2A2A7" />
-
-            <TextInput
-              placeholder="Enter your password"
-              className="flex-1 text-base"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!showPassword}
             />
 
-            <TouchableOpacity
-              onPress={() => setShowPassword(!showPassword)}
-              className="p-2"
-            >
-              {showPassword ? (
-                <Eye size={20} color="#1E1E2D" />
-              ) : (
-                <EyeSlash size={20} color="#A2A2A7" />
-              )}
-            </TouchableOpacity>
           </View>
-        </View>
-      </View>
-
-      <View >
-        <BtnMainCom
-          title="Sign In"
-           onPress={() => router.replace('/(student)/dashboard/dashboard')}
-
-        />
-
-      </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
