@@ -1,23 +1,21 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  Dimensions,
-} from 'react-native';
-import Animated from 'react-native-reanimated';
 import { useTabBarScroll, useTabBarVisibility } from '@/context/TabBarVisibilityContext';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
-import { Filter, ArrowUp2, ArrowDown2, DocumentText } from 'iconsax-react-native';
 import AssignmentCard, { Assignment } from '@/features/student/assignments/AssignmentCard';
 import AssignmentDetail from '@/features/student/assignments/AssignmentDetail';
-import SubmitAssignment from '@/features/student/assignments/SubmitAssignment';
+import EnrolledCourse, { MOCK_COURSES } from '@/features/student/assignments/EnrolledCourse';
+import Header from '@/components/Student/Header';
 import SubmissionSuccess from '@/features/student/assignments/SubmissionSuccess';
+import SubmitAssignment from '@/features/student/assignments/SubmitAssignment';
 import ViewSubmission from '@/features/student/assignments/viewSubmission';
-import Header from '@/features/student/assignments/Header';
-import EnrolledCourse, { MOCK_COURSES, Course } from '@/features/student/assignments/EnrolledCourse';
+import { router } from 'expo-router';
+import { ArrowDown2, ArrowUp2, DocumentText, Filter } from 'iconsax-react-native';
+import React, { useState } from 'react';
+import {
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
+import Animated from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const MOCK_ASSIGNMENTS: Assignment[] = [
   {
@@ -211,8 +209,9 @@ export default function AssignmentsScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
-      {/* header */}
-      <Header onBackPress={() => router.back()} showSearchAndNotify />
+      <View className="mb-2">
+        <Header title="Assignments" />
+      </View>
 
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
