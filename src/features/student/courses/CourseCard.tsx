@@ -11,11 +11,12 @@ type CourseCardProps = {
 };
 
 export const CourseCard = ({ title, duration, lessons, bgColorClass, onPress }: CourseCardProps) => {
+  
   return (
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.9}
-      className={`${bgColorClass} rounded-[10px] p-5 mr-4 h-[101px] w-[260px] justify-between border shadow-sm relative overflow-hidden`}
+      className={`${bgColorClass} rounded-2xl p-5 mr-4 w-[260px] h-[130px] justify-between border shadow-sm relative overflow-hidden`}
       style={{ borderColor: '#ffffff', borderWidth: 1 }}
     >
       <Ionicons
@@ -45,6 +46,7 @@ export const CourseCard = ({ title, duration, lessons, bgColorClass, onPress }: 
 
       {/* Course Title */}
       <Text className={`text-[14px] font-semibold text-slate-800 leading-snug pr-8`} numberOfLines={2}>
+        
         {title}
       </Text>
 
