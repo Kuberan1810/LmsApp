@@ -69,7 +69,7 @@ export default function Header() {
               {/* Profile Button */}
               <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={()=> router.push('/(student)/profile/profile')}
+                onPress={() => router.push('/(student)/profile/profile')}
                 className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-[#F67300] items-center justify-center ml-1"
               >
                 <Text className="text-[14px] font-bold text-white tracking-wider">PS</Text>

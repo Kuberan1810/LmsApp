@@ -1,11 +1,11 @@
+import Header from '@/components/Student/Header';
 import { useTabBarScroll } from '@/context/TabBarVisibilityContext';
-import { Calendar, Clock, DocumentText1, TickCircle, SearchNormal1, Setting4 } from 'iconsax-react-native';
 import { useRouter } from 'expo-router';
+import { Calendar, Clock, DocumentText1, SearchNormal1, Setting4, TickCircle } from 'iconsax-react-native';
 import React, { useState } from 'react';
-import { Text, TouchableOpacity, View, TextInput, ScrollView } from 'react-native';
+import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Header from '@/components/Student/Header';
 
 export default function TestsDashboard() {
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function TestsDashboard() {
       status: 'Available',
     },
     {
-      id: '2',  
+      id: '2',
       title: 'Module 1 Quiz: Vector Databases',
       courseName: 'SS102 - System Architecture',
       desc: "A comprehensive test covering fundamental concepts of HTML and CSS, including structure, styling.",
@@ -36,7 +36,95 @@ export default function TestsDashboard() {
       questions: 10,
       marks: '12 / 12 Marks',
       status: 'Not Attended',
-    }
+    },
+    {
+      id: '3',
+      title: 'Module 1 Quiz: Vector Databases',
+      courseName: 'SS102 - System Architecture',
+      desc: "A comprehensive test covering fundamental concepts of HTML and CSS, including structure, styling.",
+      date: '2026-07-15',
+      time: '10:00 AM - 10:15 AM',
+      questions: 10,
+      marks: '12 / 12 Marks',
+      status: 'Not Attended',
+    },
+    {
+      id: '4',
+      title: 'Module 1 Quiz: Vector Databases',
+      courseName: 'SS102 - System Architecture',
+      desc: "A comprehensive test covering fundamental concepts of HTML and CSS, including structure, styling.",
+      date: '2026-07-15',
+      time: '10:00 AM - 10:15 AM',
+      questions: 10,
+      marks: '12 / 12 Marks',
+      status: 'Not Attended',
+    },
+    {
+      id: '5',
+      title: 'Module 1 Quiz: Vector Databases',
+      courseName: 'SS102 - System Architecture',
+      desc: "A comprehensive test covering fundamental concepts of HTML and CSS, including structure, styling.",
+      date: '2026-07-15',
+      time: '10:00 AM - 10:15 AM',
+      questions: 10,
+      marks: '12 / 12 Marks',
+      status: 'Not Attended',
+    },
+    {
+      id: '6',
+      title: 'Module 1 Quiz: Vector Databases',
+      courseName: 'SS102 - System Architecture',
+      desc: "A comprehensive test covering fundamental concepts of HTML and CSS, including structure, styling.",
+      date: '2026-07-15',
+      time: '10:00 AM - 10:15 AM',
+      questions: 10,
+      marks: '12 / 12 Marks',
+      status: 'Not Attended',
+    },
+    {
+      id: '7',
+      title: 'Module 1 Quiz: Vector Databases',
+      courseName: 'SS102 - System Architecture',
+      desc: "A comprehensive test covering fundamental concepts of HTML and CSS, including structure, styling.",
+      date: '2026-07-15',
+      time: '10:00 AM - 10:15 AM',
+      questions: 10,
+      marks: '12 / 12 Marks',
+      status: 'Not Attended',
+    },
+    {
+      id: '8',
+      title: 'Module 1 Quiz: Vector Databases',
+      courseName: 'SS102 - System Architecture',
+      desc: "A comprehensive test covering fundamental concepts of HTML and CSS, including structure, styling.",
+      date: '2026-07-15',
+      time: '10:00 AM - 10:15 AM',
+      questions: 10,
+      marks: '12 / 12 Marks',
+      status: 'Not Attended',
+    },
+    {
+      id: '9',
+      title: 'Module 1 Quiz: Vector Databases',
+      courseName: 'SS102 - System Architecture',
+      desc: "A comprehensive test covering fundamental concepts of HTML and CSS, including structure, styling.",
+      date: '2026-07-15',
+      time: '10:00 AM - 10:15 AM',
+      questions: 10,
+      marks: '12 / 12 Marks',
+      status: 'Not Attended',
+    },
+    {
+      id: '10',
+      title: 'Module 1 Quiz: Vector Databases',
+      courseName: 'SS102 - System Architecture',
+      desc: "A comprehensive test covering fundamental concepts of HTML and CSS, including structure, styling.",
+      date: '2026-07-15',
+      time: '10:00 AM - 10:15 AM',
+      questions: 10,
+      marks: '12 / 12 Marks',
+      status: 'Not Attended',
+    },
   ];
 
   const IconBox = ({ children, text }: { children: React.ReactNode, text: string }) => (
@@ -50,17 +138,12 @@ export default function TestsDashboard() {
 
   return (
     <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
-      <Header/>
-      <Animated.ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 100, paddingHorizontal: 20, paddingTop: 10 }}
-        onScroll={scrollHandler}
-        scrollEventThrottle={16}
-      >
-        <Text className="text-[18px] font-semibold text-[#333] mb-5">Available Tests</Text>
-        
+      <Header />
+      <View className="px-5 pt-2">
+        <Text className="text-[20px] font-semibold text-[#333] mb-5">Available Tests</Text>
+
         {/* Search Bar */}
-        <View className="flex-row items-center bg-white border border-[#F2EEF4] rounded-[16px] px-4 py-3.5 mb-4 shadow-sm">
+        <View className="flex-row items-center bg-white border border-[#F2EEF4] rounded-[16px] px-4 py-1.5 mb-4 shadow-sm">
           <SearchNormal1 size={18} color="#A0A0AB" />
           <TextInput
             placeholder="Search tests, courses..."
@@ -71,12 +154,15 @@ export default function TestsDashboard() {
             <Setting4 size={18} color="#A0A0AB" />
           </TouchableOpacity>
         </View>
+      </View>
 
-        {/* Filter Chips */}
-        <ScrollView 
-          horizontal 
+      {/* Filter Chips */}
+      <View className="mb-6">
+        <ScrollView
+          horizontal
           showsHorizontalScrollIndicator={false}
-          className="mb-6"
+          contentContainerStyle={{ paddingHorizontal: 20 }}
+          decelerationRate="fast"
         >
           {filters.map((filter) => (
             <TouchableOpacity
@@ -90,6 +176,14 @@ export default function TestsDashboard() {
             </TouchableOpacity>
           ))}
         </ScrollView>
+      </View>
+
+      <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 100, paddingHorizontal: 20 }}
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
+      >
         {MOCK_TESTS.map((test) => (
           <TouchableOpacity
             key={test.id}
@@ -99,17 +193,21 @@ export default function TestsDashboard() {
             <View className="flex-row justify-between items-start mb-4">
               <View className="flex-1 ">
 
-               <View className='flex-row  justify-between'>
-                 <Text className="text-[12px] font-medium text-[#909090] mb-1">{test.courseName}</Text>
-                <View className={`px-3 py-1 rounded-full ${test.status === 'Available' ? 'bg-[#2A9A46]/10' : 'bg-[#F67300]/10'}`}>
-                <Text className={`text-[12px] font-medium ${test.status === 'Available' ? 'text-[#2A9A46]' : 'text-[#F67300]'}`}>{test.status}</Text>
-              </View>
-              
-              </View>
+                <View className='flex-row justify-between items-start'>
+                  <Text 
+                    className="flex-1 text-[12px] font-medium text-[#909090] mb-1 mr-2"
+                    numberOfLines={1}
+                  >
+                    {test.courseName}
+                  </Text>
+                  <View className={`px-3 py-1 rounded-full ${test.status === 'Available' ? 'bg-[#2A9A46]/10' : 'bg-[#F67300]/10'}`}>
+                    <Text className={`text-[12px] font-medium ${test.status === 'Available' ? 'text-[#2A9A46]' : 'text-[#F67300]'}`}>{test.status}</Text>
+                  </View>
+                </View>
                 <Text className="text-[18px] font-semibold text-[#333333] leading-6">{test.title}</Text>
                 {/* <Text className="text-[14px] text-[#808080] leading-5 mt-2 line-clamp-1">{test.desc}</Text> */}
               </View>
-              
+
             </View>
 
             <View className="flex-row flex-wrap justify-between ">
