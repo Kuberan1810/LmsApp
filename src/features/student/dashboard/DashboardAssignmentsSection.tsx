@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+﻿import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import React from 'react';
 import DashboardAssignmentCard from './DashboardAssignmentCard';
 
@@ -38,7 +38,7 @@ export default function DashboardAssignmentsSection() {
     <View className="bg-white mx-5 mt-6 rounded-3xl py-5 shadow-sm border border-gray-50">
       <View className="flex-row justify-between items-start mb-6 px-5">
         <View>
-          <Text className="text-[17px] font-semibold text-[#333333] mb-1">Assignments</Text>
+          <Text className="text-[20px] font-semibold text-[#333333] mb-1">Assignments</Text>
           <Text className="text-[12px] text-gray-500">Friday, 15 Jan, 2024</Text>
         </View>
         <BtnCom label="View all" />

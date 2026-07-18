@@ -1,9 +1,11 @@
-import { View, Text } from 'react-native';
-import React from 'react';
-import { Feather } from '@expo/vector-icons';
+import { View, Text, TouchableOpacity, Pressable } from 'react-native';
+import React, { useState } from 'react';
+import { InfoCircle } from 'iconsax-react-native';
 import Svg, { Circle, G, Text as SvgText } from 'react-native-svg';
 
 export default function ClassesProgressCard() {
+  const [showTooltip, setShowTooltip] = useState(false);
+
   const radius = 46;
   const strokeWidth = 22;
   const cx = 60;
@@ -36,11 +38,33 @@ export default function ClassesProgressCard() {
   const upcomingOffset = -((attendedPct + absentPct) * circumference);
 
   return (
-    <View className="bg-white mx-5 mt-6 rounded-[24px] p-5 shadow-sm border border-gray-50">
+    <View className="bg-white mx-5 mt-6 rounded-[24px] p-5 shadow-sm border border-gray-50 z-10">
       {/* Header */}
-      <View className="flex-row justify-between items-center mb-6">
-        <Text className="text-[18px] font-bold text-[#333333]">Classes</Text>
-        <Feather name="info" size={18} color="#A0A0A0" />
+      <View className="flex-row justify-between items-center mb-4 z-20">
+        <Text className="text-[20px] font-semibold text-[#333333]">Classes</Text>
+        
+        <View className="relative">
+          <TouchableOpacity onPress={() => setShowTooltip(true)}>
+            <InfoCircle size="20" color="#A0A0A0" />
+          </TouchableOpacity>
+
+          {showTooltip && (
+            <>
+              {/* Click outside overlay */}
+              <Pressable 
+                style={{ position: 'absolute', top: -1000, left: -1000, right: -1000, bottom: -1000 }}
+                onPress={() => setShowTooltip(false)}
+              />
+              {/* Tooltip Box */}
+              <View className="absolute top-8 -right-2 bg-[#333333] p-3 rounded-[12px] w-[220px] shadow-lg">
+                <View className="absolute -top-1.5 right-3 w-3 h-3 bg-[#333333] rotate-45" />
+                <Text className="text-white text-[12px] leading-[18px]">
+                  This section tracks your attendance and missed classes.
+                </Text>
+              </View>
+            </>
+          )}
+        </View>
       </View>
 
       {/* Main Content */}
@@ -48,7 +72,7 @@ export default function ClassesProgressCard() {
         {/* Left Side: Stats */}
         <View>
           <Text className="text-[15px] font-medium text-gray-400 mb-1">Attended</Text>
-          <Text className="text-[22px] font-bold text-[#333333]">21 / 38</Text>
+          <Text className="text-[20px] font-semibold text-[#333333]">21 / 38</Text>
         </View>
 
         {/* Right Side: Donut Chart */}

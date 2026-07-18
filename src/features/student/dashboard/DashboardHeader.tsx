@@ -1,6 +1,6 @@
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+﻿import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import React from 'react';
-import { Feather } from '@expo/vector-icons';
+import { SearchNormal1, Notification } from 'iconsax-react-native';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 
@@ -21,8 +21,8 @@ export default function DashboardHeader() {
         </View>
 
         {/* Search Bar */}
-        <View className="flex-1 mx-4 flex-row items-center bg-white border border-gray-100 rounded-xl px-3 h-10 shadow-sm">
-          <Feather name="search" size={16} color="#A0A0A0" />
+        <View className="flex-row items-center bg-gray-100 rounded-2xl px-4 py-2.5 mx-4 flex-1">
+          <SearchNormal1 size="18" color="#888888" />
           <TextInput 
             className="flex-1 ml-2 text-[13px] text-black"
             placeholder="Search courses, assignments..."
@@ -36,9 +36,10 @@ export default function DashboardHeader() {
             className="mr-4 relative"
             onPress={() => router.push('/(student)/notifications' as any)}
           >
-            <Feather name="bell" size={20} color="#555" />
-            {/* Notification Dot */}
-            <View className="absolute top-0 right-0 w-2 h-2 bg-[#EE8B3A] rounded-full border border-white" />
+            <View className="relative mr-4 bg-gray-50 p-2.5 rounded-full border border-gray-100">
+              <Notification size="22" color="#333333" />
+              <View className="absolute top-2.5 right-3 w-2 h-2 bg-[#EE8B3A] rounded-full border-2 border-gray-50" />
+            </View>
           </TouchableOpacity>
           
           <TouchableOpacity 
