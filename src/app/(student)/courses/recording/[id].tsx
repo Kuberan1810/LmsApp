@@ -1,6 +1,6 @@
 import React from 'react';
-import { RecordingDetailsScreen } from '@/features/student/courses/RecordingDetailsScreen';
+import { LessonDetailsScreen } from '@/features/student/courses/LessonDetailsScreen';
 
 export default function RecordingDetailsRoute() {
-  return <RecordingDetailsScreen />;
+  return <LessonDetailsScreen />;
 }

@@ -4,45 +4,26 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Document, ClipboardText } from 'iconsax-react-native';
+import Header from '@/components/Student/Header';
 
 export const RecordingDetailsScreen = () => {
   const router = useRouter();
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
-      <View className="flex-1 px-4 pt-2">
-        {/* Header */}
-        <View className="flex-row items-center justify-between mb-6 mt-2">
-          <View className="flex-row items-center gap-2">
-            <TouchableOpacity className="p-1" onPress={() => router.back()}>
-              <Feather name="chevron-left" size={24} color="black" />
-            </TouchableOpacity>
-            <Text className="text-xl font-semibold text-black">My Courses</Text>
-          </View>
-          <View className="flex-row items-center gap-[10px]">
-            <TouchableOpacity className="w-[30px] h-[30px] rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] items-center justify-center">
-              <Feather name="search" size={14} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity className="w-[30px] h-[30px] rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] items-center justify-center relative">
-              <View className="absolute top-[6px] right-[8px] w-1.5 h-1.5 bg-orange-500 rounded-full z-10" />
-              <Ionicons name="notifications-outline" size={14} color="black" />
-            </TouchableOpacity>
-            <View className="w-[30px] h-[30px] rounded-lg overflow-hidden bg-orange-500">
-              <Image 
-                source={{ uri: 'https://i.pravatar.cc/150?img=11' }} 
-                className="w-full h-full"
-                resizeMode="cover"
-              />
-            </View>
-          </View>
-        </View>
+      <Header
+        title='3.4 AI Agents (LangChain, CrewAI, AutoGen)'
+        onBackPress={() => router.back()}
+        showSearch={false}
+        showNotification={false}
+        showProfile={false}
+        titleAlign="center"
+      />
 
-        <Text className="text-[14px] font-semibold text-[#333333] mb-6 px-1">
-          3.4 AI Agents (LangChain, CrewAI, AutoGen)
-        </Text>
+      <View className="flex-1 px-4 pt-2">
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
-          
+
           {/* Class Content */}
           <View className="bg-white rounded-[24px] p-5 border border-gray-200 mb-4">
             <Text className="text-[#333333] font-semibold text-[14px] mb-3">Class Content :</Text>

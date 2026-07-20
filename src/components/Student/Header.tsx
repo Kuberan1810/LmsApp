@@ -13,6 +13,7 @@ export interface HeaderProps {
   onBackPress?: () => void;
   showSearch?: boolean;
   showNotification?: boolean;
+  showProfile?: boolean;
   titleAlign?: 'left' | 'center';
 }
 
@@ -21,6 +22,7 @@ export default function Header({
   onBackPress,
   showSearch = true,
   showNotification = true,
+  showProfile = true,
   titleAlign = 'left'
 }: HeaderProps = {}) {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
@@ -117,13 +119,15 @@ export default function Header({
               )}
 
               {/* Profile Button */}
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => router.push('/(student)/profile/profile')}
-                className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-[#F67300] items-center justify-center ml-1"
-              >
-                <Text className="text-[14px] font-bold text-white tracking-wider">PS</Text>
-              </TouchableOpacity>
+              {showProfile && (
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => router.push('/(student)/profile/profile')}
+                  className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-[#F67300] items-center justify-center ml-1"
+                >
+                  <Text className="text-[14px] font-bold text-white tracking-wider">PS</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </Animated.View>
         )}

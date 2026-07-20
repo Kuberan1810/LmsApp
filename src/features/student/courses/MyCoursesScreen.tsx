@@ -35,11 +35,9 @@ export const MyCoursesScreen = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
-
-      {/* Header */}
-
-      <Header title="My Courses" />
-
+      <Header
+        title='My Courses'
+      />
 
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
@@ -49,13 +47,13 @@ export const MyCoursesScreen = () => {
       >
         {/* Horizontal Courses Scroll */}
         <View className="mb-6">
-          <Animated.ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false} 
+          <Animated.ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingHorizontal: 20 }}
           >
             {COURSES.map((course, idx) => (
-              <EnrollCourseCard 
+              <EnrollCourseCard
                 key={idx}
                 course={course}
                 onCoursePress={(code) => router.push(`/(student)/courses/${code}`)}

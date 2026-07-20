@@ -6,6 +6,8 @@ import { Image as ExpoImage } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Import, ClipboardText } from 'iconsax-react-native';
 import BtnCom from '../../../components/BtnCom';
+import Header from '@/components/Student/Header';
+import { COURSE_DATA } from '@/data/mockCourseData';
 
 export const CourseDetailsScreen = () => {
   const router = useRouter();
@@ -15,52 +17,30 @@ export const CourseDetailsScreen = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
+      <Header
+        title='My Courses'
+        onBackPress={() => router.back()}
+        showSearch={false}
+        showNotification={false}
+        titleAlign="center"
+      />
       <View className="flex-1 px-4 pt-2">
-        {/* Header */}
-        <View className="flex-row items-center justify-between mb-6 mt-2">
-          <View className="flex-row items-center gap-2">
-            <TouchableOpacity className="p-1" onPress={() => router.back()}>
-              <Feather name="chevron-left" size={24} color="black" />
-            </TouchableOpacity>
-            <Text className="text-2xl font-semibold text-black">My Courses</Text>
-          </View>
-          <View className="flex-row items-center gap-[10px]">
-            <TouchableOpacity className="w-[30px] h-[30px] rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] items-center justify-center">
-              <Feather name="search" size={14} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity className="w-[30px] h-[30px] rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] items-center justify-center relative">
-              <View className="absolute top-[6px] right-[8px] w-1.5 h-1.5 bg-orange-500 rounded-full z-10" />
-              <Ionicons name="notifications-outline" size={14} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity 
-              onPress={() => router.push('/(student)/profile/profile' as any)}
-              className="w-[30px] h-[30px] rounded-lg overflow-hidden bg-orange-500"
-            >
-              <Image
-                source={{ uri: 'https://i.pravatar.cc/150?img=11' }}
-                className="w-full h-full"
-                resizeMode="cover"
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
           {/* Main Top Card (Overview, Tabs, Alert, Modules) */}
           <View className="bg-white rounded-[24px] p-5 mb-6 border border-gray-200">
             <Text className="text-[#333333] font-semibold text-[16px] mb-3">
-              AM101- AI / ML Frontier AI Engineer
+              {COURSE_DATA.title}
             </Text>
             <Text className="text-[#121212] font-normal text-[12px] leading-5 text-justify mb-7">
-              The AI / ML Frontier AI Engineer course is designed to equip learners with the skills required to build, deploy, and scale real-world AI and machine learning solutions.
+              {COURSE_DATA.description}
             </Text>
             <View className="flex-row items-center gap-3">
               <View className="w-10 h-10 rounded-full bg-[#F3F4F6] items-center justify-center">
-                <Text className="text-[#333333] font-semibold text-[16px]">E</Text>
+                <Text className="text-[#333333] font-semibold text-[16px]">{COURSE_DATA.instructor.initials}</Text>
               </View>
               <View>
-                <Text className="text-[#333333] font-semibold text-[14px]">Ed Donner</Text>
-                <Text className="text-[#6B7280] font-medium text-[12px]">Lead AI Instructor</Text>
+                <Text className="text-[#333333] font-semibold text-[14px]">{COURSE_DATA.instructor.name}</Text>
+                <Text className="text-[#6B7280] font-medium text-[12px]">{COURSE_DATA.instructor.role}</Text>
               </View>
             </View>
           </View>
@@ -70,8 +50,8 @@ export const CourseDetailsScreen = () => {
             {/* Tabs */}
             <View className="flex-row items-center justify-between border-gray-100 mb-6">
               {['Curriculum', 'Resources', 'FAQs'].map((tab) => (
-                <TouchableOpacity 
-                  key={tab} 
+                <TouchableOpacity
+                  key={tab}
                   onPress={() => setActiveTab(tab)}
                   className={`pb-3 border-b-2 ${activeTab === tab ? 'border-[#333333]' : 'border-transparent'}`}
                 >
@@ -89,43 +69,42 @@ export const CourseDetailsScreen = () => {
                 <View className="flex-row items-center bg-[#FFEDEF] rounded-[10px] p-[10px] gap-[10px] h-[34px] mb-6">
                   <Feather name="alert-triangle" size={14} color="#F1351B" />
                   <Text className="text-[#F1351B] font-medium text-[12px]">
-                    You Missed the Live class on Jan 02, 05:30 PM
+                    {COURSE_DATA.missedClassAlert}
                   </Text>
                 </View>
 
                 {/* Course Modules */}
                 <View>
                   <Text className="text-[#6B7280] font-semibold text-[14px] mb-4">Course Modules</Text>
-                  
-                  {[
-                    'Module 3 : Frontier AI Systems & Deployment',
-                    'Module 2 : Generative AI & LLM Engineering',
-                    'Module 1 : AI & ML Foundations'
-                  ].map((moduleName, idx) => {
+
+                  {COURSE_DATA.modules.map((moduleItem, idx) => {
                     const isExpanded = expandedModule === idx;
-                    
+
                     return (
-                      <TouchableOpacity 
-                        key={idx} 
+                      <TouchableOpacity
+                        key={idx}
                         onPress={() => setExpandedModule(isExpanded ? null : idx)}
                         activeOpacity={0.8}
                         className={`mb-3 border rounded-xl overflow-hidden border-[#F2EEF4]`}
                       >
                         <View className={`px-4 h-[56px] flex-row items-center justify-between ${isExpanded ? 'bg-gray-50' : 'bg-[#F8FAFC]'}`}>
-                          <Text className={`font-medium text-[13px] text-[#333333]`}>{moduleName}</Text>
+                          <Text className={`font-medium text-[13px] text-[#333333]`}>{moduleItem.title}</Text>
                         </View>
-                        
-                        {isExpanded && (
+
+                        {isExpanded && moduleItem.lessons.length > 0 && (
                           <View className="bg-white px-4 py-4">
-                            <Text className="text-[#6B7280] text-[12px] mb-4">3.5 AI safety & real-world use cases</Text>
-                            <TouchableOpacity onPress={() => router.push('/courses/lesson/3-4' as any)}>
-                              <Text className="text-[#333333] text-[12px] font-medium mb-4">3.4 AI Agents (LangChain, CrewAI, AutoGen)</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => router.push('/courses/recording/1' as any)}>
-                              <Text className="text-[#333333] text-[12px] font-medium mb-4">3.3 Tool-using autonomous agents</Text>
-                            </TouchableOpacity>
-                            <Text className="text-[#333333] text-[12px] mb-4">3.2 API & Web App integration (FastAPI/Flask)</Text>
-                            <Text className="text-[#333333] text-[12px]">3.1 Model deployment & basics of MLOps</Text>
+                            {moduleItem.lessons.map((lesson, lessonIdx) => {
+                              if (lesson.link) {
+                                return (
+                                  <TouchableOpacity key={lessonIdx} onPress={() => router.push(lesson.link as any)}>
+                                    <Text className="text-[#333333] text-[12px] font-medium mb-4">{lesson.title}</Text>
+                                  </TouchableOpacity>
+                                );
+                              }
+                              return (
+                                <Text key={lessonIdx} className="text-[#333333] text-[12px] mb-4">{lesson.title}</Text>
+                              );
+                            })}
                           </View>
                         )}
                       </TouchableOpacity>
@@ -137,9 +116,9 @@ export const CourseDetailsScreen = () => {
 
             {activeTab === 'Resources' && (
               <View>
-                {[1, 2, 3, 4].map((item, idx) => (
+                {COURSE_DATA.resources.map((item, idx) => (
                   <TouchableOpacity
-                    key={item}
+                    key={item.id}
                     activeOpacity={0.7}
                     style={{
                       borderWidth: 0.5,
@@ -165,8 +144,8 @@ export const CourseDetailsScreen = () => {
                         />
                       </View>
                       <View className="ml-[10px] flex-1 justify-center">
-                        <Text className="text-[15px] font-medium text-[#333333]" numberOfLines={1}>Agent Architecture.pdf</Text>
-                        <Text className="text-[12px] text-[#808080] mt-0.5">2.4MB</Text>
+                        <Text className="text-[15px] font-medium text-[#333333]" numberOfLines={1}>{item.title}</Text>
+                        <Text className="text-[12px] text-[#808080] mt-0.5">{item.size}</Text>
                       </View>
                     </View>
                     <View className="p-1">
@@ -179,25 +158,12 @@ export const CourseDetailsScreen = () => {
 
             {activeTab === 'FAQs' && (
               <View>
-                {[
-                  {
-                    q: 'What is this course about?',
-                    a: 'This course focuses on building, deploying, and scaling real-world AI/ML and Generative AI systems. It covers the complete AI lifecycle—from fundamentals to production-ready applications.'
-                  },
-                  {
-                    q: 'What tools and technologies are covered in this course?',
-                    a: 'We cover Python, LangChain, CrewAI, AutoGen, vector databases, FastAPI, and more.'
-                  },
-                  {
-                    q: 'What skills will I gain by the end of this course?',
-                    a: 'You will be able to design, build, and deploy robust AI applications and autonomous agents.'
-                  }
-                ].map((faq, idx) => {
+                {COURSE_DATA.faqs.map((faq, idx) => {
                   const isExpanded = expandedFaq === idx;
-                  
+
                   return (
-                    <TouchableOpacity 
-                      key={idx} 
+                    <TouchableOpacity
+                      key={idx}
                       onPress={() => setExpandedFaq(isExpanded ? null : idx)}
                       activeOpacity={0.8}
                       className={`mb-3 border rounded-xl overflow-hidden border-[#F1F5F9]`}
@@ -208,7 +174,7 @@ export const CourseDetailsScreen = () => {
                         </Text>
                         <Feather name={isExpanded ? 'chevron-up' : 'chevron-down'} size={20} color="#333333" />
                       </View>
-                      
+
                       {isExpanded && (
                         <View className="bg-white px-4 py-4 border-t border-[#F1F5F9]">
                           <Text className="text-[#6B7280] text-[12px] leading-relaxed">
@@ -230,21 +196,21 @@ export const CourseDetailsScreen = () => {
               <BtnCom label="View All" onClick={() => router.push('/(student)/assignments/assignments' as any)} />
             </View>
 
-            {[1, 2, 3].map((_, idx) => (
-              <View key={idx} className="flex-row items-center border border-[#F3F4F6] rounded-2xl p-4 mb-3">
+            {COURSE_DATA.assignments.map((assignment, idx) => (
+              <View key={assignment.id} className="flex-row items-center border border-[#F3F4F6] rounded-2xl p-4 mb-3">
                 <View className="w-[34px] h-[37px] rounded-[28px] bg-[#F67300] items-center justify-center mr-3">
                   <ClipboardText size={18} color="white" variant="Linear" />
                 </View>
                 <View className="flex-1">
                   <Text className="text-[#333333] font-medium text-[13px] mb-1">
-                    Build Q&A system using RAG
+                    {assignment.title}
                   </Text>
                   <Text className="text-[#9CA3AF] font-medium text-[12px]">
-                    Due date : 2 Jan
+                    Due date : {assignment.dueDate}
                   </Text>
                 </View>
                 <View className="bg-green-100 px-3 py-1 rounded-full">
-                  <Text className="text-green-500 font-medium text-[10px]">Completed</Text>
+                  <Text className="text-green-500 font-medium text-[10px]">{assignment.status}</Text>
                 </View>
               </View>
             ))}
@@ -257,17 +223,17 @@ export const CourseDetailsScreen = () => {
             <View className="flex-row items-center justify-between px-2">
               <View className="flex-row items-center gap-2">
                 <Feather name="clock" size={16} color="#9CA3AF" />
-                <Text className="text-[#333333] font-medium text-[13px]">12 weeks</Text>
+                <Text className="text-[#333333] font-medium text-[13px]">{COURSE_DATA.courseInfo.duration}</Text>
               </View>
 
               <View className="flex-row items-center gap-2">
                 <MaterialCommunityIcons name="clipboard-text-outline" size={16} color="#9CA3AF" />
-                <Text className="text-[#333333] font-medium text-[13px]">1,240 Students</Text>
+                <Text className="text-[#333333] font-medium text-[13px]">{COURSE_DATA.courseInfo.students}</Text>
               </View>
 
               <View className="flex-row items-center gap-2">
                 <Feather name="users" size={16} color="#9CA3AF" />
-                <Text className="text-[#333333] font-medium text-[13px]">Active</Text>
+                <Text className="text-[#333333] font-medium text-[13px]">{COURSE_DATA.courseInfo.status}</Text>
               </View>
             </View>
           </View>
