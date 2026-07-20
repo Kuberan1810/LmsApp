@@ -19,9 +19,9 @@ export const LessonDetailsScreen = () => {
     .find((l) => l.id === id);
 
     
-  const hasResources = lesson ? lesson.hasResource : true;
-  const hasAssignments = lesson ? lesson.hasAssignment : true;
-  const hasRecording = lesson ? lesson.hasRecording : true;
+  const hasResources = lesson ? (lesson as any).hasResource ?? true : true;
+  const hasAssignments = lesson ? (lesson as any).hasAssignment ?? false : false;
+  const hasRecording = lesson ? (lesson as any).hasRecording ?? false : false;
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
