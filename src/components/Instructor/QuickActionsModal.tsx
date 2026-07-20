@@ -150,17 +150,17 @@ export default function QuickActionsModal({ visible, onClose }: QuickActionsModa
       animationType="none"
       onRequestClose={onClose}
     >
-      
+
       <View style={styles.overlay}>
         <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]}>
-          <TouchableOpacity 
-            style={styles.backdropTouch} 
-            activeOpacity={1} 
-            onPress={onClose} 
+          <TouchableOpacity
+            style={styles.backdropTouch}
+            activeOpacity={1}
+            onPress={onClose}
           />
         </Animated.View>
 
-        <Animated.View 
+        <Animated.View
           {...panResponder.panHandlers}
           style={[
             styles.modalContainer,
@@ -170,7 +170,7 @@ export default function QuickActionsModal({ visible, onClose }: QuickActionsModa
           <View style={styles.dragArea}>
             <View style={styles.dragHandle} />
           </View>
-          
+
           <View style={styles.header}>
             <View>
               <Text style={styles.title}>Quick Actions</Text>
@@ -183,7 +183,7 @@ export default function QuickActionsModal({ visible, onClose }: QuickActionsModa
 
           <View style={styles.listContainer}>
             {ACTION_ITEMS.map((item) => (
-              <TouchableOpacity 
+              <TouchableOpacity
                 key={item.id}
                 style={styles.actionItem}
                 activeOpacity={0.7}

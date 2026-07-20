@@ -73,7 +73,7 @@ export default function Curriculum() {
     const [expandedModuleId, setExpandedModuleId] = useState<string | null>('1');
 
     // Selected Assignment state for viewing / editing detail page
-    const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
+    const [selectedAssignmentData, setSelectedAssignmentData] = useState<{ assignment: Assignment; moduleTitle: string } | null>(null);
 
     // Module Menu 
     const [activeModuleMenuId, setActiveModuleMenuId] = useState<string | null>(null);
@@ -415,7 +415,7 @@ export default function Curriculum() {
                                             {item.assignments.map((as) => (
                                                 <TouchableOpacity
                                                     key={as.id}
-                                                    onPress={() => setSelectedAssignment(as)}
+                                                    onPress={() => setSelectedAssignmentData({ assignment: as, moduleTitle: item.title })}
                                                     activeOpacity={0.7}
                                                     className="flex-row items-center justify-between bg-white border border-[#F2EEF4] rounded-[12px] p-3"
                                                 >
@@ -478,7 +478,8 @@ export default function Curriculum() {
                 })}
             </View>
 
-            {/* Module Options Dropdown Overlay */}
+
+
             <Modal
                 visible={!!activeModuleMenuId}
                 transparent
@@ -836,17 +837,18 @@ export default function Curriculum() {
 
             {/* Assignment View / Edit Screen Modal */}
             <Modal
-                visible={!!selectedAssignment}
+                visible={!!selectedAssignmentData}
                 animationType="slide"
-                onRequestClose={() => setSelectedAssignment(null)}
+                onRequestClose={() => setSelectedAssignmentData(null)}
             >
-                {selectedAssignment && (
+                {selectedAssignmentData && (
                     <Assignments
                         assignment={{
-                            title: selectedAssignment.title,
-                            dueDate: selectedAssignment.due,
+                            title: selectedAssignmentData.assignment.title,
+                            dueDate: selectedAssignmentData.assignment.due,
+                            moduleName: selectedAssignmentData.moduleTitle,
                         }}
-                        onBack={() => setSelectedAssignment(null)}
+                        onBack={() => setSelectedAssignmentData(null)}
                     />
                 )}
             </Modal>
