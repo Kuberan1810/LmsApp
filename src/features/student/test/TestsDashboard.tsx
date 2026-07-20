@@ -35,7 +35,7 @@ export default function TestsDashboard() {
       time: '10:00 AM - 10:15 AM',
       questions: 10,
       marks: '12 / 12 Marks',
-      status: 'Not Attended',
+      status: 'Submitted',
     },
     {
       id: '3',
@@ -185,10 +185,14 @@ export default function TestsDashboard() {
         onScroll={scrollHandler}
         scrollEventThrottle={16}
       >
-        {MOCK_TESTS.map((test) => (
+        {MOCK_TESTS.map((test) => {
+          const isSubmitted = test.status === 'Submitted';
+          const isAvailable = test.status === 'Available';
+          
+          return (
           <TouchableOpacity
             key={test.id}
-            onPress={() => router.push('/(student)/tests/test-intro')}
+            onPress={() => router.push(isSubmitted ? '/(student)/tests/test-result' : '/(student)/tests/test-intro')}
             className="bg-white border border-[#F2EEF4] rounded-[24px] p-5 mb-5 shadow-xs"
           >
             <View className="flex-row justify-between items-start mb-4">
@@ -201,8 +205,8 @@ export default function TestsDashboard() {
                   >
                     {test.courseName}
                   </Text>
-                  <View className={`px-3 py-1 rounded-full ${test.status === 'Available' ? 'bg-[#2A9A46]/10' : 'bg-[#F67300]/10'}`}>
-                    <Text className={`text-[12px] font-medium ${test.status === 'Available' ? 'text-[#2A9A46]' : 'text-[#F67300]'}`}>{test.status}</Text>
+                  <View className={`px-3 py-1 rounded-full ${isAvailable ? 'bg-[#2A9A46]/10' : isSubmitted ? 'bg-[#E5F1FF]' : 'bg-[#F67300]/10'}`}>
+                    <Text className={`text-[12px] font-medium ${isAvailable ? 'text-[#2A9A46]' : isSubmitted ? 'text-[#007BFF]' : 'text-[#F67300]'}`}>{test.status}</Text>
                   </View>
                 </View>
                 <Text className="text-[18px] font-semibold text-[#333333] leading-6">{test.title}</Text>
@@ -226,13 +230,18 @@ export default function TestsDashboard() {
               </IconBox>
             </View>
 
-            {test.status === 'Available' && (
-              <View className="mt-4 bg-[#EE8B3A] py-3 rounded-xl items-center">
-                <Text className="text-white font-semibold text-[15px]">Start Test</Text>
-              </View>
+            {(isAvailable || isSubmitted) && (
+              <TouchableOpacity 
+                className={`mt-4 py-3 rounded-xl items-center ${isSubmitted ? 'bg-[#F9FAFB] border border-[#E5E7EB]' : 'bg-[#EE8B3A]'}`}
+                onPress={() => router.push(isSubmitted ? '/(student)/tests/test-result' : '/(student)/tests/test-intro')}
+              >
+                <Text className={`font-semibold text-[15px] ${isSubmitted ? 'text-[#4B5563]' : 'text-white'}`}>
+                  {isSubmitted ? 'View Details' : 'Start Test'}
+                </Text>
+              </TouchableOpacity>
             )}
           </TouchableOpacity>
-        ))}
+        )})}
       </Animated.ScrollView>
     </SafeAreaView>
   );
