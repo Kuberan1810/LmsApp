@@ -4,27 +4,26 @@ import { useRouter } from 'expo-router';
 
 const STATS = [
     {
-        title: 'Attendance Rate',
-        value: '87%',
-        textColor: 'text-[#F67300]',
-        subtitle: 'Avg. over last 30days',
-    },
-    {
-        title: 'Total Classes',
-        value: '26',
-        denominator: '/31',
-        subtitle: '81% Classes Completed',
-    },
-    {
         title: 'Total Students',
-        value: '32',
-        subtitle: 'Enrolled active students',
+        value: '0',
+        subtitle: 'Enrolled students',
     },
     {
-        title: 'Average Score',
-        value: '78',
-        denominator: '/100',
-        subtitle: 'Last assessment',
+        title: 'Attendance Rate',
+        value: '0%',
+        textColor: 'text-[#F67300]',
+        subtitle: 'Average attendance',
+    },
+    {
+        title: 'Live Sessions',
+        value: '0',
+        subtitle: '1 Assignments, 1 Tests',
+    },
+    {
+        title: 'Completed Classes',
+        value: '0',
+        denominator: '/ 0',
+        subtitle: '0% classes completed',
     },
 ];
 
@@ -32,41 +31,45 @@ export default function CoursesStats() {
     const router = useRouter();
 
     return (
-        <View className="px-5 mb-6">
-            {/* Course Title*/}
-            <View className="flex-row justify-between items-center mt-2 mb-6">
-                <View className="flex-1 mr-3">
-                    <Text className="text-[16px] font-medium text-[#333333] tracking-tight">Batch-01</Text>
-                    <Text className="text-[12px] text-[#333333] mt-0.5">AM101 - AI / ML Frontier AI Engineer</Text>
+        <>
+            <View className="bg-white rounded-[16px] px-4 py-4 mb-5 border border-[#F2EEF4] mx-5">
+                {/* Course Title*/}
+                <View className="flex-row justify-between items-center">
+                    <View className="flex-1 mr-3">
+                        <Text className="text-[16px] font-semibold text-[#0B1C30] tracking-tight">Batch-B</Text>
+                        <Text className="text-[12px] text-[#8C8E90] mt-0.5">AA101 - AI</Text>
+                    </View>
+                    <TouchableOpacity
+                        onPress={() => router.push('/(instructor)/students')}
+                        className="bg-[#F67300] px-4 py-2 rounded-[12px]"
+                        activeOpacity={0.8}
+                    >
+                        <Text className="text-white text-[12px] font-medium">View Students</Text>
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                    onPress={() => router.push('/(instructor)/students')}
-                    className="bg-[#F67300] px-[10px] py-1.5 rounded-[12px]"
-                    activeOpacity={0.8}
-                >
-                    <Text className="text-white text-[12px] font-medium">View Student list</Text>
-                </TouchableOpacity>
             </View>
 
             {/* Grid of stats */}
-            <View className="flex-row flex-wrap gap-4">
-                {STATS.map((item, index) => (
-                    <View
-                        key={index}
-                        className="bg-white p-[10px] rounded-[12px]"
-                        style={{ width: '45%', flexGrow: 1 }}
-                    >
-                        <Text className="text-[15px] font-medium text-[#333333]">{item.title}</Text>
-                        <View className="flex-row items-baseline mt-2 mb-1">
-                            <Text className={`text-[24px] font-medium ${item.textColor || 'text-[#0B1C30]'}`}>{item.value}</Text>
-                            {item.denominator && (
-                                <Text className="text-[14px] text-[#121212]">{item.denominator}</Text>
-                            )}
+            <View className="mx-5 mb-5">
+                <View className="flex-row flex-wrap gap-4">
+                    {STATS.map((item, index) => (
+                        <View
+                            key={index}
+                            className="bg-white p-4 rounded-[12px] border border-[#F2EEF4]"
+                            style={{ width: '45%', flexGrow: 1 }}
+                        >
+                            <Text className="text-[12px] font-medium text-[#8C8E90]">{item.title}</Text>
+                            <View className="flex-row items-baseline mt-1 mb-1">
+                                <Text className={`text-[24px] font-semibold ${item.textColor || 'text-[#0B1C30]'}`}>{item.value}</Text>
+                                {item.denominator && (
+                                    <Text className="text-[14px] text-[#121212] ml-0.5">{item.denominator}</Text>
+                                )}
+                            </View>
+                            <Text className="text-[10px] text-[#8C8E90]">{item.subtitle}</Text>
                         </View>
-                        <Text className="text-[12px] text-[#8C8E90]">{item.subtitle}</Text>
-                    </View>
-                ))}
+                    ))}
+                </View>
             </View>
-        </View>
+        </>
     );
 }
