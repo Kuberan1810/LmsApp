@@ -17,7 +17,7 @@ export interface HeaderProps {
   titleAlign?: 'left' | 'center';
 }
 
-export default function Header({
+export default function InstructorHeader({
   title,
   onBackPress,
   showSearch = true,
@@ -113,7 +113,7 @@ export default function Header({
                   className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-white items-center justify-center relative"
                 >
                   <NotificationBing
-                    onPress={() => router.push('/(student)/notification/notifications')}
+                   
                     size={18} color="#1E1E2D" />
                   {/* Notification Dot */}
                   <View className="absolute top-[10px] right-[10px] w-2.5 h-2.5 bg-[#EE8B3A] rounded-full border-[1.5px] border-white" />
@@ -124,7 +124,7 @@ export default function Header({
               {showProfile && (
                 <TouchableOpacity
                   activeOpacity={0.7}
-                  onPress={() => router.push('/(student)/profile/profileScreen')}
+                  onPress={() => router.push('/(instructor)/profile')}
                   className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-[#F67300] items-center justify-center ml-1"
                 >
                   <Text className="text-[14px] font-bold text-white tracking-wider">PS</Text>

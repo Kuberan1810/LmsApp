@@ -1,15 +1,14 @@
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Modular Feature Imports
-import Header from '@/components/Instructor/header';
+import Header from '@/components/Instructor/InstructorHeader';
 import CoursesStats from '@/features/instructor/Courses/coursesStats';
-import UpcomingSchedule from '@/features/instructor/Courses/UpcomingSchedule';
 import Curriculum from '@/features/instructor/Courses/Curriculum';
-import FAQ from '@/features/instructor/Courses/faq';
 import ExistingResources from '@/features/instructor/Courses/ExistingResources';
+import FAQ from '@/features/instructor/Courses/faq';
+import UpcomingSchedule from '@/features/instructor/Courses/UpcomingSchedule';
 
 export default function CoursesScreen() {
     const router = useRouter();

@@ -4,7 +4,9 @@ import { Image as ExpoImage } from 'expo-image';
 import { Danger, CalendarRemove, DocumentUpload, Trash, CloseCircle } from 'iconsax-react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import { Assignment } from './AssignmentCard';
-import Header from './Header';
+import Header from '@/components/Student/Header';
+import { router } from 'expo-router';
+
 
 const getFileIconSource = (fileName: string) => {
   const ext = fileName.split('.').pop()?.toLowerCase();
@@ -178,7 +180,13 @@ export default function SubmitAssignment({ assignment, onBack, onSuccess }: Subm
 
   return (
     <View className="flex-1 bg-[#FAFAFA]">
-      <Header onBackPress={onBack} showSearchAndNotify />
+      <Header
+        title='My Courses'
+        onBackPress={onBack}
+        showSearch={false}
+        showNotification={false}
+        titleAlign="center"
+      />
 
       {/* Main Content */}
       <ScrollView className="flex-1 px-5 pt-4" contentContainerStyle={{ paddingBottom: 100 }}>

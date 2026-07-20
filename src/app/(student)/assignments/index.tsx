@@ -1,11 +1,7 @@
 import { useTabBarScroll, useTabBarVisibility } from '@/context/TabBarVisibilityContext';
 import AssignmentCard, { Assignment } from '@/features/student/assignments/AssignmentCard';
-import AssignmentDetail from '@/features/student/assignments/AssignmentDetail';
 import EnrolledCourse, { MOCK_COURSES } from '@/features/student/assignments/EnrolledCourse';
 import Header from '@/components/Student/Header';
-import SubmissionSuccess from '@/features/student/assignments/SubmissionSuccess';
-import SubmitAssignment from '@/features/student/assignments/SubmitAssignment';
-import ViewSubmission from '@/features/student/assignments/viewSubmission';
 import { router } from 'expo-router';
 import { ArrowDown2, ArrowUp2, DocumentText, Filter } from 'iconsax-react-native';
 import React, { useState } from 'react';
@@ -17,7 +13,7 @@ import {
 import Animated from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const MOCK_ASSIGNMENTS: Assignment[] = [
+export const MOCK_ASSIGNMENTS: Assignment[] = [
   {
     id: '1',
     title: 'Implement PDF-based Q&A using Vector Database',
@@ -82,13 +78,6 @@ export default function AssignmentsScreen() {
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
 
   const [assignments, setAssignments] = useState<Assignment[]>(MOCK_ASSIGNMENTS);
-  const [currentView, setCurrentView] = useState<'list' | 'detail' | 'submit' | 'success' | 'viewSubmission'>('list');
-  const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-
-  React.useEffect(() => {
-    setIsTabBarVisible(currentView === 'list');
-  }, [currentView, setIsTabBarVisible]);
 
   const handleCoursePress = (courseCode: string) => {
     if (selectedCourse === courseCode) {
@@ -99,25 +88,11 @@ export default function AssignmentsScreen() {
   };
 
   const handleAssignmentPress = (assignment: Assignment) => {
-    setSelectedAssignment(assignment);
     if (assignment.status === 'Submitted') {
-      setCurrentView('viewSubmission');
+      router.push(`/(student)/assignments/view/${assignment.id}` as any);
     } else {
-      setCurrentView('detail');
+      router.push(`/(student)/assignments/${assignment.id}` as any);
     }
-  };
-
-  const handleSubmissionSuccess = (submittedFiles: { name: string; size: string }[], notes: string) => {
-    if (selectedAssignment) {
-      setAssignments((prevAssignments) =>
-        prevAssignments.map((a) =>
-          a.id === selectedAssignment.id ? { ...a, status: 'Submitted', mark: undefined, submittedFiles, submissionNotes: notes } : a
-        )
-      );
-      setSelectedAssignment((prev) => prev ? { ...prev, status: 'Submitted', submittedFiles, submissionNotes: notes } : null);
-    }
-    setCurrentView('detail');
-    setShowSuccessPopup(true);
   };
 
   const getFilteredAssignments = () => {
@@ -151,61 +126,7 @@ export default function AssignmentsScreen() {
     },
   ];
 
-  const renderSuccessModal = () => {
-    if (!showSuccessPopup || !selectedAssignment) return null;
-    return (
-      <SubmissionSuccess
-        visible={showSuccessPopup}
-        assignment={selectedAssignment}
-        onViewSubmission={() => {
-          setShowSuccessPopup(false);
-          setCurrentView('viewSubmission');
-        }}
-        onBackToDashboard={() => {
-          setShowSuccessPopup(false);
-          setCurrentView('list');
-          router.replace('/(student)/dashboard/dashboard');
-        }}
-      />
-    );
-  };
 
-  if (currentView === 'detail' && selectedAssignment) {
-    return (
-      <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
-        <AssignmentDetail
-          assignment={selectedAssignment}
-          onBack={() => setCurrentView('list')}
-          onSubmit={() => setCurrentView('submit')}
-        />
-        {renderSuccessModal()}
-      </SafeAreaView>
-    );
-  }
-
-  if (currentView === 'submit' && selectedAssignment) {
-    return (
-      <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
-        <SubmitAssignment
-          assignment={selectedAssignment}
-          onBack={() => setCurrentView('detail')}
-          onSuccess={handleSubmissionSuccess}
-        />
-        {renderSuccessModal()}
-      </SafeAreaView>
-    );
-  }
-
-  if (currentView === 'viewSubmission' && selectedAssignment) {
-    return (
-      <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
-        <ViewSubmission
-          assignment={selectedAssignment}
-          onBack={() => setCurrentView('list')}
-        />
-      </SafeAreaView>
-    );
-  }
 
   return (
     <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
@@ -328,9 +249,6 @@ export default function AssignmentsScreen() {
 
 
       </Animated.ScrollView>
-
-
-      {renderSuccessModal()}
 
     </SafeAreaView>
   );

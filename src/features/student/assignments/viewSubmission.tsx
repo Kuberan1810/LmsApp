@@ -2,9 +2,10 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Image as ExpoImage } from 'expo-image';
-import { ArrowLeft2, CalendarRemove, DocumentDownload, Award, Message2 } from 'iconsax-react-native';
+import { ArrowLeft2, CalendarRemove, Award, Message2, ImportCurve } from 'iconsax-react-native';
 import { Assignment } from './AssignmentCard';
-import Header from './Header';
+import { router } from 'expo-router';
+import Header from '@/components/Student/Header';
 
 const getFileIconSource = (fileName: string) => {
     const ext = fileName.split('.').pop()?.toLowerCase();
@@ -58,7 +59,15 @@ export default function ViewSubmission({ assignment, onBack }: ViewSubmissionPro
 
     return (
         <View className="flex-1 bg-[#FAFAFA]">
-            <Header onBackPress={onBack} showSearchAndNotify />
+      <Header
+          title='Assignment Submission'
+          onBackPress={onBack}
+          showSearch={false}
+          showNotification={false}
+          showProfile={false}
+          titleAlign="center"
+      />
+
 
             <ScrollView
                 showsVerticalScrollIndicator={false}
@@ -68,9 +77,7 @@ export default function ViewSubmission({ assignment, onBack }: ViewSubmissionPro
                 {/* Header Brief Card */}
                 <View className="bg-white border border-[#F2EEF4] p-5 rounded-[16px] mb-5 shadow-xs">
                     <View className="flex-row items-center mb-3">
-                        <TouchableOpacity onPress={onBack} className="mr-2 p-1">
-                            <ArrowLeft2 size={20} color="#1F2937" variant="Linear" />
-                        </TouchableOpacity>
+                       
                         <Text className="text-[20px] font-medium text-[#333333]">
                             {assignment.title}
                         </Text>
@@ -155,7 +162,7 @@ export default function ViewSubmission({ assignment, onBack }: ViewSubmissionPro
                                     </View>
                                 </View>
                                 <TouchableOpacity className="p-2">
-                                    <DocumentDownload size={18} color="#808080" variant="Linear" />
+                                    <ImportCurve size={18} color="#808080" variant="Linear" />
                                 </TouchableOpacity>
                             </View>
                         ))}

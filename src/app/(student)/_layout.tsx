@@ -1,7 +1,7 @@
 import { TabBarVisibilityProvider, useTabBarVisibility } from '@/context/TabBarVisibilityContext';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { BlurView } from 'expo-blur';
-import { Tabs } from 'expo-router';
+import { Tabs, usePathname } from 'expo-router';
 import { CalendarTick, ClipboardText, DocumentText, DocumentText1, Home2, NoteText } from 'iconsax-react-native';
 import React from 'react';
 import { LayoutAnimation, LogBox, Platform, Text, TouchableOpacity, UIManager, View } from 'react-native';
@@ -19,6 +19,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 
 function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const { tabBarOffset, isTabBarVisible } = useTabBarVisibility();
+  const pathname = usePathname();
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -26,15 +27,21 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     };
   });
 
-  const currentRouteName = state.routes[state.index].name;
-  const isMainRoute = ['dashboard/dashboard', 'courses', 'assignments/assignments', 'attendance/attendance', 'tests/index'].includes(currentRouteName);
+  const mainRoutes = [
+    '/dashboard', '/dashboard/dashboard', 
+    '/courses', '/courses/index',
+    '/assignments', '/assignments/assignments', 
+    '/attendance', '/attendance/attendance', 
+    '/tests', '/tests/index'
+  ];
+  const isMainRoute = mainRoutes.includes(pathname);
 
   if (!isMainRoute || !isTabBarVisible) {
     return null;
   }
 
   const visibleRoutes = state.routes.filter(r =>
-    ['dashboard/dashboard', 'courses', 'assignments/assignments', 'attendance/attendance', 'tests/index'].includes(r.name)
+    ['dashboard/dashboard', 'courses', 'assignments', 'attendance/attendance', 'tests/index'].includes(r.name)
   );
 
   const tabContent = visibleRoutes.map((route, index) => {
@@ -73,7 +80,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 
     let IconComponent = Home2;
     if (route.name === 'courses') IconComponent = isFocused ? DocumentText : DocumentText1;
-    if (route.name === 'assignments/assignments') IconComponent = NoteText;
+    if (route.name === 'assignments') IconComponent = NoteText;
     if (route.name === 'attendance/attendance') IconComponent = CalendarTick;
     if (route.name === 'tests/index') IconComponent = ClipboardText;
 
@@ -155,12 +162,9 @@ export default function StudentLayout() {
       >
         <Tabs.Screen name="dashboard/dashboard" options={{ title: 'Home' }} />
         <Tabs.Screen name="courses" options={{ title: 'Courses' }} />
-        <Tabs.Screen name="assignments/assignments" options={{ title: 'Tasks' }} />
+        <Tabs.Screen name="assignments" options={{ title: 'Tasks' }} />
         <Tabs.Screen name="attendance/attendance" options={{ title: 'Calendar' }} />
-
         <Tabs.Screen name="tests/index" options={{ title: 'Tests' }} />
-
-
         <Tabs.Screen name="profile/profile" options={{ href: null }} />
 
       </Tabs>

@@ -3,7 +3,8 @@ import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-nativ
 import { Image as ExpoImage } from 'expo-image';
 import { Danger, CalendarRemove, Link, EmojiHappy, DocumentDownload, Export, DocumentUpload, LinkSquare, Maximize } from 'iconsax-react-native';
 import { Assignment } from './AssignmentCard';
-import Header from './Header';
+import Header from '../../../components/Student/Header';
+import { router } from 'expo-router';
 
 const getFileIconSource = (fileName: string) => {
   const ext = fileName.split('.').pop()?.toLowerCase();
@@ -82,8 +83,13 @@ export default function AssignmentDetail({ assignment, onBack, onSubmit }: Assig
 
   return (
     <View className="flex-1 bg-[#FAFAFA]">
-      <Header onBackPress={onBack} showSearchAndNotify />
-
+      <Header
+        title='My Courses'
+        onBackPress={onBack}
+        showSearch={false}
+        showNotification={false}
+        titleAlign="center"
+      />
       {/* Main Content */}
       <ScrollView className="flex-1 px-5 pt-4" contentContainerStyle={{ paddingBottom: 100 }}>
         <View className="bg-white rounded-2xl p-6 mb-5 border border-[#F2EEF4] shadow-xs">

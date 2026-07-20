@@ -89,6 +89,7 @@ export const CourseDetailsScreen = () => {
                       >
                         <View className={`px-4 h-[56px] flex-row items-center justify-between ${isExpanded ? 'bg-gray-50' : 'bg-[#F8FAFC]'}`}>
                           <Text className={`font-medium text-[13px] text-[#333333]`}>{moduleItem.title}</Text>
+                          <Feather name={isExpanded ? 'chevron-up' : 'chevron-down'} size={20} color="#808080" />
                         </View>
 
                         {isExpanded && moduleItem.lessons.length > 0 && (

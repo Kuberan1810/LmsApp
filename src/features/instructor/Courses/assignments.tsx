@@ -1,9 +1,8 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import Header from '@/components/Instructor/InstructorHeader';
 import { Image as ExpoImage } from 'expo-image';
-import Header from '@/components/Instructor/header';
-import { DocumentUpload, Maximize, Link } from 'iconsax-react-native';
+import { DocumentUpload, Link, Maximize } from 'iconsax-react-native';
 import { Calendar } from 'lucide-react-native';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 const getFileIconSource = (fileName: string) => {
     const ext = fileName.split('.').pop()?.toLowerCase();
