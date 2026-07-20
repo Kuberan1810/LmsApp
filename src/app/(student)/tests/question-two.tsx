@@ -1,11 +1,6 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import FinishTestScreen from '../../../features/student/test/FinishTestScreen';
 
 export default function QuestionTwoRoute() {
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#F7F7F7', justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Question Two Placeholder</Text>
-    </SafeAreaView>
-  );
+  return <FinishTestScreen />;
 }
