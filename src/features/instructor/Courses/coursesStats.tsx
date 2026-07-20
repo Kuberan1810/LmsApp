@@ -41,7 +41,7 @@ export default function CoursesStats() {
                     </View>
                     <TouchableOpacity
                         onPress={() => router.push('/(instructor)/students')}
-                        className="bg-[#F67300] px-4 py-2 rounded-[12px]"
+                        className="bg-[#F67300] px-4 py-2 rounded-[6px]"
                         activeOpacity={0.8}
                     >
                         <Text className="text-white text-[12px] font-medium">View Students</Text>
@@ -51,21 +51,21 @@ export default function CoursesStats() {
 
             {/* Grid of stats */}
             <View className="mx-5 mb-5">
-                <View className="flex-row flex-wrap gap-4">
+                <View className="flex-row flex-wrap gap-2">
                     {STATS.map((item, index) => (
                         <View
                             key={index}
-                            className="bg-white p-4 rounded-[12px] border border-[#F2EEF4]"
+                            className="bg-white p-4 rounded-[16px] border border-[#F2EEF4]"
                             style={{ width: '45%', flexGrow: 1 }}
                         >
-                            <Text className="text-[12px] font-medium text-[#8C8E90]">{item.title}</Text>
+                            <Text className="text-[15px] font-medium text-[#333333]">{item.title}</Text>
                             <View className="flex-row items-baseline mt-1 mb-1">
-                                <Text className={`text-[24px] font-semibold ${item.textColor || 'text-[#0B1C30]'}`}>{item.value}</Text>
+                                <Text className={`text-[20px] font-semibold ${item.textColor || 'text-[#0B1C30]'}`}>{item.value}</Text>
                                 {item.denominator && (
-                                    <Text className="text-[14px] text-[#121212] ml-0.5">{item.denominator}</Text>
+                                    <Text className="text-[20px] text-[#121212] ml-0.5">{item.denominator}</Text>
                                 )}
                             </View>
-                            <Text className="text-[10px] text-[#8C8E90]">{item.subtitle}</Text>
+                            <Text className="text-[12px] text-[#99A1AF]">{item.subtitle}</Text>
                         </View>
                     ))}
                 </View>
