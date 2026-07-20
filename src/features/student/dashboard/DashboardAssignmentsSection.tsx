@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import React from 'react';
 import DashboardAssignmentCard from './DashboardAssignmentCard';
+import { router } from 'expo-router';
 
 import BtnCom from '../../../components/BtnCom';
 
@@ -41,7 +42,7 @@ export default function DashboardAssignmentsSection() {
           <Text className="text-[20px] font-semibold text-[#333333] mb-1">Assignments</Text>
           <Text className="text-[12px] text-[#626262]">Friday, 15 Jan, 2024</Text>
         </View>
-        <BtnCom label="View all" />
+        <BtnCom label="View all" onClick={() => router.push('/(student)/assignments/assignments')} />
       </View>
 
       {/* Dates Horizontal Scroll */}
