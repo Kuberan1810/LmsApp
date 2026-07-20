@@ -205,8 +205,8 @@ export default function TestsDashboard() {
                   >
                     {test.courseName}
                   </Text>
-                  <View className={`px-3 py-1 rounded-full ${isAvailable ? 'bg-[#2A9A46]/10' : isSubmitted ? 'bg-[#E5F1FF]' : 'bg-[#F67300]/10'}`}>
-                    <Text className={`text-[12px] font-medium ${isAvailable ? 'text-[#2A9A46]' : isSubmitted ? 'text-[#007BFF]' : 'text-[#F67300]'}`}>{test.status}</Text>
+                  <View className={`px-3 py-1 rounded-full ${isAvailable || isSubmitted ? 'bg-[#2A9A46]/10' : 'bg-[#F67300]/10'}`}>
+                    <Text className={`text-[12px] font-medium ${isAvailable || isSubmitted ? 'text-[#2A9A46]' : 'text-[#F67300]'}`}>{test.status}</Text>
                   </View>
                 </View>
                 <Text className="text-[18px] font-semibold text-[#333333] leading-6">{test.title}</Text>
