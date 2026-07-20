@@ -2,15 +2,34 @@ import { View, Text, TouchableOpacity, ScrollView, Modal, TextInput } from 'reac
 import React, { useState } from 'react';
 import { ArrowLeft2, ArrowRight2, Clock, Calendar, Edit2, Edit } from 'iconsax-react-native';
 
-const DAYS = [
-    { day: 'Sun', date: '12', isOff: true, fullDate: 'Sunday, Jul 12, 2026' },
-    { day: 'Mon', date: '13', isOff: false, fullDate: 'Monday, Jul 13, 2026' },
-    { day: 'Tue', date: '14', isOff: false, fullDate: 'Tuesday, Jul 14, 2026' },
-    { day: 'Wed', date: '15', isOff: false, fullDate: 'Wednesday, Jul 15, 2026' },
-    { day: 'Thu', date: '16', isOff: false, fullDate: 'Thursday, Jul 16, 2026' },
-    { day: 'Fri', date: '17', isOff: false, fullDate: 'Friday, Jul 17, 2026' },
-    { day: 'Sat', date: '18', isOff: false, fullDate: 'Saturday, Jul 18, 2026' },
-];
+const getDaysOfWeek = (offset: number) => {
+    const baseDate = new Date(2026, 6, 12); // Sunday, Jul 12, 2026
+    baseDate.setDate(baseDate.getDate() + offset * 7);
+
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const fullDayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    return Array.from({ length: 7 }, (_, i) => {
+        const d = new Date(baseDate);
+        d.setDate(baseDate.getDate() + i);
+        const dateStr = String(d.getDate());
+        const monthStr = monthNames[d.getMonth()];
+        const yearStr = d.getFullYear();
+        const monthNum = String(d.getMonth() + 1).padStart(2, '0');
+        const formattedDate = `${String(d.getDate()).padStart(2, '0')}-${monthNum}-${yearStr}`;
+
+        return {
+            day: dayNames[d.getDay()],
+            date: dateStr,
+            isOff: d.getDay() === 0,
+            fullDate: `${fullDayNames[d.getDay()]}, ${monthStr} ${d.getDate()}, ${yearStr}`,
+            formattedDate,
+            monthStr,
+            yearStr,
+        };
+    });
+};
 
 const INITIAL_SCHEDULE_DATA: Record<string, any> = {
     '18': {
@@ -22,18 +41,39 @@ const INITIAL_SCHEDULE_DATA: Record<string, any> = {
 };
 
 export default function UpcomingSchedule() {
+    const [weekOffset, setWeekOffset] = useState(0);
     const [selectedDate, setSelectedDate] = useState('18');
+    const [batchType, setBatchType] = useState<'Weekend' | 'Weekdays'>('Weekend');
     const [scheduleData, setScheduleData] = useState<Record<string, any>>(INITIAL_SCHEDULE_DATA);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editDate, setEditDate] = useState('18-07-2026');
     const [editTimeRange, setEditTimeRange] = useState('10:00 AM - 11:00 AM');
 
-    const selectedDayInfo = DAYS.find(d => d.date === selectedDate);
+    const days = getDaysOfWeek(weekOffset);
+    const selectedDayInfo = days.find(d => d.date === selectedDate);
     const activeClass = scheduleData[selectedDate];
+
+    const handlePrevWeek = () => {
+        const newOffset = weekOffset - 1;
+        const newDays = getDaysOfWeek(newOffset);
+        const currentIndex = days.findIndex(d => d.date === selectedDate);
+        const targetIndex = currentIndex !== -1 ? currentIndex : 0;
+        setWeekOffset(newOffset);
+        setSelectedDate(newDays[targetIndex].date);
+    };
+
+    const handleNextWeek = () => {
+        const newOffset = weekOffset + 1;
+        const newDays = getDaysOfWeek(newOffset);
+        const currentIndex = days.findIndex(d => d.date === selectedDate);
+        const targetIndex = currentIndex !== -1 ? currentIndex : 0;
+        setWeekOffset(newOffset);
+        setSelectedDate(newDays[targetIndex].date);
+    };
 
     const handleOpenEdit = () => {
         if (activeClass) {
-            setEditDate(`${selectedDate}-07-2026`);
+            setEditDate(selectedDayInfo?.formattedDate || `${selectedDate}-07-2026`);
             setEditTimeRange(activeClass.time);
             setIsEditModalOpen(true);
         }
@@ -57,10 +97,18 @@ export default function UpcomingSchedule() {
             <View className="flex-row justify-between items-center mb-1">
                 <Text className="text-[20px] font-semibold text-[#333333]">Upcoming Schedule</Text>
                 <View className="flex-row space-x-2 gap-2">
-                    <TouchableOpacity className="w-8 h-8 rounded-[6px] border border-[#F3F5F7] p-1.5 items-center justify-center bg-white">
+                    <TouchableOpacity
+                        onPress={handlePrevWeek}
+                        className="w-8 h-8 rounded-[6px] border border-[#F3F5F7] p-1.5 items-center justify-center bg-white"
+                        activeOpacity={0.7}
+                    >
                         <ArrowLeft2 size={16} color="#626262" />
                     </TouchableOpacity>
-                    <TouchableOpacity className="w-8 h-8 rounded-[6px] border border-[#F3F5F7] p-1.5 items-center justify-center bg-white">
+                    <TouchableOpacity
+                        onPress={handleNextWeek}
+                        className="w-8 h-8 rounded-[6px] border border-[#F3F5F7] p-1.5 items-center justify-center bg-white"
+                        activeOpacity={0.7}
+                    >
                         <ArrowRight2 size={16} color="#626262" />
                     </TouchableOpacity>
                 </View>
@@ -69,7 +117,7 @@ export default function UpcomingSchedule() {
             {/* Subheadings */}
             <Text className="text-[13px] font-medium text-[#F67300] mb-0.5">AA101 - AI</Text>
             <Text className="text-[12px] text-[#8C8E90] mb-4">
-                Batch-B · Weekend ({activeClass ? activeClass.time : '10:00 AM - 11:00 AM'})
+                Batch-B · {batchType} ({activeClass ? activeClass.time : '10:00 AM - 11:00 AM'})
             </Text>
 
             {/* Date Selector */}
@@ -77,10 +125,13 @@ export default function UpcomingSchedule() {
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 className="mb-4"
-                contentContainerStyle={{ gap: 8 }}
+                contentContainerStyle={{ gap: 8, paddingVertical: 4, paddingHorizontal: 4 }}
             >
-                {DAYS.map((d) => {
+                {days.map((d) => {
                     const isSelected = d.date === selectedDate;
+                    const isWeekendDay = d.day === 'Sun' || d.day === 'Sat';
+                    const hasOrangeDot = batchType === 'Weekend' ? isWeekendDay : !isWeekendDay;
+
                     let bgClass = 'bg-white border border-[#E5E7EB]';
                     let textClass = 'text-[#4A5565] font-semibold';
                     let dateClass = 'text-[#4A5565] font-semibold';
@@ -97,13 +148,16 @@ export default function UpcomingSchedule() {
 
                     return (
                         <TouchableOpacity
-                            key={d.date}
+                            key={`${d.day}-${d.date}`}
                             onPress={() => setSelectedDate(d.date)}
-                            className={`w-12 h-12 rounded-[12px] items-center justify-center ${bgClass}`}
+                            className={`w-12 h-12 rounded-[12px] items-center justify-center relative ${bgClass}`}
                             activeOpacity={0.8}
                         >
+                            {hasOrangeDot && (
+                                <View className="w-2 h-2 rounded-full bg-[#F67300] absolute -top-1 -right-1 z-10" />
+                            )}
                             <Text className={`text-[10px] ${textClass}`}>{d.day}</Text>
-                            <Text className={`text-[10px] mt-1 ${dateClass}`}>{d.date}</Text>
+                            <Text className={`text-[10px] mt-0.5 ${dateClass}`}>{d.date}</Text>
                         </TouchableOpacity>
                     );
                 })}
