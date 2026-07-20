@@ -18,10 +18,10 @@ export const LessonDetailsScreen = () => {
     .flatMap((m) => m.lessons)
     .find((l) => l.id === id);
 
-  // If status is not provided, default to past (to show mock data)
-  const isPast = !lesson || lesson.status === 'past';
+    
   const hasResources = lesson ? lesson.hasResource : true;
   const hasAssignments = lesson ? lesson.hasAssignment : true;
+  const hasRecording = lesson ? lesson.hasRecording : true;
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
@@ -34,6 +34,7 @@ export const LessonDetailsScreen = () => {
         showProfile={false}
         titleAlign="center"
       />
+      
       <View className="flex-1 px-4 pt-2">
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
 
@@ -78,78 +79,71 @@ export const LessonDetailsScreen = () => {
             <View className="bg-white rounded-[24px] p-5 mb-4 border border-gray-200">
               <Text className="text-[#333333] font-semibold text-[14px] mb-4">Resources</Text>
 
-              <View
-                style={{
-                  borderWidth: 0.5,
-                  borderColor: '#F2EEF4',
-                  shadowColor: '#F2EEF4',
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 4,
-                  elevation: 3,
-                  height: 77,
-                }}
-                className="flex-row justify-between items-center bg-white pl-1 py-1 pr-5 rounded-[15px] mb-3.5"
-              >
-                <View className="flex-row items-center flex-1 pr-2">
-                  <View
-                    style={{ width: 76, height: 69 }}
-                    className="rounded-[24px] bg-[#FEE2E2] justify-center items-center"
-                  >
-                    <ExpoImage
-                      source={require('../../../../assets/icon/pdfIcon.svg')}
-                      style={{ width: 32, height: 32 }}
-                      contentFit="contain"
-                    />
-                  </View>
-                  <View className="ml-[10px] flex-1 justify-center">
-                    <Text className="text-[15px] font-medium text-[#333333]" numberOfLines={1}>Project_Guidelines.pdf</Text>
-                    <Text className="text-[12px] text-[#808080] mt-0.5">2.4MB</Text>
-                  </View>
-                </View>
-                <TouchableOpacity className="p-1">
-                  <Import size={18} color="#808080" variant="Linear" />
-                </TouchableOpacity>
-              </View>
+              {COURSE_DATA.resources.map((resource, idx) => {
+                const isPdf = resource.title.endsWith('.pdf');
 
-              <View
-                style={{
-                  borderWidth: 0.5,
-                  borderColor: '#F2EEF4',
-                  shadowColor: '#F2EEF4',
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 4,
-                  elevation: 3,
-                  height: 77,
-                }}
-                className="flex-row justify-between items-center bg-white pl-1 py-1 pr-5 rounded-[15px]"
-              >
-                <View className="flex-row items-center flex-1 pr-2">
+                return (
                   <View
-                    style={{ width: 76, height: 69 }}
-                    className="rounded-[24px] bg-blue-50 justify-center items-center"
+                    key={idx}
+                    style={{
+                      borderWidth: 0.5,
+                      borderColor: '#F2EEF4',
+                      shadowColor: '#F2EEF4',
+                      shadowOffset: { width: 0, height: 4 },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 4,
+                      elevation: 3,
+                      height: 77,
+                    }}
+                    className={`flex-row justify-between items-center bg-white pl-1 py-1 pr-5 rounded-[15px] ${idx !== COURSE_DATA.resources.length - 1 ? 'mb-3.5' : ''}`}
                   >
-                    <Link size={24} color="#3B82F6" variant="Linear" />
+                    <View className="flex-row items-center flex-1 pr-2">
+                      <View
+                        style={{ width: 76, height: 69 }}
+                        className={`rounded-[24px] justify-center items-center ${isPdf ? 'bg-[#FEE2E2]' : 'bg-blue-50'}`}
+                      >
+                        {isPdf ? (
+                          <ExpoImage
+                            source={require('../../../../assets/icon/pdfIcon.svg')}
+                            style={{ width: 32, height: 32 }}
+                            contentFit="contain"
+                          />
+                        ) : (
+                          <Link size={24} color="#3B82F6" variant="Linear" />
+                        )}
+                      </View>
+                      <View className="ml-[10px] flex-1 justify-center">
+                        <Text className="text-[15px] font-medium text-[#333333]" numberOfLines={1}>{resource.title}</Text>
+                        <Text className="text-[12px] text-[#808080] mt-0.5">{resource.size || 'external-link.com'}</Text>
+                      </View>
+                    </View>
+                    <TouchableOpacity className="p-1">
+                      {isPdf ? (
+                        <Import size={18} color="#808080" variant="Linear" />
+                      ) : (
+                        <Export size={18} color="#808080" variant="Linear" />
+                      )}
+                    </TouchableOpacity>
                   </View>
-                  <View className="ml-[10px] flex-1 justify-center">
-                    <Text className="text-[15px] font-medium text-[#333333]" numberOfLines={1}>RAG Architecture Overview</Text>
-                    <Text className="text-[12px] text-[#808080] mt-0.5">external-link.com</Text>
-                  </View>
-                </View>
-                <TouchableOpacity className="p-1">
-                  <Export size={18} color="#808080" variant="Linear" />
-                </TouchableOpacity>
-              </View>
+                );
+              })}
             </View>
           )}
 
-          {/* Conditionally Render for Past Classes Only */}
-          {isPast && (
-            <>
-              {/* Recorded Classes */}
-              <View className="mb-6">
-                <Text className="text-[#333333] font-semibold text-[14px] mb-4 pl-1">Recorded Classes</Text>
+          {/* Recorded Classes */}
+          {!hasRecording ? (
+            <View className="bg-white rounded-[24px] p-5 border border-gray-200 mb-6 h-[160px]">
+              <Text className="text-[#333333] font-semibold text-[14px] mb-2 pl-1">Recorded Classes</Text>
+              <View className="flex-1 items-center justify-center pb-2">
+                <View className="w-14 h-14 rounded-full bg-orange-50 items-center justify-center mb-2">
+                  <Feather name="video-off" size={24} color="#EA580C" />
+                </View>
+                <Text className="text-[#333333] font-medium text-[11px]">No Recorded Classes</Text>
+              </View>
+            </View>
+          ) : (
+            <View className="mb-6">
+              <Text className="text-[#333333] font-semibold text-[14px] mb-4 pl-1">Recorded Classes</Text>
                 {[1, 2].map((item) => (
                   <View key={item} className="bg-white border border-gray-200 rounded-[24px] p-5 mb-3">
                     <Text className="text-[#333333] font-semibold text-[14px] mb-1">
@@ -179,8 +173,9 @@ export const LessonDetailsScreen = () => {
                   </View>
                 ))}
               </View>
+            )}
 
-              {/* Assignments */}
+            {/* Assignments */}
               {!hasAssignments ? (
                 <View className="bg-white rounded-[24px] p-5 border border-gray-200 mb-6 h-[160px]">
                   <Text className="text-[#333333] font-semibold text-[14px] mb-2">Assignments</Text>
@@ -216,10 +211,8 @@ export const LessonDetailsScreen = () => {
                       </View>
                     </View>
                   ))}
-                </View>
-              )}
-            </>
-          )}
+                  </View>
+                )}
 
         </ScrollView>
       </View>
