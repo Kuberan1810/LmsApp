@@ -58,6 +58,7 @@ export const MyCoursesScreen = () => {
               <EnrollCourseCard 
                 key={idx}
                 course={course}
+                onCoursePress={(code) => router.push(`/(student)/courses/${code}`)}
               />
             ))}
           </Animated.ScrollView>
