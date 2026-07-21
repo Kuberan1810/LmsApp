@@ -3,7 +3,6 @@ import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-nativ
 import { Image as ExpoImage } from 'expo-image';
 import * as DocumentPicker from 'expo-document-picker';
 import InstructorHeader from '@/components/Instructor/InstructorHeader';
-import { Calendar, Clock } from 'iconsax-react-native';
 import { Edit2, Trash2, UploadCloud, X, Link as LinkIcon, Smile } from 'lucide-react-native';
 
 const getFileIconSource = (fileName: string) => {
@@ -50,36 +49,32 @@ const getFileBgColor = (fileName: string) => {
     }
 };
 
-export interface ResourceItem {
+export interface FileItem {
     id: string;
     name: string;
     size: string;
-    type?: string;
-    status?: string;
+    status: 'ready' | 'uploading';
     progress?: number;
 }
 
-export interface EditAssignmentData {
+export interface EditChapterData {
     id?: string;
     title?: string;
-    batch?: string;
-    dueDate?: string;
-    dueTime?: string;
-    description?: string;
-    objective?: string;
-    expectedOutcome?: string;
-    resources?: ResourceItem[];
+    moduleName?: string;
+    classContent?: string;
+    keyTopics?: string;
+    resources?: FileItem[];
 }
 
-interface EditAssignmentProps {
-    assignment?: EditAssignmentData;
+interface EditChapterProps {
+    chapter?: EditChapterData;
     onBack?: () => void;
-    onSave?: (data: EditAssignmentData) => void;
+    onSave?: (data: EditChapterData) => void;
 }
 
-export default function EditAssignment({ assignment, onBack, onSave }: EditAssignmentProps) {
-    const [title, setTitle] = useState(assignment?.title || 'Assignment Name');
-    const [batch] = useState(assignment?.batch || 'Batch 02');
+export default function EditChapter({ chapter, onBack, onSave }: EditChapterProps) {
+    const [title, setTitle] = useState(chapter?.title || '3.4 AI Agents (LangChain, CrewAI, AutoGen)');
+    const [moduleName] = useState(chapter?.moduleName || 'Module 1: Module-1');
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const titleInputRef = React.useRef<TextInput>(null);
 
@@ -92,15 +87,11 @@ export default function EditAssignment({ assignment, onBack, onSave }: EditAssig
             return next;
         });
     };
-    const [dueDate, setDueDate] = useState(assignment?.dueDate || '12/01/2026');
-    const [dueTime, setDueTime] = useState(assignment?.dueTime || '11:59 pm');
 
-    const [description, setDescription] = useState(assignment?.description || '');
-    const [objective, setObjective] = useState(assignment?.objective || '');
-    const [expectedOutcome, setExpectedOutcome] = useState(assignment?.expectedOutcome || '');
-    const [resources, setResources] = useState<ResourceItem[]>(assignment?.resources || []);
+    const [classContent, setClassContent] = useState(chapter?.classContent || '');
+    const [keyTopics, setKeyTopics] = useState(chapter?.keyTopics || '');
+    const [resources, setResources] = useState<FileItem[]>(chapter?.resources || []);
 
-    const [comment, setComment] = useState('');
 
     const handleDeleteResource = (id: string) => {
         setResources(prev => prev.filter(item => item.id !== id));
@@ -126,15 +117,11 @@ export default function EditAssignment({ assignment, onBack, onSave }: EditAssig
                     }
                 }
 
-                const ext = asset.name.split('.').pop()?.toLowerCase();
-                const fileType = ['pdf', 'doc', 'docx', 'xls', 'xlsx'].includes(ext || '') ? 'pdf' : 'file';
-
-                const newFile: ResourceItem = {
+                const newFile: FileItem = {
                     id: newFileId,
                     name: asset.name,
                     size: sizeStr,
-                    type: fileType,
-                    status: 'Uploading',
+                    status: 'uploading',
                     progress: 35,
                 };
 
@@ -143,7 +130,7 @@ export default function EditAssignment({ assignment, onBack, onSave }: EditAssig
                 setTimeout(() => {
                     setResources(prev =>
                         prev.map(item =>
-                            item.id === newFileId ? { ...item, progress: 100, status: 'Ready to submit' } : item
+                            item.id === newFileId ? { ...item, progress: 100, status: 'ready' } : item
                         )
                     );
                 }, 800);
@@ -157,12 +144,9 @@ export default function EditAssignment({ assignment, onBack, onSave }: EditAssig
         if (onSave) {
             onSave({
                 title,
-                batch,
-                dueDate,
-                dueTime,
-                description,
-                objective,
-                expectedOutcome,
+                moduleName,
+                classContent,
+                keyTopics,
                 resources,
             });
         }
@@ -172,7 +156,7 @@ export default function EditAssignment({ assignment, onBack, onSave }: EditAssig
         <View className="flex-1 bg-[#FAFAFA]">
             {/* Header */}
             <InstructorHeader
-                title="Assignment"
+                title="Chapter"
                 onBackPress={onBack}
                 showSearch={false}
                 showNotification={false}
@@ -185,7 +169,7 @@ export default function EditAssignment({ assignment, onBack, onSave }: EditAssig
                 contentContainerStyle={{ paddingBottom: 100 }}
                 showsVerticalScrollIndicator={false}
             >
-                {/* Assignment Title & Batch Header */}
+                {/* Chapter Title & Module Header */}
                 <View className="flex-row items-center justify-between mb-4 px-1">
                     <View className="flex-row items-center gap-2 flex-1 mr-2">
                         {isEditingTitle ? (
@@ -195,8 +179,6 @@ export default function EditAssignment({ assignment, onBack, onSave }: EditAssig
                                     value={title}
                                     onChangeText={setTitle}
                                     onBlur={() => setIsEditingTitle(false)}
-                                    placeholder="Assignment Name"
-                                    placeholderTextColor="#A0A0AB"
                                     className="text-[16px] font-medium text-[#333333] flex-1 p-0"
                                     autoFocus
                                 />
@@ -208,50 +190,16 @@ export default function EditAssignment({ assignment, onBack, onSave }: EditAssig
                             <Edit2 size={16} color={isEditingTitle ? "#F67300" : "#8C8E90"} />
                         </TouchableOpacity>
                     </View>
-                    <View className="bg-[#F67300]/10 px-3 py-1 rounded-full shrink-0">
-                        <Text className="text-[#F67300] text-[12px]">{batch}</Text>
-                    </View>
                 </View>
 
-                {/* Due Date & Time Inputs */}
-                <View className="flex-row gap-3 mb-4">
-                    <View className="flex-1 bg-white rounded-[10px] border border-[#F2EEF4] p-2.5">
-                        <Text className="text-[13px] text-[#333333] font-medium mb-2">Due date</Text>
-                        <View className="flex-row items-center justify-between">
-                            <TextInput
-                                value={dueDate}
-                                onChangeText={setDueDate}
-                                className="flex-1 text-[13px] text-[#8C8E90] font-medium p-0"
-                            />
-                            <View className="w-6 h-6 rounded-[5px] border border-[#F3F5F7] bg-white items-center justify-center">
-                                <Calendar size={14} color="#8C8E90" />
-                            </View>
-                        </View>
-                    </View>
-
-                    <View className="flex-1 bg-white rounded-[10px] border border-[#F2EEF4] p-2.5">
-                        <Text className="text-[13px] text-[#333333] font-medium mb-2">Due Time(IST)</Text>
-                        <View className="flex-row items-center justify-between">
-                            <TextInput
-                                value={dueTime}
-                                onChangeText={setDueTime}
-                                className="flex-1 text-[13px] text-[#8C8E90] font-medium p-0"
-                            />
-                            <View className="w-6 h-6 rounded-[5px] border border-[#F3F5F7] bg-white items-center justify-center">
-                                <Clock size={14} color="#8C8E90" />
-                            </View>
-                        </View>
-                    </View>
-                </View>
-
-                {/* Description Card */}
+                {/* Class Content Card */}
                 <View className="bg-white rounded-[24px] border border-[#F2EEF4] p-6 mb-4">
-                    <Text className="text-[20px] font-medium text-[#333333] mb-2">Description:</Text>
+                    <Text className="text-[20px] font-medium text-[#333333] mb-2">Class Content:</Text>
                     <View className="border border-[#DEDEDE] rounded-[18px] p-4 bg-white min-h-[140px]">
                         <TextInput
-                            value={description}
-                            onChangeText={setDescription}
-                            placeholder="Enter description..."
+                            value={classContent}
+                            onChangeText={setClassContent}
+                            placeholder="Enter class content..."
                             placeholderTextColor="#A0A0AB"
                             multiline
                             textAlignVertical="top"
@@ -260,30 +208,14 @@ export default function EditAssignment({ assignment, onBack, onSave }: EditAssig
                     </View>
                 </View>
 
-                {/* Objective Card */}
+                {/* Key Topics Card */}
                 <View className="bg-white rounded-[24px] border border-[#F2EEF4] p-6 mb-4">
-                    <Text className="text-[20px] font-medium text-[#333333] mb-2">Objective:</Text>
+                    <Text className="text-[20px] font-medium text-[#333333] mb-2">Key Topics:</Text>
                     <View className="border border-[#DEDEDE] rounded-[18px] p-4 bg-white min-h-[140px]">
                         <TextInput
-                            value={objective}
-                            onChangeText={setObjective}
-                            placeholder="Enter objective..."
-                            placeholderTextColor="#A0A0AB"
-                            multiline
-                            textAlignVertical="top"
-                            className="text-[12px] text-[#333333] leading-relaxed p-0 text-left"
-                        />
-                    </View>
-                </View>
-
-                {/* Expected Outcome Card */}
-                <View className="bg-white rounded-[24px] border border-[#F2EEF4] p-6 mb-4">
-                    <Text className="text-[20px] font-medium text-[#333333] mb-2">Expected Outcome:</Text>
-                    <View className="border border-[#DEDEDE] rounded-[18px] p-4 bg-white min-h-[140px]">
-                        <TextInput
-                            value={expectedOutcome}
-                            onChangeText={setExpectedOutcome}
-                            placeholder="Enter expected outcome..."
+                            value={keyTopics}
+                            onChangeText={setKeyTopics}
+                            placeholder="Enter key topics..."
                             placeholderTextColor="#A0A0AB"
                             multiline
                             textAlignVertical="top"
@@ -317,13 +249,15 @@ export default function EditAssignment({ assignment, onBack, onSave }: EditAssig
                         <Text className="text-[12px] text-[#626262] mb-2 text-center">
                             Drag and drop files here or click to select files
                         </Text>
-                        <Text className="text-[12px] text-center text-[#626262] mb-0.5">Supported formats: pdf, doc, docx, txt Maximum file size: 10MB</Text>
+                        <Text className="text-[12px] text-center text-[#626262] mb-0.5">
+                            Supported formats: pdf, doc, docx, txt Maximum file size: 10MB
+                        </Text>
                     </TouchableOpacity>
 
                     {/* Uploaded Files */}
                     <View className="gap-2.5">
                         {resources.map((res) => {
-                            const isUploading = res.status === 'Uploading' || (res.progress && res.progress < 100);
+                            const isUploading = res.status === 'uploading' || (res.progress && res.progress < 100);
 
                             return (
                                 <View key={res.id} className="bg-white p-2">
@@ -354,11 +288,13 @@ export default function EditAssignment({ assignment, onBack, onSave }: EditAssig
                                     </View>
 
                                     {/* Progress bar */}
-                                    {isUploading && (
-                                        <View className="h-1.5 bg-[#E5E5E5] rounded-full overflow-hidden mt-2.5 w-full">
-                                            <View style={{ width: `${res.progress || 60}%` }} className="h-full bg-[#F67300]" />
-                                        </View>
-                                    )}
+                                    {
+                                        isUploading && (
+                                            <View className="h-1.5 bg-[#E5E5E5] rounded-full overflow-hidden mt-2.5 w-full">
+                                                <View style={{ width: `${res.progress || 60}%` }} className="h-full bg-[#F67300]" />
+                                            </View>
+                                        )
+                                    }
                                 </View>
                             );
                         })}
@@ -369,38 +305,14 @@ export default function EditAssignment({ assignment, onBack, onSave }: EditAssig
                     </View>
                 </View>
 
-                {/* Add Comment Card */}
-                <View className="bg-white rounded-[16px] border border-[#F2EEF4] p-6 mb-4">
-                    <Text className="text-[20px] font-medium text-[#333333] mb-2">Add Comment:</Text>
-                    <View className="border border-[#DEDEDE] rounded-[18px] p-4 bg-white min-h-[110px] flex-row items-start justify-between">
-                        <TextInput
-                            value={comment}
-                            onChangeText={setComment}
-                            placeholder="Add Comments..."
-                            placeholderTextColor="#A0A0AB"
-                            multiline
-                            textAlignVertical="top"
-                            className="flex-1 text-[14px] text-[#333333] p-0 text-left mr-2"
-                        />
-                        <View className="flex-row items-center gap-2 pt-1">
-                            <TouchableOpacity className="p-0.5">
-                                <LinkIcon size={18} color="#808080" />
-                            </TouchableOpacity>
-                            <TouchableOpacity className="p-0.5">
-                                <Smile size={18} color="#808080" />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-
-                {/* Save  */}
+                {/* Save Button */}
                 <View className="items-end mt-2 mb-6">
                     <TouchableOpacity
                         onPress={handleSaveSubmit}
-                        className="bg-[#F67300] px-7 h-11 rounded-[12px] items-center justify-center "
+                        className="bg-[#F67300] px-7 h-11 rounded-[12px] items-center justify-center"
                         activeOpacity={0.8}
                     >
-                        <Text className="text-white text-[16px] font-semibold">Save</Text>
+                        <Text className="text-white text-[16px] font-semibold">Upload</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView >

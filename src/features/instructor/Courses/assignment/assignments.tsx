@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import EditAssignment from './editassignment';
+import EditAssignment, { EditAssignmentData } from './editassignment';
 import ReviewAssignment from './reviewAssignment';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { Image as ExpoImage } from 'expo-image';
-import Header from '@/components/Instructor/header';
+import InstructorHeader from '@/components/Instructor/InstructorHeader';
 import { DocumentUpload, Maximize, Link as IconsaxLink } from 'iconsax-react-native';
 import { Calendar } from 'lucide-react-native';
 
@@ -25,6 +25,29 @@ const getFileIconSource = (fileName: string) => {
             return require('../../../../../assets/icon/imgIcon.svg');
         default:
             return require('../../../../../assets/icon/file.svg');
+    }
+};
+
+const getFileBgColor = (fileName: string) => {
+    const ext = fileName.split('.').pop()?.toLowerCase();
+    if (fileName.includes('link') || fileName.includes('.com') || fileName.includes('http')) {
+        return 'bg-[#EFF6FF]';
+    }
+    switch (ext) {
+        case 'pdf':
+            return 'bg-[#FEE2E2]';
+        case 'doc':
+        case 'docx':
+            return 'bg-[#E0F2FE]';
+        case 'xls':
+        case 'xlsx':
+            return 'bg-[#DCFCE7]';
+        case 'png':
+        case 'jpg':
+        case 'jpeg':
+            return 'bg-[#F3E8FF]';
+        default:
+            return 'bg-gray-100';
     }
 };
 
@@ -50,61 +73,50 @@ export interface AssignmentData {
     description?: string;
     objective?: string;
     expectedOutcome?: string;
+    resources?: ResourceItem[];
 }
 
 interface AssignmentsProps {
     assignment?: AssignmentData;
     onBack?: () => void;
     initialIsEditing?: boolean;
+    onSave?: (data: EditAssignmentData) => void;
 }
 
-export default function Assignments({ assignment, onBack, initialIsEditing = false }: AssignmentsProps) {
+export default function Assignments({ assignment, onBack, initialIsEditing = false, onSave }: AssignmentsProps) {
     const [isEditing, setIsEditing] = useState(initialIsEditing);
     const [isReviewing, setIsReviewing] = useState(false);
-    const [title] = useState(assignment?.title || 'Build Q&A system using RAG');
+    const [title, setTitle] = useState(assignment?.title || 'Build Q&A system using RAG');
     const [status] = useState(assignment?.status || 'In Progress');
-    const [dueDate] = useState(assignment?.dueDate || 'Jan 26');
-    const [dueTime] = useState(assignment?.dueTime || '11:59 PM');
+    const [dueDate, setDueDate] = useState(assignment?.dueDate || 'Jan 26');
+    const [dueTime, setDueTime] = useState(assignment?.dueTime || '11:59 PM');
     const [courseCode] = useState(assignment?.courseCode || 'AM101');
     const [courseName] = useState(assignment?.courseName || 'AI / ML Frontier Ai Engineer');
     const [batch] = useState(assignment?.batch || 'Batch 02');
     const [moduleName] = useState(assignment?.moduleName || 'Module 1: Module-1');
 
     // Description
-    const [description, setDescription] = useState(
-        assignment?.description ||
-        (isEditing
-            ? 'AI Agents are systems that use LLMs to plan, act, and collaborate autonomously. LangChain builds tool-using agents for workflows and RAG. CrewAI enables role-based multi-agent teamwork. AutoGen focuses on conversation-driven agents that interact with each other and humans to solve complex tasks.'
-            : 'Build a Question Answering (Q&A) system using Retrieval-Augmented Generation (RAG). In this assignment, you will combine a language model with external knowledge sources to generate more accurate and context-aware answers instead of relying only on the model\'s memory.')
-    );
-
-    const [objective, setObjective] = useState(
-        assignment?.objective ||
-        (isEditing
-            ? 'AI Agents are systems that use LLMs to plan, act, and collaborate autonomously. LangChain builds tool-using agents for workflows and RAG. CrewAI enables role-based multi-agent teamwork. AutoGen focuses on conversation-driven agents that interact with each other and humans to solve complex tasks.'
-            : 'Design and implement a basic retrieval pipeline that searches relevant information, passes it as context to the language model, and produces meaningful responses.')
-    );
-
-    const [expectedOutcome, setExpectedOutcome] = useState(
-        assignment?.expectedOutcome ||
-        (isEditing
-            ? 'AI Agents are systems that use LLMs to plan, act, and collaborate autonomously. LangChain builds tool-using agents for workflows and RAG. CrewAI enables role-based multi-agent teamwork. AutoGen focuses on conversation-driven agents that interact with each other and humans to solve complex tasks.'
-            : 'A working RAG-based Q&A system that can answer questions accurately using provided data, demonstrating the practical application of AI in learning platforms.')
-    );
-
-    // Resources
-    const [resources] = useState<ResourceItem[]>([
-        { id: '1', name: 'Project_Guidelines.pdf', size: '2.4MB', type: 'pdf', status: 'Ready to submit' },
-        { id: '2', name: 'external-link.com', size: '6.6MB', type: 'pdf', status: 'Ready to submit' },
-    ]);
+    const [description, setDescription] = useState(assignment?.description || '');
+    const [objective, setObjective] = useState(assignment?.objective || '');
+    const [expectedOutcome, setExpectedOutcome] = useState(assignment?.expectedOutcome || '');
+    const [resources, setResources] = useState<ResourceItem[]>(assignment?.resources || []);
 
     const handleToggleEditMode = (editing: boolean) => {
-        if (editing) {
-            setDescription('AI Agents are systems that use LLMs to plan, act, and collaborate autonomously. LangChain builds tool-using agents for workflows and RAG. CrewAI enables role-based multi-agent teamwork. AutoGen focuses on conversation-driven agents that interact with each other and humans to solve complex tasks.');
-            setObjective('AI Agents are systems that use LLMs to plan, act, and collaborate autonomously. LangChain builds tool-using agents for workflows and RAG. CrewAI enables role-based multi-agent teamwork. AutoGen focuses on conversation-driven agents that interact with each other and humans to solve complex tasks.');
-            setExpectedOutcome('AI Agents are systems that use LLMs to plan, act, and collaborate autonomously. LangChain builds tool-using agents for workflows and RAG. CrewAI enables role-based multi-agent teamwork. AutoGen focuses on conversation-driven agents that interact with each other and humans to solve complex tasks.');
-        }
         setIsEditing(editing);
+    };
+
+    const handleSaveFromEdit = (data: EditAssignmentData) => {
+        if (data.title) setTitle(data.title);
+        if (data.dueDate) setDueDate(data.dueDate);
+        if (data.dueTime) setDueTime(data.dueTime);
+        if (data.description !== undefined) setDescription(data.description);
+        if (data.objective !== undefined) setObjective(data.objective);
+        if (data.expectedOutcome !== undefined) setExpectedOutcome(data.expectedOutcome);
+        if (data.resources) setResources(data.resources);
+        if (onSave) {
+            onSave(data);
+        }
+        setIsEditing(false);
     };
 
     if (isEditing) {
@@ -120,7 +132,7 @@ export default function Assignments({ assignment, onBack, initialIsEditing = fal
                     resources,
                 }}
                 onBack={() => setIsEditing(false)}
-                onSave={() => setIsEditing(false)}
+                onSave={handleSaveFromEdit}
             />
         );
     }
@@ -142,7 +154,14 @@ export default function Assignments({ assignment, onBack, initialIsEditing = fal
     return (
         <View className="flex-1 bg-[#FAFAFA]">
             {/* Navigation Header */}
-            <Header title="Assignment" onBackPress={onBack} />
+            <InstructorHeader
+                title="Assignment"
+                onBackPress={onBack}
+                showSearch={false}
+                showNotification={false}
+                showProfile={false}
+                titleAlign="center"
+            />
 
             <ScrollView className="flex-1 px-5 pt-2" contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
                 {/* Assignment Overview Card */}
@@ -168,19 +187,25 @@ export default function Assignments({ assignment, onBack, initialIsEditing = fal
                     {/* Description */}
                     <View className="mb-6">
                         <Text className="text-[18px] font-medium text-[#333333] mb-3">Description:</Text>
-                        <Text className="text-[14px] text-[#4D4D4D] leading-relaxed text-left">{description}</Text>
+                        <Text className={`text-[14px] leading-relaxed text-left ${description ? 'text-[#4D4D4D]' : 'text-[#8C8E90] italic'}`}>
+                            {description || 'No description provided yet.'}
+                        </Text>
                     </View>
 
                     {/* Objective */}
                     <View className="mb-6">
                         <Text className="text-[18px] font-medium text-[#333333] mb-3">Objective:</Text>
-                        <Text className="text-[14px] text-[#4D4D4D] leading-relaxed text-left">{objective}</Text>
+                        <Text className={`text-[14px] leading-relaxed text-left ${objective ? 'text-[#4D4D4D]' : 'text-[#8C8E90] italic'}`}>
+                            {objective || 'No objective provided yet.'}
+                        </Text>
                     </View>
 
                     {/* Expected Outcome */}
                     <View>
                         <Text className="text-[18px] font-medium text-[#333333] mb-3">Expected Outcome:</Text>
-                        <Text className="text-[14px] text-[#4D4D4D] leading-relaxed text-left">{expectedOutcome}</Text>
+                        <Text className={`text-[14px] leading-relaxed text-left ${expectedOutcome ? 'text-[#4D4D4D]' : 'text-[#8C8E90] italic'}`}>
+                            {expectedOutcome || 'No expected outcome provided yet.'}
+                        </Text>
                     </View>
                 </View>
 
@@ -194,7 +219,7 @@ export default function Assignments({ assignment, onBack, initialIsEditing = fal
                         const subtitle = resItem.size || 'external-link.com';
                         const ext = title.split('.').pop()?.toLowerCase();
                         const isFile = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'png', 'jpg'].includes(ext || '');
-                        const iconBg = isFile ? 'bg-[#FEE2E2]' : 'bg-blue-50';
+                        const iconBg = isFile ? getFileBgColor(title) : 'bg-[#EFF6FF]';
                         const actionIcon = isFile ? (
                             <DocumentUpload size={18} color="#808080" variant="Linear" />
                         ) : (

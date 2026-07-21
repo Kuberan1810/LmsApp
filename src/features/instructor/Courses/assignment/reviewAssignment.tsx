@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-native';
-import Header from '@/components/Instructor/header';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal } from 'react-native';
+import InstructorHeader from '@/components/Instructor/InstructorHeader';
 import { SearchNormal1, Filter, ArrowSwapHorizontal, ArrowLeft2, ArrowRight2 } from 'iconsax-react-native';
+import { Check, X } from 'lucide-react-native';
 import ViewSubmissionModal, { SubmissionData } from './viewSubmissionModal';
 
 export interface StudentSubmission {
@@ -32,6 +33,12 @@ export default function ReviewAssignment({
     const [selectedSubmission, setSelectedSubmission] = useState<SubmissionData | null>(null);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
+    // Filter & Sort state
+    const [filterStatus, setFilterStatus] = useState<'All' | 'Submitted' | 'Graded' | 'Pending'>('All');
+    const [sortOption, setSortOption] = useState<'Default' | 'Name-ASC' | 'Name-DESC' | 'Grade-HIGH' | 'Grade-LOW'>('Default');
+    const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+    const [isSortModalOpen, setIsSortModalOpen] = useState(false);
+
     const [submissions, setSubmissions] = useState<StudentSubmission[]>([
         {
             sNo: 1,
@@ -41,6 +48,15 @@ export default function ReviewAssignment({
             status: 'Graded',
             grade: 90,
         },
+        {
+            sNo: 2,
+            studentId: '11',
+            studentName: 'Grace',
+            submittedOn: 'Jul 16, 2026, 11:10 AM',
+            status: 'Graded',
+            grade: 80,
+        },
+
     ]);
 
     const handleOpenSubmissionModal = (row: StudentSubmission) => {
@@ -68,11 +84,39 @@ export default function ReviewAssignment({
         }
     };
 
-    const filteredSubmissions = submissions.filter(
-        sub =>
-            sub.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            sub.studentId.includes(searchQuery)
-    );
+    const filteredSubmissions = submissions
+        .filter(sub => {
+            const matchesSearch =
+                sub.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                sub.studentId.includes(searchQuery);
+            const matchesFilter =
+                filterStatus === 'All'
+                    ? true
+                    : filterStatus === 'Submitted'
+                        ? sub.status === 'Submitted' || sub.status === 'Graded'
+                        : sub.status === filterStatus;
+
+            return matchesSearch && matchesFilter;
+        })
+        .sort((a, b) => {
+            if (sortOption === 'Name-ASC') {
+                return a.studentName.localeCompare(b.studentName);
+            }
+            if (sortOption === 'Name-DESC') {
+                return b.studentName.localeCompare(a.studentName);
+            }
+            if (sortOption === 'Grade-HIGH') {
+                const numA = typeof a.grade === 'number' ? a.grade : 0;
+                const numB = typeof b.grade === 'number' ? b.grade : 0;
+                return numB - numA;
+            }
+            if (sortOption === 'Grade-LOW') {
+                const numA = typeof a.grade === 'number' ? a.grade : 0;
+                const numB = typeof b.grade === 'number' ? b.grade : 0;
+                return numA - numB;
+            }
+            return a.sNo - b.sNo;
+        });
 
     const submittedCount = submissions.filter(s => s.status === 'Submitted' || s.status === 'Graded').length;
     const enrolledCount = submissions.length;
@@ -80,8 +124,15 @@ export default function ReviewAssignment({
 
     return (
         <View className="flex-1 bg-[#FAFAFA]">
-            {/* Header  */}
-            <Header title="Assignment Submissions" onBackPress={onBack} />
+            {/* Header */}
+            <InstructorHeader
+                title="Assignment Submissions"
+                onBackPress={onBack}
+                showSearch={false}
+                showNotification={false}
+                showProfile={false}
+                titleAlign="center"
+            />
 
             <ScrollView
                 className="flex-1 px-5 pt-2"
@@ -135,36 +186,103 @@ export default function ReviewAssignment({
 
                 {/* Submissions Table Card */}
                 <View className="bg-white rounded-[20px] border border-[#F2EEF4] p-5">
-                    <View className="flex-row items-center gap-2 mb-6">
+                    <View className="flex-row items-center gap-2 mb-6 relative z-30">
                         {/* Search Input */}
-                        <View className="flex-1 flex-row items-center bg-[#F9FAFB] border border-[#E5E7EB] rounded-[12px] px-3 h-10">
+                        <View className="flex-1 flex-row items-center bg-[#F9FAFB] border border-[#E5E7EB] rounded-[12px] px-3 h-10 relative overflow-hidden">
                             <SearchNormal1 size={16} color="#9CA3AF" />
+                            {!searchQuery && (
+                                <Text
+                                    numberOfLines={1}
+                                    ellipsizeMode="tail"
+                                    className="absolute left-8 right-2 text-[13px] text-[#9CA3AF] pointer-events-none"
+                                >
+                                    Search by Student name or ID...
+                                </Text>
+                            )}
                             <TextInput
                                 value={searchQuery}
                                 onChangeText={setSearchQuery}
-                                placeholder="Search by Student name or ID..."
-                                placeholderTextColor="#9CA3AF"
-                                className="flex-1 ml-2 text-[13px] text-[#333333] p-0"
+                                numberOfLines={1}
+                                className="flex-1 ml-2 text-[13px] text-[#333333] p-0 h-full"
                             />
                         </View>
 
-                        {/* Filter Button */}
-                        <TouchableOpacity
-                            className="flex-row items-center bg-white border border-[#E5E7EB] rounded-[12px] px-3 h-10"
-                            activeOpacity={0.7}
-                        >
-                            <Filter size={16} color="#626262" />
-                            <Text className="text-[13px] font-medium text-[#626262] ml-1.5">Filter</Text>
-                        </TouchableOpacity>
+                        {/* Filter Container  */}
+                        <View className="relative z-40">
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setIsFilterModalOpen(prev => !prev);
+                                    setIsSortModalOpen(false);
+                                }}
+                                className="flex-row items-center bg-white border border-[#E5E7EB] rounded-[12px] px-3 h-10"
+                                activeOpacity={0.7}
+                            >
+                                <Filter size={16} color="#626262" />
+                                <Text className="text-[13px] font-medium text-[#626262] ml-1.5">Filter</Text>
+                            </TouchableOpacity>
 
-                        {/* Sort Button */}
-                        <TouchableOpacity
-                            className="flex-row items-center bg-white border border-[#E5E7EB] rounded-[12px] px-3 h-10"
-                            activeOpacity={0.7}
-                        >
-                            <ArrowSwapHorizontal size={16} color="#626262" />
-                            <Text className="text-[13px] font-medium text-[#626262] ml-1.5">Sort</Text>
-                        </TouchableOpacity>
+                            {isFilterModalOpen && (
+                                <View className="absolute top-12 left-0 w-44 bg-white border border-[#F2EEF4] rounded-[14px] p-1.5 shadow-xl z-50">
+                                    {(['All', 'Submitted', 'Graded', 'Pending'] as const).map((opt) => (
+                                        <TouchableOpacity
+                                            key={opt}
+                                            onPress={() => {
+                                                setFilterStatus(opt);
+                                                setIsFilterModalOpen(false);
+                                            }}
+                                            className={`flex-row items-center justify-between px-3 py-2.5 rounded-[8px] ${filterStatus === opt ? 'bg-[#FFF5ED]' : 'active:bg-[#F9FAFB]'
+                                                }`}
+                                        >
+                                            <Text className={`text-[13px] font-medium ${filterStatus === opt ? 'text-[#F67300]' : 'text-[#333333]'}`}>
+                                                {opt === 'All' ? 'All Submissions' : opt}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                </View>
+                            )}
+                        </View>
+
+                        {/* Sort  */}
+
+                        <View className="relative z-40">
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setIsSortModalOpen(prev => !prev);
+                                    setIsFilterModalOpen(false);
+                                }}
+                                className="flex-row items-center bg-white border border-[#E5E7EB] rounded-[12px] px-3 h-10"
+                                activeOpacity={0.7}
+                            >
+                                <ArrowSwapHorizontal size={16} color="#626262" />
+                                <Text className="text-[13px] font-medium text-[#626262] ml-1.5">Sort</Text>
+                            </TouchableOpacity>
+
+                            {isSortModalOpen && (
+                                <View className="absolute top-12 right-0 w-52 bg-white border border-[#F2EEF4] rounded-[14px] p-1.5 shadow-xl z-50">
+                                    {[
+                                        { label: 'Default (S.No)', value: 'Default' },
+                                        { label: 'Student Name (A - Z)', value: 'Name-ASC' },
+                                        { label: 'Student Name (Z - A)', value: 'Name-DESC' },
+                                        { label: 'Grade (Highest first)', value: 'Grade-HIGH' },
+                                        { label: 'Grade (Lowest first)', value: 'Grade-LOW' },
+                                    ].map((opt) => (
+                                        <TouchableOpacity
+                                            key={opt.value}
+                                            onPress={() => {
+                                                setSortOption(opt.value as any);
+                                                setIsSortModalOpen(false);
+                                            }}
+                                            className={`flex-row items-center justify-between px-3 py-2.5 rounded-[8px] ${sortOption === opt.value ? 'bg-[#FFF5ED]' : 'active:bg-[#F9FAFB]'
+                                                }`}
+                                        >
+                                            <Text className={`text-[13px] font-medium ${sortOption === opt.value ? 'text-[#F67300]' : 'text-[#333333]'}`}>
+                                                {opt.label}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                </View>
+                            )}
+                        </View>
                     </View>
 
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -182,8 +300,10 @@ export default function ReviewAssignment({
 
                             {/* Table Rows */}
                             {filteredSubmissions.map((row, index) => (
-                                <View
+                                <TouchableOpacity
                                     key={row.studentId || index}
+                                    onPress={() => handleOpenSubmissionModal(row)}
+                                    activeOpacity={0.7}
                                     className={`py-3.5 px-4 flex-row items-center border-b border-[#F3F4F6] ${index % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'
                                         }`}
                                 >
@@ -206,7 +326,7 @@ export default function ReviewAssignment({
                                             <Text className="text-white text-[13px] font-bold">View</Text>
                                         </TouchableOpacity>
                                     </View>
-                                </View>
+                                </TouchableOpacity>
                             ))}
 
                             {filteredSubmissions.length === 0 && (
