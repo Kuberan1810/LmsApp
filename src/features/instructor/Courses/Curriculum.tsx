@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, Text, TouchableOpacity, TextInput, Modal } from 'react-native';
 import { Search, Plus, Trash2, Edit2, ChevronUp, ChevronDown, MoreVertical } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
@@ -12,6 +13,7 @@ interface Chapter {
     classContent?: string;
     keyTopics?: string;
     resources?: FileItem[];
+    isNew?: boolean;
 }
 
 interface Assignment {
@@ -23,6 +25,7 @@ interface Assignment {
     objective?: string;
     expectedOutcome?: string;
     resources?: ResourceItem[];
+    isNew?: boolean;
 }
 
 interface Test {
@@ -85,7 +88,7 @@ export default function Curriculum() {
     const [expandedModuleId, setExpandedModuleId] = useState<string | null>('1');
 
     // Chapter 
-    const [selectedChapterData, setSelectedChapterData] = useState<{ chapter: Chapter; moduleTitle: string } | null>(null);
+    const [selectedChapterData, setSelectedChapterData] = useState<{ chapter: Chapter; moduleTitle: string; initialIsEditing?: boolean } | null>(null);
     const [selectedAssignmentData, setSelectedAssignmentData] = useState<{ assignment: Assignment; moduleTitle: string } | null>(null);
 
     // Module Menu 
@@ -188,6 +191,7 @@ export default function Curriculum() {
 
     const handleAddChapter = () => {
         if (!targetModuleIdForChapter || !newChapterTitle.trim()) return;
+
         setModules(prev =>
             prev.map(m => {
                 if (m.id === targetModuleIdForChapter) {
@@ -196,9 +200,18 @@ export default function Curriculum() {
                     const cleanTitle = newChapterTitle.trim().replace(/^Chapter\s*\d+(\.\d+)?\s*[-:]?\s*/i, '');
                     const formattedTitle = `Chapter ${moduleIndex}.${nextNum} - ${cleanTitle}`;
 
+                    const createdChapter: Chapter = {
+                        id: `c_${Date.now()}`,
+                        title: formattedTitle,
+                        classContent: '',
+                        keyTopics: '',
+                        resources: [],
+                        isNew: true,
+                    };
+
                     return {
                         ...m,
-                        chapters: [...m.chapters, { id: `c_${Date.now()}`, title: formattedTitle }]
+                        chapters: [...m.chapters, createdChapter]
                     };
                 }
                 return m;
@@ -258,7 +271,12 @@ export default function Curriculum() {
                         assignments: [...m.assignments, {
                             id: `a_${Date.now()}`,
                             title: formattedTitle,
-                            due: newAssignmentDue.trim() || '18-07-2026'
+                            due: newAssignmentDue.trim() || '18-07-2026',
+                            description: '',
+                            objective: '',
+                            expectedOutcome: '',
+                            resources: [],
+                            isNew: true,
                         }]
                     };
                 }
@@ -325,8 +343,6 @@ export default function Curriculum() {
         }
         setDeleteModalState({ isOpen: false, type: 'module', moduleId: '' });
     };
-
-
 
     return (
         <View className="bg-white border border-[#F2EEF4] rounded-[16px] mb-4 p-4 mx-5">
@@ -413,7 +429,10 @@ export default function Curriculum() {
                                             {item.chapters.map((ch) => (
                                                 <TouchableOpacity
                                                     key={ch.id}
-                                                    onPress={() => setSelectedChapterData({ chapter: ch, moduleTitle: item.title })}
+                                                    onPress={() => {
+                                                        const isNew = ch.isNew || (ch.classContent === '' && ch.keyTopics === '' && (!ch.resources || ch.resources.length === 0));
+                                                        setSelectedChapterData({ chapter: ch, moduleTitle: item.title, initialIsEditing: !!isNew });
+                                                    }}
                                                     activeOpacity={0.7}
                                                     className="flex-row items-center justify-between bg-white border border-[#F2EEF4] rounded-[12px] p-3"
                                                 >
@@ -884,118 +903,131 @@ export default function Curriculum() {
                 </View>
             </Modal>
 
-            {/* Chapter View / Edit Screen Modal */}
             <Modal
                 visible={!!selectedChapterData}
                 animationType="none"
+                presentationStyle="fullScreen"
+                statusBarTranslucent
                 onRequestClose={() => setSelectedChapterData(null)}
             >
-                {selectedChapterData && (
-                    <Chapters
-                        chapter={{
-                            id: selectedChapterData.chapter.id,
-                            title: selectedChapterData.chapter.title,
-                            chapterTitle: selectedChapterData.chapter.title,
-                            moduleName: selectedChapterData.moduleTitle,
-                            classContent: selectedChapterData.chapter.classContent,
-                            keyTopics: selectedChapterData.chapter.keyTopics,
-                            resources: selectedChapterData.chapter.resources,
-                        }}
-                        chapterTitle={selectedChapterData.chapter.title}
-                        moduleName={selectedChapterData.moduleTitle}
-                        onBack={() => setSelectedChapterData(null)}
-                        onSave={(data) => {
-                            setModules(prev =>
-                                prev.map(m => ({
-                                    ...m,
-                                    chapters: m.chapters.map(c =>
-                                        c.id === selectedChapterData.chapter.id
-                                            ? {
-                                                ...c,
-                                                title: data.title || c.title,
-                                                classContent: data.classContent !== undefined ? data.classContent : c.classContent,
-                                                keyTopics: data.keyTopics !== undefined ? data.keyTopics : c.keyTopics,
-                                                resources: data.resources !== undefined ? data.resources : c.resources,
-                                            }
-                                            : c
-                                    )
-                                }))
-                            );
-                            setSelectedChapterData(prev =>
-                                prev ? {
-                                    ...prev,
-                                    chapter: {
-                                        ...prev.chapter,
-                                        title: data.title || prev.chapter.title,
-                                        classContent: data.classContent !== undefined ? data.classContent : prev.chapter.classContent,
-                                        keyTopics: data.keyTopics !== undefined ? data.keyTopics : prev.chapter.keyTopics,
-                                        resources: data.resources !== undefined ? data.resources : prev.chapter.resources,
-                                    }
-                                } : null
-                            );
-                        }}
-                    />
-                )}
+                <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right', 'bottom']}>
+                    {selectedChapterData && (
+                        <Chapters
+                            key={selectedChapterData.chapter.id + (selectedChapterData.initialIsEditing ? '_edit' : '_view')}
+                            chapter={{
+                                id: selectedChapterData.chapter.id,
+                                title: selectedChapterData.chapter.title,
+                                chapterTitle: selectedChapterData.chapter.title,
+                                moduleName: selectedChapterData.moduleTitle,
+                                classContent: selectedChapterData.chapter.classContent,
+                                keyTopics: selectedChapterData.chapter.keyTopics,
+                                resources: selectedChapterData.chapter.resources,
+                            }}
+                            chapterTitle={selectedChapterData.chapter.title}
+                            moduleName={selectedChapterData.moduleTitle}
+                            initialIsEditing={selectedChapterData.initialIsEditing || false}
+                            onBack={() => setSelectedChapterData(null)}
+                            onSave={(data) => {
+                                setModules(prev =>
+                                    prev.map(m => ({
+                                        ...m,
+                                        chapters: m.chapters.map(c =>
+                                            c.id === selectedChapterData.chapter.id
+                                                ? {
+                                                    ...c,
+                                                    title: data.title || c.title,
+                                                    classContent: data.classContent !== undefined ? data.classContent : c.classContent,
+                                                    keyTopics: data.keyTopics !== undefined ? data.keyTopics : c.keyTopics,
+                                                    resources: data.resources !== undefined ? data.resources : c.resources,
+                                                    isNew: false,
+                                                }
+                                                : c
+                                        )
+                                    }))
+                                );
+                                setSelectedChapterData(prev =>
+                                    prev ? {
+                                        ...prev,
+                                        chapter: {
+                                            ...prev.chapter,
+                                            title: data.title || prev.chapter.title,
+                                            classContent: data.classContent !== undefined ? data.classContent : prev.chapter.classContent,
+                                            keyTopics: data.keyTopics !== undefined ? data.keyTopics : prev.chapter.keyTopics,
+                                            resources: data.resources !== undefined ? data.resources : prev.chapter.resources,
+                                            isNew: false,
+                                        },
+                                        initialIsEditing: false,
+                                    } : null
+                                );
+                            }}
+                        />
+                    )}
+                </SafeAreaView>
             </Modal>
 
-            {/* Assignment View / Edit Screen Modal */}
             <Modal
                 visible={!!selectedAssignmentData}
                 animationType="none"
+                presentationStyle="fullScreen"
+                statusBarTranslucent
                 onRequestClose={() => setSelectedAssignmentData(null)}
             >
-                {selectedAssignmentData && (
-                    <Assignments
-                        assignment={{
-                            id: selectedAssignmentData.assignment.id,
-                            title: selectedAssignmentData.assignment.title,
-                            moduleName: selectedAssignmentData.moduleTitle,
-                            dueDate: selectedAssignmentData.assignment.due,
-                            dueTime: selectedAssignmentData.assignment.dueTime,
-                            description: selectedAssignmentData.assignment.description,
-                            objective: selectedAssignmentData.assignment.objective,
-                            expectedOutcome: selectedAssignmentData.assignment.expectedOutcome,
-                            resources: selectedAssignmentData.assignment.resources,
-                        }}
-                        onBack={() => setSelectedAssignmentData(null)}
-                        onSave={(data) => {
-                            setModules(prev =>
-                                prev.map(m => ({
-                                    ...m,
-                                    assignments: m.assignments.map(a =>
-                                        a.id === selectedAssignmentData.assignment.id
-                                            ? {
-                                                ...a,
-                                                title: data.title || a.title,
-                                                due: data.dueDate || a.due,
-                                                dueTime: data.dueTime || a.dueTime,
-                                                description: data.description !== undefined ? data.description : a.description,
-                                                objective: data.objective !== undefined ? data.objective : a.objective,
-                                                expectedOutcome: data.expectedOutcome !== undefined ? data.expectedOutcome : a.expectedOutcome,
-                                                resources: data.resources !== undefined ? data.resources : a.resources,
-                                            }
-                                            : a
-                                    )
-                                }))
-                            );
-                            setSelectedAssignmentData(prev =>
-                                prev ? {
-                                    ...prev,
-                                    assignment: {
-                                        ...prev.assignment,
-                                        title: data.title || prev.assignment.title,
-                                        due: data.dueDate || prev.assignment.due,
-                                        dueTime: data.dueTime || prev.assignment.dueTime,
-                                        description: data.description !== undefined ? data.description : prev.assignment.description,
-                                        objective: data.objective !== undefined ? data.objective : prev.assignment.objective,
-                                        expectedOutcome: data.expectedOutcome !== undefined ? data.expectedOutcome : prev.assignment.expectedOutcome,
-                                        resources: data.resources !== undefined ? data.resources : prev.assignment.resources,
-                                    }
-                                } : null
-                            );
-                        }}
-                    />
-                )}
+                <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right', 'bottom']}>
+                    {selectedAssignmentData && (
+                        <Assignments
+                            assignment={{
+                                id: selectedAssignmentData.assignment.id,
+                                title: selectedAssignmentData.assignment.title,
+                                moduleName: selectedAssignmentData.moduleTitle,
+                                dueDate: selectedAssignmentData.assignment.due,
+                                dueTime: selectedAssignmentData.assignment.dueTime,
+                                description: selectedAssignmentData.assignment.description,
+                                objective: selectedAssignmentData.assignment.objective,
+                                expectedOutcome: selectedAssignmentData.assignment.expectedOutcome,
+                                resources: selectedAssignmentData.assignment.resources,
+                            }}
+                            onBack={() => setSelectedAssignmentData(null)}
+                            onSave={(data) => {
+                                setModules(prev =>
+                                    prev.map(m => ({
+                                        ...m,
+                                        assignments: m.assignments.map(a =>
+                                            a.id === selectedAssignmentData.assignment.id
+                                                ? {
+                                                    ...a,
+                                                    title: data.title || a.title,
+                                                    due: data.dueDate || a.due,
+                                                    dueTime: data.dueTime || a.dueTime,
+                                                    description: data.description !== undefined ? data.description : a.description,
+                                                    objective: data.objective !== undefined ? data.objective : a.objective,
+                                                    expectedOutcome: data.expectedOutcome !== undefined ? data.expectedOutcome : a.expectedOutcome,
+                                                    resources: data.resources !== undefined ? data.resources : a.resources,
+                                                    isNew: false,
+                                                }
+                                                : a
+                                        )
+                                    }))
+                                );
+                                setSelectedAssignmentData(prev =>
+                                    prev ? {
+                                        ...prev,
+                                        assignment: {
+                                            ...prev.assignment,
+                                            title: data.title || prev.assignment.title,
+                                            due: data.dueDate || prev.assignment.due,
+                                            dueTime: data.dueTime || prev.assignment.dueTime,
+                                            description: data.description !== undefined ? data.description : prev.assignment.description,
+                                            objective: data.objective !== undefined ? data.objective : prev.assignment.objective,
+                                            expectedOutcome: data.expectedOutcome !== undefined ? data.expectedOutcome : prev.assignment.expectedOutcome,
+                                            resources: data.resources !== undefined ? data.resources : prev.assignment.resources,
+                                            isNew: false,
+                                        }
+                                    } : null
+                                );
+                            }}
+                        />
+                    )}
+                </SafeAreaView>
             </Modal>
         </View>
     );

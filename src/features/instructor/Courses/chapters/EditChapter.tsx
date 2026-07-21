@@ -88,9 +88,25 @@ export default function EditChapter({ chapter, onBack, onSave }: EditChapterProp
         });
     };
 
-    const [classContent, setClassContent] = useState(chapter?.classContent || '');
-    const [keyTopics, setKeyTopics] = useState(chapter?.keyTopics || '');
-    const [resources, setResources] = useState<FileItem[]>(chapter?.resources || []);
+    const [classContent, setClassContent] = useState(
+        chapter?.classContent !== undefined
+            ? chapter.classContent
+            : 'AI Agents are systems powered by Large Language Models (LLMs) that can autonomously perform tasks, make decisions, and interact with environments using tools and reasoning frameworks like ReAct.'
+    );
+    const [keyTopics, setKeyTopics] = useState(
+        chapter?.keyTopics !== undefined
+            ? chapter.keyTopics
+            : 'Introduction to AI Agents & Autonomous Workflows\nLangChain Fundamentals & Agent Executors\nCrewAI Multi-Agent Collaboration Framework\nAutoGen Framework for Conversational AI\nBuilding Real-World AI Agents'
+    );
+    const [resources, setResources] = useState<FileItem[]>(
+        chapter?.resources !== undefined
+            ? chapter.resources
+            : [
+                { id: '1', name: 'Agent_Architecture_Overview.pdf', size: '2.4 MB', status: 'ready' },
+                { id: '2', name: 'LangChain_CrewAI_Guide.docx', size: '1.8 MB', status: 'ready' },
+                { id: '3', name: 'Agentic_AI_Deep_Dive.mp4', size: '45.0 MB', status: 'ready' },
+            ]
+    );
 
 
     const handleDeleteResource = (id: string) => {
