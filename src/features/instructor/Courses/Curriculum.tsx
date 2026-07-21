@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Modal } from 'react-native';
 import { Search, Plus, Trash2, Edit2, ChevronUp, ChevronDown, MoreVertical } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
 import Assignments from './assignments';
 
 interface Chapter {
@@ -68,6 +69,7 @@ const INITIAL_MODULES: Module[] = [
 ];
 
 export default function Curriculum() {
+    const router = useRouter();
     const [searchQuery, setSearchQuery] = useState('');
     const [modules, setModules] = useState<Module[]>(INITIAL_MODULES);
     const [expandedModuleId, setExpandedModuleId] = useState<string | null>('1');
@@ -453,18 +455,21 @@ export default function Curriculum() {
                                         </View>
                                         <View className="gap-2.5">
                                             {item.tests.map((ts) => (
-                                                <View key={ts.id} className="flex-row items-center justify-between bg-white border border-[#F2EEF4] rounded-[12px] p-3">
+                                                <TouchableOpacity key={ts.id} onPress={() => router.push('/(instructor)/tests/results')} activeOpacity={0.7} className="flex-row items-center justify-between bg-white border border-[#F2EEF4] rounded-[12px] p-3">
                                                     <View className="flex-1 mr-2">
                                                         <Text className="text-[15px] text-[#333333] font-medium" numberOfLines={1}>{ts.title}</Text>
                                                         <Text className="text-[12px] text-[#808080] mt-0.5">Due: {ts.due}</Text>
                                                     </View>
                                                     <TouchableOpacity
-                                                        onPress={() => setDeleteModalState({ isOpen: true, type: 'test', moduleId: item.id, itemId: ts.id, title: ts.title })}
+                                                        onPress={(e) => {
+                                                            e.stopPropagation();
+                                                            setDeleteModalState({ isOpen: true, type: 'test', moduleId: item.id, itemId: ts.id, title: ts.title });
+                                                        }}
                                                         className="p-1 shrink-0"
                                                     >
                                                         <Trash2 size={14} color="#F32D2D" />
                                                     </TouchableOpacity>
-                                                </View>
+                                                </TouchableOpacity>
                                             ))}
                                             {item.tests.length === 0 && (
                                                 <Text className="text-[12px] text-[#8C8E90] italic pl-1">No tests added yet.</Text>

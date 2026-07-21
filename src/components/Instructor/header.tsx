@@ -10,10 +10,11 @@ import { ArrowLeft2 } from 'iconsax-react-native';
 
 export interface HeaderProps {
   title?: string;
+  subtitle?: string;
   onBackPress?: () => void;
 }
 
-export default function InstructorHeader({ title, onBackPress }: HeaderProps = {}) {
+export default function InstructorHeader({ title, subtitle, onBackPress }: HeaderProps = {}) {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
   return (
@@ -52,9 +53,16 @@ export default function InstructorHeader({ title, onBackPress }: HeaderProps = {
                       <ArrowLeft2 size={24} color="#1F2937" variant="Linear" />
                     </TouchableOpacity>
                   )}
-                  <Text className="text-[20px] font-medium text-[#333333] leading-tight flex-1" numberOfLines={1}>
-                    {title}
-                  </Text>
+                  <View className="flex-1">
+                    <Text className="text-[20px] font-medium text-[#333333] leading-tight" numberOfLines={1}>
+                      {title}
+                    </Text>
+                    {subtitle && (
+                      <Text className="text-[12px] font-medium text-[#808080] mt-0.5" numberOfLines={1}>
+                        {subtitle}
+                      </Text>
+                    )}
+                  </View>
                 </>
               ) : (
                 <View className="w-24 h-8 justify-center">
