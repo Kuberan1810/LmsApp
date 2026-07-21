@@ -4,6 +4,7 @@ import { ArrowLeft2 } from 'iconsax-react-native';
 import { Calendar, Clock, Edit2, FileText, Link2, Trash2, UploadCloud, X, Check } from 'lucide-react-native';
 import { useState } from 'react';
 import { Animated, ScrollView, Text, TextInput, TouchableOpacity, View, Modal } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function AssignmentDetailsScreen() {
   type UploadFile = {
@@ -19,6 +20,32 @@ export default function AssignmentDetailsScreen() {
   const [objective, setObjective] = useState('');
   const [expectedOutcome, setExpectedOutcome] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+
+  const onChangeDate = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(false);
+    if (selectedDate) setDate(selectedDate);
+  };
+
+  const onChangeTime = (event: any, selectedDate?: Date) => {
+    setShowTimePicker(false);
+    if (selectedDate) setDate(selectedDate);
+  };
+
+  const formattedDate = date.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+
+  const formattedTime = date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  });
 
   const pickDocument = async () => {
     try {
@@ -84,23 +111,47 @@ export default function AssignmentDetailsScreen() {
         {/* Date & Time Row */}
         <View className="flex-row justify-between mb-8 mt-2">
           {/* Due Date */}
-          <View className="bg-white rounded-2xl p-4 flex-1 mr-3 flex-row items-center justify-between">
+          <TouchableOpacity 
+            onPress={() => setShowDatePicker(true)}
+            className="bg-white rounded-2xl p-4 flex-1 mr-3 flex-row items-center justify-between"
+          >
             <View>
               <Text className="text-sm font-medium text-[#4B5563] mb-1">Due date</Text>
-              <Text className="text-[#9CA3AF] text-sm">12/01/2026</Text>
+              <Text className="text-[#9CA3AF] text-sm">{formattedDate}</Text>
             </View>
             <Calendar size={20} color="#9CA3AF" strokeWidth={1.5} />
-          </View>
+          </TouchableOpacity>
 
           {/* Due Time */}
-          <View className="bg-white rounded-2xl p-4 flex-1 ml-3 flex-row items-center justify-between">
+          <TouchableOpacity 
+            onPress={() => setShowTimePicker(true)}
+            className="bg-white rounded-2xl p-4 flex-1 ml-3 flex-row items-center justify-between"
+          >
             <View>
               <Text className="text-sm font-medium text-[#4B5563] mb-1">Due Time(IST)</Text>
-              <Text className="text-[#9CA3AF] text-sm">11:59 pm</Text>
+              <Text className="text-[#9CA3AF] text-sm">{formattedTime}</Text>
             </View>
             <Clock size={20} color="#9CA3AF" strokeWidth={1.5} />
-          </View>
+          </TouchableOpacity>
         </View>
+
+        {showDatePicker && (
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="default"
+            onChange={onChangeDate}
+          />
+        )}
+        
+        {showTimePicker && (
+          <DateTimePicker
+            value={date}
+            mode="time"
+            display="default"
+            onChange={onChangeTime}
+          />
+        )}
 
         {/* Description Card */}
         <View className="bg-white rounded-[24px] p-5 mb-5">
