@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Modal, TouchableOpacity, Animated, StyleSheet, Dimensions, Platform, PanResponder } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { X, ClipboardList, GraduationCap, FileText, Bell, ChevronRight } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
 
 interface QuickActionsModalProps {
   visible: boolean;
@@ -46,6 +47,7 @@ const ACTION_ITEMS = [
 ];
 
 export default function QuickActionsModal({ visible, onClose }: QuickActionsModalProps) {
+  const router = useRouter();
   const [showModal, setShowModal] = React.useState(visible);
   const slideAnim = React.useRef(new Animated.Value(height)).current;
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
@@ -190,6 +192,15 @@ export default function QuickActionsModal({ visible, onClose }: QuickActionsModa
                 onPress={() => {
                   console.log(`Clicked ${item.title}`);
                   onClose();
+                  if (item.id === 'assignment') {
+                    router.push('/(instructor)/create-assignment');
+                  } else if (item.id === 'test') {
+                    router.push('/(instructor)/create-test');
+                  } else if (item.id === 'announcement') {
+                    router.push('/(instructor)/create-announcement');
+                  } else if (item.id === 'resources') {
+                    router.push('/(instructor)/create-resource');
+                  }
                 }}
               >
                 <View style={[styles.iconContainer, { backgroundColor: item.bgColor }]}>
