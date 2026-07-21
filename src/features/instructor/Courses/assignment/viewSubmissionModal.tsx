@@ -32,7 +32,7 @@ export default function ViewSubmissionModal({
     const submittedOn = submission?.submittedOn || 'Jul 14, 2026, 05:15 PM';
     const status = submission?.status || 'Graded';
     const initialGrade = submission?.grade ? String(submission.grade) : '90';
-    const notes = submission?.notes || '"This is your assignment work"';
+    const notes = submission?.notes || '"This is my assignment work"';
     const fileName = submission?.fileName || 'Text_to_PDF_Onlinenotpad';
 
     const [marks, setMarks] = useState(initialGrade);
@@ -93,7 +93,7 @@ export default function ViewSubmissionModal({
                                 <View className="flex-row items-center flex-1 mr-3">
                                     <View className="w-16 h-13 p-4 rounded-[20px] bg-[#FFF0F0] items-center justify-center mr-3">
                                         <ExpoImage
-                                            source={require('../../../../assets/images/pdficon.svg')}
+                                            source={require('../../../../../assets/images/pdficon.svg')}
                                             style={{ width: 24, height: 24 }}
                                             contentFit="contain"
                                         />

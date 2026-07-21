@@ -10,20 +10,20 @@ const getFileIconSource = (fileName: string) => {
     const ext = fileName.split('.').pop()?.toLowerCase();
     switch (ext) {
         case 'pdf':
-            return require('../../../../assets/icon/pdfIcon.svg');
+            return require('../../../../../assets/icon/pdfIcon.svg');
         case 'doc':
-            return require('../../../../assets/icon/docIcon.svg');
+            return require('../../../../../assets/icon/docIcon.svg');
         case 'docx':
-            return require('../../../../assets/icon/word.svg');
+            return require('../../../../../assets/icon/word.svg');
         case 'xls':
         case 'xlsx':
-            return require('../../../../assets/icon/xl.svg');
+            return require('../../../../../assets/icon/xl.svg');
         case 'png':
         case 'jpg':
         case 'jpeg':
-            return require('../../../../assets/icon/imgIcon.svg');
+            return require('../../../../../assets/icon/imgIcon.svg');
         default:
-            return require('../../../../assets/icon/file.svg');
+            return require('../../../../../assets/icon/file.svg');
     }
 };
 

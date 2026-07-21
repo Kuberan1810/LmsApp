@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Modal } from 'react-native';
 import { Search, Plus, Trash2, Edit2, ChevronUp, ChevronDown, MoreVertical } from 'lucide-react-native';
-import Assignments from './assignments';
+import Assignments from './assignment/assignments';
+import Chapters from './chapters/Chapters';
+
 
 interface Chapter {
     id: string;
@@ -72,7 +74,8 @@ export default function Curriculum() {
     const [modules, setModules] = useState<Module[]>(INITIAL_MODULES);
     const [expandedModuleId, setExpandedModuleId] = useState<string | null>('1');
 
-    // Selected Assignment state for viewing / editing detail page
+    // Chapter 
+    const [selectedChapterData, setSelectedChapterData] = useState<{ chapter: Chapter; moduleTitle: string } | null>(null);
     const [selectedAssignmentData, setSelectedAssignmentData] = useState<{ assignment: Assignment; moduleTitle: string } | null>(null);
 
     // Module Menu 
@@ -296,6 +299,8 @@ export default function Curriculum() {
         setDeleteModalState({ isOpen: false, type: 'module', moduleId: '' });
     };
 
+
+
     return (
         <View className="bg-white border border-[#F2EEF4] rounded-[16px] mb-4 p-4 mx-5">
             <View className="mb-4">
@@ -379,20 +384,34 @@ export default function Curriculum() {
                                         </View>
                                         <View className="gap-2.5">
                                             {item.chapters.map((ch) => (
-                                                <View key={ch.id} className="flex-row items-center justify-between bg-white border border-[#F2EEF4] rounded-[12px] p-3">
+                                                <TouchableOpacity
+                                                    key={ch.id}
+                                                    onPress={() => setSelectedChapterData({ chapter: ch, moduleTitle: item.title })}
+                                                    activeOpacity={0.7}
+                                                    className="flex-row items-center justify-between bg-white border border-[#F2EEF4] rounded-[12px] p-3"
+                                                >
                                                     <Text className="text-[15px] text-[#333333] font-medium flex-1 mr-2" numberOfLines={1}>{ch.title}</Text>
                                                     <View className="flex-row items-center gap-2 shrink-0">
-                                                        <TouchableOpacity onPress={() => handleOpenEditChapter(item.id, ch)} className="p-1">
+                                                        <TouchableOpacity
+                                                            onPress={(e) => {
+                                                                e.stopPropagation();
+                                                                handleOpenEditChapter(item.id, ch);
+                                                            }}
+                                                            className="p-1"
+                                                        >
                                                             <Edit2 size={14} color="#6A7282" />
                                                         </TouchableOpacity>
                                                         <TouchableOpacity
-                                                            onPress={() => setDeleteModalState({ isOpen: true, type: 'chapter', moduleId: item.id, itemId: ch.id, title: ch.title })}
+                                                            onPress={(e) => {
+                                                                e.stopPropagation();
+                                                                setDeleteModalState({ isOpen: true, type: 'chapter', moduleId: item.id, itemId: ch.id, title: ch.title });
+                                                            }}
                                                             className="p-1"
                                                         >
                                                             <Trash2 size={14} color="#F32D2D" />
                                                         </TouchableOpacity>
                                                     </View>
-                                                </View>
+                                                </TouchableOpacity>
                                             ))}
                                             {item.chapters.length === 0 && (
                                                 <Text className="text-[12px] text-[#8C8E90] italic pl-1">No chapters added yet.</Text>
@@ -835,6 +854,21 @@ export default function Curriculum() {
                 </View>
             </Modal>
 
+            {/* Chapter View / Edit Screen Modal */}
+            <Modal
+                visible={!!selectedChapterData}
+                animationType="slide"
+                onRequestClose={() => setSelectedChapterData(null)}
+            >
+                {selectedChapterData && (
+                    <Chapters
+                        chapterTitle={selectedChapterData.chapter.title}
+                        moduleName={selectedChapterData.moduleTitle}
+                        onBack={() => setSelectedChapterData(null)}
+                    />
+                )}
+            </Modal>
+
             {/* Assignment View / Edit Screen Modal */}
             <Modal
                 visible={!!selectedAssignmentData}
@@ -845,8 +879,9 @@ export default function Curriculum() {
                     <Assignments
                         assignment={{
                             title: selectedAssignmentData.assignment.title,
-                            dueDate: selectedAssignmentData.assignment.due,
                             moduleName: selectedAssignmentData.moduleTitle,
+                            id: selectedAssignmentData.assignment.id,
+                            dueDate: selectedAssignmentData.assignment.due,
                         }}
                         onBack={() => setSelectedAssignmentData(null)}
                     />
