@@ -13,8 +13,7 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#FFFFFF",
-        "foregroundImage": "./assets/images/coirei-cirlce-logo.png",
-       
+        "foregroundImage": "./assets/images/coirei-cirlce-logo.png"
       },
       "predictiveBackGestureEnabled": false
     },
@@ -32,7 +31,8 @@
           "imageWidth": 76
         }
       ],
-      "expo-font"
+      "expo-font",
+      "@react-native-community/datetimepicker"
     ],
     "experiments": {
       "typedRoutes": true,

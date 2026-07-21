@@ -34,9 +34,9 @@ export default function CustomDropdown({ value, onChange, options, placeholder =
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={toggleDropdown}
-        className="bg-[#FAFAFA] border border-[#F3F4F6] rounded-xl flex-row items-center justify-between px-4 py-3.5"
+        className="bg-white border border-[#D3D3D3] rounded-[10px] h-[45px] flex-row items-center justify-between px-[15px]"
       >
-        <Text className={`text-base flex-1 ${selectedItem ? 'text-[#1F2937]' : 'text-[#D1D5DB]'}`}>
+        <Text className={`text-[14px] flex-1 ${selectedItem ? 'text-[#1F2937]' : 'text-[#9CA3AF]'}`}>
           {selectedItem ? selectedItem.label : placeholder}
         </Text>
         {visible ? (

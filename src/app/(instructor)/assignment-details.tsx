@@ -1,9 +1,9 @@
+import * as DocumentPicker from 'expo-document-picker';
 import { Stack, router } from 'expo-router';
 import { ArrowLeft2 } from 'iconsax-react-native';
-import { Edit2, Calendar, UploadCloud, FileText, Trash2, X, Link2 } from 'lucide-react-native';
+import { Calendar, Clock, Edit2, FileText, Link2, Trash2, UploadCloud, X, Check } from 'lucide-react-native';
 import { useState } from 'react';
-import { ScrollView, Text, TextInput, TouchableOpacity, View, Animated } from 'react-native';
-import * as DocumentPicker from 'expo-document-picker';
+import { Animated, ScrollView, Text, TextInput, TouchableOpacity, View, Modal } from 'react-native';
 
 export default function AssignmentDetailsScreen() {
   type UploadFile = {
@@ -14,6 +14,11 @@ export default function AssignmentDetailsScreen() {
     status: 'uploading' | 'ready';
   };
   const [files, setFiles] = useState<UploadFile[]>([]);
+  const [assignmentName, setAssignmentName] = useState('Assignment Name');
+  const [description, setDescription] = useState('');
+  const [objective, setObjective] = useState('');
+  const [expectedOutcome, setExpectedOutcome] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const pickDocument = async () => {
     try {
@@ -21,7 +26,7 @@ export default function AssignmentDetailsScreen() {
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const file = result.assets[0];
         const fileSizeMB = (file.size ? file.size / (1024 * 1024) : 0).toFixed(1) + 'MB';
-        
+
         const newFile: UploadFile = {
           id: Math.random().toString(),
           name: file.name,
@@ -57,9 +62,15 @@ export default function AssignmentDetailsScreen() {
         <TouchableOpacity onPress={() => router.back()} className="mr-2 p-1">
           <ArrowLeft2 size={24} color="#111827" />
         </TouchableOpacity>
-        
-        <View className="flex-row items-center">
-          <Text className="text-xl font-medium text-[#111827] mr-2">Assignment Name</Text>
+
+        <View className="flex-row items-center flex-1 pr-4">
+          <TextInput
+            value={assignmentName}
+            onChangeText={setAssignmentName}
+            className="text-xl font-medium text-[#111827] mr-2 p-0"
+            placeholder="Assignment Name"
+            placeholderTextColor="#9CA3AF"
+          />
           <Edit2 size={14} color="#9CA3AF" />
         </View>
 
@@ -69,7 +80,7 @@ export default function AssignmentDetailsScreen() {
       </View>
 
       <ScrollView className="flex-1 px-5" showsVerticalScrollIndicator={false}>
-        
+
         {/* Date & Time Row */}
         <View className="flex-row justify-between mb-8 mt-2">
           {/* Due Date */}
@@ -87,7 +98,7 @@ export default function AssignmentDetailsScreen() {
               <Text className="text-sm font-medium text-[#4B5563] mb-1">Due Time(IST)</Text>
               <Text className="text-[#9CA3AF] text-sm">11:59 pm</Text>
             </View>
-            <Calendar size={20} color="#9CA3AF" strokeWidth={1.5} />
+            <Clock size={20} color="#9CA3AF" strokeWidth={1.5} />
           </View>
         </View>
 
@@ -101,9 +112,9 @@ export default function AssignmentDetailsScreen() {
               placeholder="Enter description here..."
               placeholderTextColor="#9CA3AF"
               className="text-[#4B5563] text-[14px] leading-5 flex-1"
-            >
-              AI Agents are systems that use LLMs to plan, act, and collaborate autonomously. LangChain builds tool-using agents for workflows and RAG. CrewAI enables role-based multi-agent teamwork. AutoGen focuses on conversation-driven agents that interact with each other and humans to solve complex tasks.
-            </TextInput>
+              value={description}
+              onChangeText={setDescription}
+            />
           </View>
         </View>
 
@@ -117,9 +128,9 @@ export default function AssignmentDetailsScreen() {
               placeholder="Enter objective here..."
               placeholderTextColor="#9CA3AF"
               className="text-[#4B5563] text-[14px] leading-5 flex-1"
-            >
-              AI Agents are systems that use LLMs to plan, act, and collaborate autonomously. LangChain builds tool-using agents for workflows and RAG. CrewAI enables role-based multi-agent teamwork. AutoGen focuses on conversation-driven agents that interact with each other and humans to solve complex tasks.
-            </TextInput>
+              value={objective}
+              onChangeText={setObjective}
+            />
           </View>
         </View>
 
@@ -133,16 +144,16 @@ export default function AssignmentDetailsScreen() {
               placeholder="Enter expected outcome here..."
               placeholderTextColor="#9CA3AF"
               className="text-[#4B5563] text-[14px] leading-5 flex-1"
-            >
-              AI Agents are systems that use LLMs to plan, act, and collaborate autonomously. LangChain builds tool-using agents for workflows and RAG. CrewAI enables role-based multi-agent teamwork. AutoGen focuses on conversation-driven agents that interact with each other and humans to solve complex tasks.
-            </TextInput>
+              value={expectedOutcome}
+              onChangeText={setExpectedOutcome}
+            />
           </View>
         </View>
 
         {/* Resources Card */}
         <View className="bg-white rounded-[24px] p-5 mb-5">
           <Text className="text-[18px] text-[#1F2937] mb-4">Resources</Text>
-          
+
           <TouchableOpacity onPress={pickDocument} className="border-2 border-dashed border-[#E5E7EB] rounded-2xl py-8 items-center justify-center mb-6">
             <View className="w-14 h-14 bg-[#F67300] rounded-full items-center justify-center mb-4">
               <UploadCloud size={24} color="#FFFFFF" strokeWidth={2} />
@@ -171,14 +182,14 @@ export default function AssignmentDetailsScreen() {
                     </View>
                     {file.status === 'uploading' && (
                       <View className="h-1 bg-[#F3F4F6] rounded-full mt-2 overflow-hidden w-full">
-                        <Animated.View 
-                          className="h-full bg-[#F67300] rounded-full" 
+                        <Animated.View
+                          className="h-full bg-[#F67300] rounded-full"
                           style={{
                             width: file.progress.interpolate({
                               inputRange: [0, 100],
                               outputRange: ['0%', '100%']
                             })
-                          }} 
+                          }}
                         />
                       </View>
                     )}
@@ -217,12 +228,42 @@ export default function AssignmentDetailsScreen() {
 
         {/* Footer */}
         <View className="flex-row items-center justify-end mb-10">
-          <TouchableOpacity className="bg-[#F67300] py-3.5 px-8 rounded-xl items-center justify-center">
+          <TouchableOpacity 
+            className="bg-[#F67300] py-3.5 px-8 rounded-xl items-center justify-center"
+            onPress={() => setShowSuccessModal(true)}
+          >
             <Text className="text-white font-semibold text-sm">Save & Upload</Text>
           </TouchableOpacity>
         </View>
 
       </ScrollView>
+
+      {/* Success Modal */}
+      <Modal
+        visible={showSuccessModal}
+        transparent
+        animationType="fade"
+      >
+        <View className="flex-1 items-center justify-center px-10" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}>
+          <View className="bg-white rounded-[32px] p-8 w-full items-center">
+            <View className="w-14 h-14 bg-[#22C55E] rounded-full items-center justify-center mb-6">
+              <Check size={32} color="#FFFFFF" strokeWidth={3} />
+            </View>
+            <Text className="text-[20px] font-medium text-[#374151] mb-8 text-center">
+              Assignment Created !
+            </Text>
+            <TouchableOpacity 
+              className="bg-[#F67300] w-[140px] py-3.5 rounded-xl items-center justify-center"
+              onPress={() => {
+                setShowSuccessModal(false);
+                router.back();
+              }}
+            >
+              <Text className="text-white font-semibold text-[15px]">Done</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

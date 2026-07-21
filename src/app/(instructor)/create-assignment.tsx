@@ -1,8 +1,8 @@
+import CustomDropdown from '@/components/Instructor/CustomDropdown';
 import { Stack, router } from 'expo-router';
 import { ArrowLeft2, ClipboardText } from 'iconsax-react-native';
 import { useState } from 'react';
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import CustomDropdown from '@/components/Instructor/CustomDropdown';
 
 export default function CreateAssignmentScreen() {
   const [courseName, setCourseName] = useState('');
@@ -57,12 +57,17 @@ export default function CreateAssignmentScreen() {
       </View>
 
       {/* Form Section */}
-      <ScrollView className="flex-1 px-6 pt-8" showsVerticalScrollIndicator={false}>
-        <Text className="text-xl font-bold text-[#1F2937] mb-6">Assignment Details</Text>
+      <ScrollView 
+        className="flex-1 px-6 pt-8" 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
+      >
+        <View className="flex-1">
+          <Text className="text-xl font-bold text-[#1F2937] mb-6">Assignment Details</Text>
 
         <View className="mb-5">
-          <Text className="text-sm font-medium text-[#4B5563] mb-2">Course Name / ID</Text>
-          <CustomDropdown 
+          <Text className="text-[14px] font-medium text-[#4B5563] mb-2">Course Name / ID</Text>
+          <CustomDropdown
             value={courseName}
             onChange={setCourseName}
             options={DUMMY_COURSES}
@@ -71,8 +76,8 @@ export default function CreateAssignmentScreen() {
         </View>
 
         <View className="mb-5">
-          <Text className="text-sm font-medium text-[#4B5563] mb-2">Batch ID</Text>
-          <CustomDropdown 
+          <Text className="text-[14px] font-medium text-[#4B5563] mb-2">Batch ID</Text>
+          <CustomDropdown
             value={batchId}
             onChange={setBatchId}
             options={DUMMY_BATCHES}
@@ -81,18 +86,19 @@ export default function CreateAssignmentScreen() {
         </View>
 
         <View className="mb-8">
-          <Text className="text-sm font-medium text-[#4B5563] mb-2">Module</Text>
+          <Text className="text-[14px] font-medium text-[#4B5563] mb-2">Module</Text>
           <TextInput
             value={moduleName}
             onChangeText={setModuleName}
             placeholder="E.g. Module 1"
-            placeholderTextColor="#D1D5DB"
-            className="bg-[#FAFAFA] border border-[#F3F4F6] rounded-xl px-4 py-3.5 text-base text-[#1F2937]"
+            placeholderTextColor="#9CA3AF"
+            className="bg-white border border-[#D3D3D3] rounded-[10px] h-[45px] px-[15px] text-[14px] text-[#1F2937]"
           />
+        </View>
         </View>
 
         {/* Buttons */}
-        <View className="flex-row items-center justify-between mb-4">
+        <View className="flex-row items-center justify-between mt-4">
           <TouchableOpacity
             onPress={() => router.back()}
             className="flex-1 py-4 rounded-xl border border-[#E5E7EB] bg-white items-center justify-center mr-3"
