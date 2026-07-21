@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, LayoutAnimation, Platform, UIManager } from 'react-native';
-import { ChevronDown, ChevronUp } from 'lucide-react-native';
+import { ArrowDown2, ArrowUp2 } from 'iconsax-react-native';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -11,9 +11,10 @@ interface CustomDropdownProps {
   onChange: (value: string) => void;
   options: { label: string; value: string }[];
   placeholder?: string;
+  className?: string;
 }
 
-export default function CustomDropdown({ value, onChange, options, placeholder = 'Select...' }: CustomDropdownProps) {
+export default function CustomDropdown({ value, onChange, options, placeholder = 'Select...', className = '' }: CustomDropdownProps) {
   const [visible, setVisible] = useState(false);
 
   const selectedItem = options.find((opt) => opt.value === value);
@@ -34,15 +35,15 @@ export default function CustomDropdown({ value, onChange, options, placeholder =
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={toggleDropdown}
-        className="bg-white border border-[#D3D3D3] rounded-[10px] h-[45px] flex-row items-center justify-between px-[15px]"
+        className={`bg-white border border-[#D3D3D3] rounded-[10px] h-[38px] flex-row items-center justify-between px-3 ${className}`}
       >
-        <Text className={`text-[14px] flex-1 ${selectedItem ? 'text-[#1F2937]' : 'text-[#9CA3AF]'}`}>
+        <Text className={`text-[13px] font-medium flex-1 mr-1 ${selectedItem ? 'text-[#1F2937]' : 'text-[#9CA3AF]'}`} numberOfLines={1}>
           {selectedItem ? selectedItem.label : placeholder}
         </Text>
         {visible ? (
-          <ChevronUp size={20} color="#9CA3AF" />
+          <ArrowUp2 size={14} color="#9CA3AF" variant="Linear" />
         ) : (
-          <ChevronDown size={20} color="#9CA3AF" />
+          <ArrowDown2 size={14} color="#9CA3AF" variant="Linear" />
         )}
       </TouchableOpacity>
 
@@ -58,12 +59,7 @@ export default function CustomDropdown({ value, onChange, options, placeholder =
                 ]}
                 onPress={() => handleSelect(item.value)}
               >
-                <Text
-                  style={[
-                    styles.optionText,
-                    value === item.value && styles.selectedOptionText
-                  ]}
-                >
+                <Text className={`text-[13px] ${item.value === value ? 'text-[#F67300] font-semibold' : 'text-[#4B5563]'}`}>
                   {item.label}
                 </Text>
               </TouchableOpacity>
@@ -78,31 +74,22 @@ export default function CustomDropdown({ value, onChange, options, placeholder =
 const styles = StyleSheet.create({
   dropdownContainer: {
     position: 'absolute',
-    top: 50,
-    zIndex: 1000,
+    top: 42,
+    left: 0,
+    right: 0,
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#F3F4F6',
-    width: '100%',
-    maxHeight: 200,
-    marginTop: 8,
-    overflow: 'hidden',
+    borderColor: '#E5E7EB',
+    maxHeight: 160,
+    zIndex: 1000,
   },
   option: {
-    paddingVertical: 14,
-    paddingHorizontal: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
   },
   optionBorder: {
     borderBottomWidth: 1,
     borderBottomColor: '#F3F4F6',
-  },
-  optionText: {
-    fontSize: 15,
-    color: '#374151',
-  },
-  selectedOptionText: {
-    color: '#000000',
-    fontWeight: '600',
   },
 });
