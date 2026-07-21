@@ -1,9 +1,9 @@
+import { Image } from 'expo-image';
 import { Stack, router } from 'expo-router';
 import { ArrowLeft2 } from 'iconsax-react-native';
-import { Folder, Upload, Download, Edit2, Trash2, Plus } from 'lucide-react-native';
+import { Download, Edit2, Folder, Plus, Trash2, Upload } from 'lucide-react-native';
 import { useState } from 'react';
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { Image } from 'expo-image';
 import CustomDropdown from '../../components/Instructor/CustomDropdown';
 
 export default function CreateResourceScreen() {
@@ -52,16 +52,17 @@ export default function CreateResourceScreen() {
         </View>
       </View>
 
-      <ScrollView 
-        className="flex-1 px-6 pt-8" 
+      <ScrollView
+        className="flex-1 px-6 pt-8"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 40 }}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
       >
-        
+        <View className="flex-1">
+
         {/* Dropdowns */}
         <View className="mb-5 z-50">
           <Text className="text-sm font-medium text-[#4B5563] mb-2">Course</Text>
-          <CustomDropdown 
+          <CustomDropdown
             value={courseName}
             onChange={setCourseName}
             options={DUMMY_COURSES}
@@ -71,7 +72,7 @@ export default function CreateResourceScreen() {
 
         <View className="mb-8 z-40">
           <Text className="text-sm font-medium text-[#4B5563] mb-2">Batch</Text>
-          <CustomDropdown 
+          <CustomDropdown
             value={batchId}
             onChange={setBatchId}
             options={DUMMY_BATCHES}
@@ -100,9 +101,9 @@ export default function CreateResourceScreen() {
             <View className="flex-row items-center">
               <View className="w-16 h-13 p-4 rounded-[20px] bg-[#FFF0F0] items-center justify-center mr-3">
                 <Image
-                    source={require('../../../assets/images/pdficon.svg')}
-                    contentFit="contain"
-                    style={{ width: 24, height: 24 }}
+                  source={require('../../../assets/images/pdficon.svg')}
+                  contentFit="contain"
+                  style={{ width: 24, height: 24 }}
                 />
               </View>
               <View className="flex-1">
@@ -130,24 +131,25 @@ export default function CreateResourceScreen() {
 
           <View className="bg-[#FAFAFA] border border-[#F3F4F6] rounded-2xl p-4">
             <Text className="text-[#9CA3AF] text-xs font-medium mb-3">FAQ #1</Text>
-            
+
             <TextInput
               placeholder="Enter Question (e.g. When is the assignment due?)"
               placeholderTextColor="#9CA3AF"
-              className="bg-white border border-[#E5E7EB] rounded-xl px-4 py-3.5 text-sm text-[#1F2937] mb-3"
+              className="bg-white border border-[#D3D3D3] rounded-[10px] h-[45px] px-[15px] text-[14px] text-[#1F2937] mb-3"
             />
             <TextInput
               placeholder="Enter Answer (e.g. Submissions are accepted until Friday midnight.)"
               placeholderTextColor="#9CA3AF"
               multiline
               textAlignVertical="top"
-              className="bg-white border border-[#E5E7EB] rounded-xl px-4 py-3.5 text-sm text-[#1F2937] min-h-[80px]"
+              className="bg-white border border-[#D3D3D3] rounded-[10px] px-[15px] py-3.5 text-[14px] text-[#1F2937] min-h-[80px]"
             />
           </View>
         </View>
+        </View>
 
         {/* Buttons */}
-        <View className="flex-row items-center justify-between mb-10">
+        <View className="flex-row items-center justify-between mt-4">
           <TouchableOpacity
             onPress={() => router.back()}
             className="flex-1 py-4 rounded-xl border border-[#E5E7EB] bg-white items-center justify-center mr-3"
