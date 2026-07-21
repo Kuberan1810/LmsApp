@@ -2,20 +2,27 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Modal } from 'react-native';
 import { Search, Plus, Trash2, Edit2, ChevronUp, ChevronDown, MoreVertical } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
-
-import Assignments from './assignment/assignments';
+import Assignments, { ResourceItem } from './assignment/assignments';
 import Chapters from './chapters/Chapters';
-
+import { FileItem } from './chapters/EditChapter';
 
 interface Chapter {
     id: string;
     title: string;
+    classContent?: string;
+    keyTopics?: string;
+    resources?: FileItem[];
 }
 
 interface Assignment {
     id: string;
     title: string;
     due: string;
+    dueTime?: string;
+    description?: string;
+    objective?: string;
+    expectedOutcome?: string;
+    resources?: ResourceItem[];
 }
 
 interface Test {
@@ -137,10 +144,12 @@ export default function Curriculum() {
     // Module Handlers
     const handleAddModule = () => {
         if (!newModuleTitle.trim()) return;
-        const nextId = (modules.length + 1).toString();
+        const nextNum = modules.length + 1;
+        const cleanTitle = newModuleTitle.trim().replace(/^Module\s*\d+\s*[:|-]?\s*/i, '');
+        const formattedTitle = `Module ${nextNum}: ${cleanTitle || newModuleTitle.trim()}`;
         const newModule: Module = {
-            id: nextId,
-            title: newModuleTitle.trim(),
+            id: nextNum.toString(),
+            title: formattedTitle,
             status: 'Ongoing',
             statusBg: 'bg-[#FFEDDE]',
             statusColor: 'text-[#F67300]',
@@ -149,7 +158,7 @@ export default function Curriculum() {
             tests: []
         };
         setModules([...modules, newModule]);
-        setExpandedModuleId(nextId);
+        setExpandedModuleId(nextNum.toString());
         setNewModuleTitle('');
         setIsAddModuleOpen(false);
     };
@@ -182,9 +191,14 @@ export default function Curriculum() {
         setModules(prev =>
             prev.map(m => {
                 if (m.id === targetModuleIdForChapter) {
+                    const moduleIndex = prev.findIndex(mod => mod.id === m.id) + 1;
+                    const nextNum = m.chapters.length + 1;
+                    const cleanTitle = newChapterTitle.trim().replace(/^Chapter\s*\d+(\.\d+)?\s*[-:]?\s*/i, '');
+                    const formattedTitle = `Chapter ${moduleIndex}.${nextNum} - ${cleanTitle}`;
+
                     return {
                         ...m,
-                        chapters: [...m.chapters, { id: `c_${Date.now()}`, title: newChapterTitle.trim() }]
+                        chapters: [...m.chapters, { id: `c_${Date.now()}`, title: formattedTitle }]
                     };
                 }
                 return m;
@@ -234,11 +248,16 @@ export default function Curriculum() {
         setModules(prev =>
             prev.map(m => {
                 if (m.id === targetModuleIdForAssignment) {
+                    const moduleIndex = prev.findIndex(mod => mod.id === m.id) + 1;
+                    const nextNum = m.assignments.length + 1;
+                    const cleanTitle = newAssignmentTitle.trim().replace(/^Assignment\s*\d+(\.\d+)?\s*[-:]?\s*/i, '');
+                    const formattedTitle = `Assignment ${moduleIndex}.${nextNum} - ${cleanTitle}`;
+
                     return {
                         ...m,
                         assignments: [...m.assignments, {
                             id: `a_${Date.now()}`,
-                            title: newAssignmentTitle.trim(),
+                            title: formattedTitle,
                             due: newAssignmentDue.trim() || '18-07-2026'
                         }]
                     };
@@ -264,11 +283,16 @@ export default function Curriculum() {
         setModules(prev =>
             prev.map(m => {
                 if (m.id === targetModuleIdForTest) {
+                    const moduleIndex = prev.findIndex(mod => mod.id === m.id) + 1;
+                    const nextNum = m.tests.length + 1;
+                    const cleanTitle = newTestTitle.trim().replace(/^Test\s*\d+(\.\d+)?\s*[-:]?\s*/i, '');
+                    const formattedTitle = `Test ${moduleIndex}.${nextNum} - ${cleanTitle}`;
+
                     return {
                         ...m,
                         tests: [...m.tests, {
                             id: `t_${Date.now()}`,
-                            title: newTestTitle.trim(),
+                            title: formattedTitle,
                             due: newTestDue.trim() || '2026-07-20'
                         }]
                     };
@@ -863,14 +887,53 @@ export default function Curriculum() {
             {/* Chapter View / Edit Screen Modal */}
             <Modal
                 visible={!!selectedChapterData}
-                animationType="slide"
+                animationType="none"
                 onRequestClose={() => setSelectedChapterData(null)}
             >
                 {selectedChapterData && (
                     <Chapters
+                        chapter={{
+                            id: selectedChapterData.chapter.id,
+                            title: selectedChapterData.chapter.title,
+                            chapterTitle: selectedChapterData.chapter.title,
+                            moduleName: selectedChapterData.moduleTitle,
+                            classContent: selectedChapterData.chapter.classContent,
+                            keyTopics: selectedChapterData.chapter.keyTopics,
+                            resources: selectedChapterData.chapter.resources,
+                        }}
                         chapterTitle={selectedChapterData.chapter.title}
                         moduleName={selectedChapterData.moduleTitle}
                         onBack={() => setSelectedChapterData(null)}
+                        onSave={(data) => {
+                            setModules(prev =>
+                                prev.map(m => ({
+                                    ...m,
+                                    chapters: m.chapters.map(c =>
+                                        c.id === selectedChapterData.chapter.id
+                                            ? {
+                                                ...c,
+                                                title: data.title || c.title,
+                                                classContent: data.classContent !== undefined ? data.classContent : c.classContent,
+                                                keyTopics: data.keyTopics !== undefined ? data.keyTopics : c.keyTopics,
+                                                resources: data.resources !== undefined ? data.resources : c.resources,
+                                            }
+                                            : c
+                                    )
+                                }))
+                            );
+                            setSelectedChapterData(prev =>
+                                prev ? {
+                                    ...prev,
+                                    chapter: {
+                                        ...prev.chapter,
+                                        title: data.title || prev.chapter.title,
+                                        classContent: data.classContent !== undefined ? data.classContent : prev.chapter.classContent,
+                                        keyTopics: data.keyTopics !== undefined ? data.keyTopics : prev.chapter.keyTopics,
+                                        resources: data.resources !== undefined ? data.resources : prev.chapter.resources,
+                                    }
+                                } : null
+                            );
+                        }}
                     />
                 )}
             </Modal>
@@ -878,18 +941,59 @@ export default function Curriculum() {
             {/* Assignment View / Edit Screen Modal */}
             <Modal
                 visible={!!selectedAssignmentData}
-                animationType="slide"
+                animationType="none"
                 onRequestClose={() => setSelectedAssignmentData(null)}
             >
                 {selectedAssignmentData && (
                     <Assignments
                         assignment={{
+                            id: selectedAssignmentData.assignment.id,
                             title: selectedAssignmentData.assignment.title,
                             moduleName: selectedAssignmentData.moduleTitle,
-                            id: selectedAssignmentData.assignment.id,
                             dueDate: selectedAssignmentData.assignment.due,
+                            dueTime: selectedAssignmentData.assignment.dueTime,
+                            description: selectedAssignmentData.assignment.description,
+                            objective: selectedAssignmentData.assignment.objective,
+                            expectedOutcome: selectedAssignmentData.assignment.expectedOutcome,
+                            resources: selectedAssignmentData.assignment.resources,
                         }}
                         onBack={() => setSelectedAssignmentData(null)}
+                        onSave={(data) => {
+                            setModules(prev =>
+                                prev.map(m => ({
+                                    ...m,
+                                    assignments: m.assignments.map(a =>
+                                        a.id === selectedAssignmentData.assignment.id
+                                            ? {
+                                                ...a,
+                                                title: data.title || a.title,
+                                                due: data.dueDate || a.due,
+                                                dueTime: data.dueTime || a.dueTime,
+                                                description: data.description !== undefined ? data.description : a.description,
+                                                objective: data.objective !== undefined ? data.objective : a.objective,
+                                                expectedOutcome: data.expectedOutcome !== undefined ? data.expectedOutcome : a.expectedOutcome,
+                                                resources: data.resources !== undefined ? data.resources : a.resources,
+                                            }
+                                            : a
+                                    )
+                                }))
+                            );
+                            setSelectedAssignmentData(prev =>
+                                prev ? {
+                                    ...prev,
+                                    assignment: {
+                                        ...prev.assignment,
+                                        title: data.title || prev.assignment.title,
+                                        due: data.dueDate || prev.assignment.due,
+                                        dueTime: data.dueTime || prev.assignment.dueTime,
+                                        description: data.description !== undefined ? data.description : prev.assignment.description,
+                                        objective: data.objective !== undefined ? data.objective : prev.assignment.objective,
+                                        expectedOutcome: data.expectedOutcome !== undefined ? data.expectedOutcome : prev.assignment.expectedOutcome,
+                                        resources: data.resources !== undefined ? data.resources : prev.assignment.resources,
+                                    }
+                                } : null
+                            );
+                        }}
                     />
                 )}
             </Modal>

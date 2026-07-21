@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { Image as ExpoImage } from 'expo-image';
-import * as DocumentPicker from 'expo-document-picker';
-import Header from '@/components/Instructor/header';
-import { Edit2, Trash2, UploadCloud, X, Check } from 'lucide-react-native';
+import InstructorHeader from '@/components/Instructor/InstructorHeader';
+import { DocumentUpload, Maximize, Link as IconsaxLink } from 'iconsax-react-native';
+import EditChapter, { EditChapterData } from './EditChapter';
 
 const getFileIconSource = (fileName: string) => {
     const ext = fileName.split('.').pop()?.toLowerCase();
@@ -33,19 +33,19 @@ const getFileBgColor = (fileName: string) => {
     }
     switch (ext) {
         case 'pdf':
-            return 'bg-[#FFF0F0]';
+            return 'bg-[#FEE2E2]';
         case 'doc':
         case 'docx':
-            return 'bg-[#EBF5FF]';
+            return 'bg-[#E0F2FE]';
         case 'xls':
         case 'xlsx':
-            return 'bg-[#F0FDF4]';
+            return 'bg-[#DCFCE7]';
         case 'png':
         case 'jpg':
         case 'jpeg':
-            return 'bg-[#FFF7ED]';
+            return 'bg-[#F3E8FF]';
         default:
-            return 'bg-[#FFF0F0]';
+            return 'bg-gray-100';
     }
 };
 
@@ -57,218 +57,192 @@ export interface FileItem {
     progress?: number;
 }
 
+export interface ChapterData {
+    id?: string;
+    chapterTitle?: string;
+    title?: string;
+    moduleName?: string;
+    classContent?: string;
+    keyTopics?: string;
+    resources?: FileItem[];
+}
+
 interface ChaptersProps {
+    chapter?: ChapterData;
     chapterTitle?: string;
     moduleName?: string;
     onBack?: () => void;
+    initialIsEditing?: boolean;
+    onSave?: (data: EditChapterData) => void;
 }
 
 export default function Chapters({
+    chapter,
     chapterTitle = '3.4 AI Agents (LangChain, CrewAI, AutoGen)',
     moduleName = 'Module 1: Module-1',
     onBack,
+    initialIsEditing = false,
+    onSave,
 }: ChaptersProps) {
-    const [title, setTitle] = useState(chapterTitle);
-    const [isEditingTitle, setIsEditingTitle] = useState(false);
+    const [isEditing, setIsEditing] = useState(initialIsEditing);
 
-    const [classContent, setClassContent] = useState(
-        'AI Agents are systems that use LLMs to plan, act, and collaborate autonomously. LangChain builds tool-using agents for workflows and RAG. CrewAI enables role-based multi-agent teamwork. AutoGen focuses on conversation-driven agents that interact with each other and humans to solve complex tasks.'
-    );
+    const [title, setTitle] = useState(chapter?.title || chapter?.chapterTitle || chapterTitle);
+    const [modName, setModName] = useState(chapter?.moduleName || moduleName);
 
-    const [keyTopics, setKeyTopics] = useState(
-        'AI Agents are systems that use LLMs to plan, act, and collaborate autonomously. LangChain builds tool-using agents for workflows and RAG. CrewAI enables role-based multi-agent teamwork. AutoGen focuses on conversation-driven agents that interact with each other and humans to solve complex tasks.'
-    );
+    const [classContent, setClassContent] = useState(chapter?.classContent || '');
+    const [keyTopics, setKeyTopics] = useState(chapter?.keyTopics || '');
+    const [resources, setResources] = useState<FileItem[]>(chapter?.resources || []);
 
-    const [files, setFiles] = useState<FileItem[]>([
-        {
-            id: '1',
-            name: 'Project_Guidelines.pdf',
-            size: '2.4MB',
-            status: 'ready',
-        },
-        {
-            id: '2',
-            name: 'Module_assignment.pdf',
-            size: '6.8MB',
-            status: 'uploading',
-            progress: 65,
-        },
-    ]);
-
-    const handlePickDocument = async () => {
-        try {
-            const result = await DocumentPicker.getDocumentAsync({
-                type: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'],
-                copyToCacheDirectory: true,
-            });
-
-            if (!result.canceled && result.assets && result.assets.length > 0) {
-                const asset = result.assets[0];
-                const newFileId = String(Date.now());
-                const newFile: FileItem = {
-                    id: newFileId,
-                    name: asset.name,
-                    size: asset.size ? `${(asset.size / (1024 * 1024)).toFixed(1)}MB` : '2.0MB',
-                    status: 'uploading',
-                    progress: 35,
-                };
-                setFiles(prev => [...prev, newFile]);
-
-                setTimeout(() => {
-                    setFiles(prev =>
-                        prev.map(item =>
-                            item.id === newFileId ? { ...item, progress: 100, status: 'ready' } : item
-                        )
-                    );
-                }, 800);
-            }
-        } catch (err) {
-            console.log('Document picker error:', err);
+    const handleSaveFromEdit = (data: EditChapterData) => {
+        if (data.title) setTitle(data.title);
+        if (data.moduleName) setModName(data.moduleName);
+        if (data.classContent) setClassContent(data.classContent);
+        if (data.keyTopics) setKeyTopics(data.keyTopics);
+        if (data.resources) setResources(data.resources);
+        if (onSave) {
+            onSave(data);
         }
+        setIsEditing(false);
     };
 
-    const handleDeleteFile = (id: string) => {
-        setFiles(prev => prev.filter(f => f.id !== id));
-    };
+    if (isEditing) {
+        return (
+            <EditChapter
+                chapter={{
+                    title,
+                    moduleName: modName,
+                    classContent,
+                    keyTopics,
+                    resources,
+                }}
+                onBack={() => setIsEditing(false)}
+                onSave={handleSaveFromEdit}
+            />
+        );
+    }
 
     return (
         <View className="flex-1 bg-[#FAFAFA]">
             {/* Header */}
-            <Header title="Chapter" onBackPress={onBack} />
+            <InstructorHeader
+                title="Chapter"
+                onBackPress={onBack}
+                showSearch={false}
+                showNotification={false}
+                showProfile={false}
+                titleAlign="center"
+            />
 
-            <ScrollView className="flex-1 px-5 pt-2" showsVerticalScrollIndicator={false}>
-                {/* Chapter Title */}
-                <View className="flex-row items-center mb-6 pr-2">
-                    {isEditingTitle ? (
-                        <View className="flex-row items-center flex-1 bg-white border border-[#8C8E90] rounded-[12px] px-3 py-1 mr-2">
-                            <TextInput
-                                value={title}
-                                onChangeText={setTitle}
-                                className="flex-1 text-[18px] font-medium text-[#333333]"
-                                autoFocus
-                            />
-                            <TouchableOpacity onPress={() => setIsEditingTitle(false)} className="p-1">
-                                <Check size={20} color="#F67300" />
-                            </TouchableOpacity>
-                        </View>
-                    ) : (
-                        <View className="flex-row items-center flex-1">
-                            <Text className="text-[18px] font-medium text-[#333333] mr-2 flex-1 leading-tight">
-                                {title}
-                            </Text>
-                            <TouchableOpacity onPress={() => setIsEditingTitle(true)} className="p-1">
-                                <Edit2 size={16} color="#8C8E90" />
-                            </TouchableOpacity>
-                        </View>
+            <ScrollView
+                className="flex-1 px-5 pt-2"
+                contentContainerStyle={{ paddingBottom: 100 }}
+                showsVerticalScrollIndicator={false}
+            >
+                {/* Chapter Overview Card */}
+                <View className="bg-white rounded-[16px] p-6 mb-4 border border-[#F2EEF4]">
+                    <View className="flex-row items-center justify-between mb-4">
+                        <Text className="text-[20px] font-medium text-[#333333] flex-1 mr-2">{title}</Text>
+                    </View>
+
+                    {/* Class Content Section */}
+                    <View className="mb-6">
+                        <Text className="text-[18px] font-medium text-[#333333] mb-3">Class Content:</Text>
+                        <Text className={`text-[14px] leading-relaxed text-left ${classContent ? 'text-[#4D4D4D]' : 'text-[#8C8E90] italic'}`}>
+                            {classContent || 'No class content provided yet.'}
+                        </Text>
+                    </View>
+
+                    {/* Key Topics Section */}
+                    <View className="mb-2">
+                        <Text className="text-[18px] font-medium text-[#333333] mb-3">Key Topics:</Text>
+                        <Text className={`text-[14px] leading-relaxed text-left ${keyTopics ? 'text-[#4D4D4D]' : 'text-[#8C8E90] italic'}`}>
+                            {keyTopics || 'No key topics provided yet.'}
+                        </Text>
+                    </View>
+                </View>
+
+                {/* Resources Card Wrapper */}
+                <View className="bg-white border border-[#F2EEF4] p-5 rounded-[16px] mb-5">
+                    <Text className="text-[20px] font-medium text-[#333333] mb-4">Resources</Text>
+
+                    {/* Resources List */}
+                    {resources.map((resItem, index, arr) => {
+                        const resTitle = resItem.name;
+                        const subtitle = resItem.size || 'external-link.com';
+                        const ext = resTitle.split('.').pop()?.toLowerCase();
+                        const isFile = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'png', 'jpg'].includes(ext || '');
+                        const iconBg = isFile ? getFileBgColor(resTitle) : 'bg-[#EFF6FF]';
+                        const actionIcon = isFile ? (
+                            <DocumentUpload size={18} color="#808080" variant="Linear" />
+                        ) : (
+                            <Maximize size={18} color="#808080" variant="Linear" />
+                        );
+
+                        return (
+                            <View
+                                key={resItem.id || index}
+                                style={{
+                                    borderWidth: 0.5,
+                                    borderColor: '#F2EEF4',
+                                    shadowColor: '#F2EEF4',
+                                    shadowOffset: { width: 0, height: 4 },
+                                    shadowOpacity: 0.25,
+                                    shadowRadius: 4,
+                                    elevation: 3,
+                                    height: 77,
+                                }}
+                                className={`flex-row justify-between items-center bg-white pl-1 py-1 pr-5 rounded-[15px] ${index < arr.length - 1 ? 'mb-3.5' : ''
+                                    }`}
+                            >
+                                <View className="flex-row items-center flex-1 pr-2">
+                                    {isFile ? (
+                                        <View
+                                            style={{ width: 76, height: 69 }}
+                                            className={`rounded-[24px] ${iconBg} justify-center items-center`}
+                                        >
+                                            <ExpoImage
+                                                source={getFileIconSource(resTitle)}
+                                                style={{ width: 32, height: 32 }}
+                                                contentFit="contain"
+                                            />
+                                        </View>
+                                    ) : (
+                                        <View
+                                            style={{ width: 76, height: 69 }}
+                                            className={`rounded-[24px] ${iconBg} justify-center items-center`}
+                                        >
+                                            <IconsaxLink size={24} color="#3B82F6" variant="Linear" />
+                                        </View>
+                                    )}
+                                    <View className="ml-[10px] flex-1 justify-center">
+                                        <Text className="text-[15px] font-medium text-[#333333]" numberOfLines={1}>
+                                            {resTitle}
+                                        </Text>
+                                        <Text className="text-[12px] text-[#808080] mt-0.5">{subtitle}</Text>
+                                    </View>
+                                </View>
+                                <TouchableOpacity className="p-1">
+                                    {actionIcon}
+                                </TouchableOpacity>
+                            </View>
+                        );
+                    })}
+
+                    {resources.length === 0 && (
+                        <Text className="text-[13px] text-[#8C8E90] italic text-center py-2">No resources available.</Text>
                     )}
                 </View>
 
-                {/* Class Content Section */}
-                <View className="bg-white border border-[#F2EEF4] rounded-[24px] p-6 mb-5">
-                    <Text className="text-[20px] font-medium text-[#333333] mb-4">Class Content:</Text>
-                    <View className="bg-[#FFFFFF] border border-[#DEDEDE] rounded-[18px] p-4">
-                        <Text className="text-[12px] text-[#333333] leading-6 font-normal">
-                            {classContent}
-                        </Text>
-                    </View>
-                </View>
-
-                {/* Key Topics Section */}
-                <View className="bg-white border border-[#F2EEF4] rounded-[24px] p-6 mb-5">
-                    <Text className="text-[20px] font-medium text-[#333333] mb-4">Key Topics::</Text>
-                    <View className="bg-[#FFFFFF] border border-[#DEDEDE] rounded-[18px] p-4">
-                        <Text className="text-[12px] text-[#333333] leading-6 font-normal">
-                            {keyTopics}
-                        </Text>
-                    </View>
-                </View>
-
-                {/* Resources Section */}
-                <View className="bg-white rounded-[16px] border border-[#F2EEF4] p-6 mb-5">
-                    <Text className="text-[20px] font-medium text-[#333333] mb-4">Resources</Text>
-
+                {/* Edit Chapter */}
+                <View className="flex-row mt-1 mb-6">
                     <TouchableOpacity
-                        onPress={handlePickDocument}
-                        className="border border-dashed border-[#333333] rounded-[10px] p-4 items-center justify-center bg-white mb-4"
+                        onPress={() => setIsEditing(true)}
+                        className="flex-1 h-12 rounded-[15px] bg-[#F67300] items-center justify-center"
                         activeOpacity={0.8}
                     >
-                        <View
-                            className="w-[70px] h-[70px] rounded-full bg-[#F67300] items-center justify-center mb-3"
-                            style={{
-                                shadowColor: '#000000',
-                                shadowOffset: { width: 0, height: 4 },
-                                shadowOpacity: 0.2,
-                                shadowRadius: 5,
-                                elevation: 4,
-                            }}
-                        >
-                            <UploadCloud size={32} color="#FFFFFF" />
-                        </View>
-                        <Text className="text-[20px] font-medium text-[#333333] mb-3">Upload your files</Text>
-                        <Text className="text-[12px] text-[#626262] mb-2 text-center">
-                            Drag and drop files here or click to select files
-                        </Text>
-                        <Text className="text-[12px] text-center text-[#626262] mb-0.5">
-                            Supported formats: pdf, doc, docx, txt Maximum file size: 10MB
-                        </Text>
+                        <Text className="text-white text-[16px] font-semibold">Edit Chapter</Text>
                     </TouchableOpacity>
-
-                    {/* Uploaded Files */}
-                    <View className="gap-2.5">
-                        {files.map((file) => {
-                            const isUploading = file.status === 'uploading' || (file.progress && file.progress < 100);
-
-                            return (
-                                <View key={file.id} className="bg-white p-2">
-                                    <View className="flex-row items-center justify-between">
-                                        <View className="flex-row items-center flex-1 mr-2">
-                                            <View className={`w-12 h-11 rounded-[16px] ${getFileBgColor(file.name)} items-center justify-center mr-3`}>
-                                                <ExpoImage
-                                                    source={getFileIconSource(file.name)}
-                                                    style={{ width: 26, height: 26 }}
-                                                    contentFit="contain"
-                                                />
-                                            </View>
-                                            <View className="flex-1">
-                                                <Text className={`text-[16px] font-medium text-[#4D4D4D] ${isUploading ? 'italic' : ''}`} numberOfLines={1}>
-                                                    {file.name}
-                                                </Text>
-                                                <View className="flex-row items-center gap-2 mt-1">
-                                                    <Text className="text-[12px] text-[#808080]">{file.size}</Text>
-                                                    <Text className={`text-[14px] font-medium ${isUploading ? 'text-[#6A7282]' : 'text-[#16A34A]'}`}>
-                                                        {isUploading ? 'Uploading...' : 'Ready to submit'}
-                                                    </Text>
-                                                </View>
-                                            </View>
-                                        </View>
-                                        <TouchableOpacity onPress={() => handleDeleteFile(file.id)} className="p-1">
-                                            {isUploading ? <X size={16} color="#333333" /> : <Trash2 size={16} color="#333333" />}
-                                        </TouchableOpacity>
-                                    </View>
-
-                                    {/* Progress bar */}
-                                    {isUploading && (
-                                        <View className="h-1.5 bg-[#E5E5E5] rounded-full overflow-hidden mt-2.5 w-full">
-                                            <View style={{ width: `${file.progress || 65}%` }} className="h-full bg-[#F67300]" />
-                                        </View>
-                                    )}
-                                </View>
-                            );
-                        })}
-
-                        {files.length === 0 && (
-                            <Text className="text-[13px] text-[#8C8E90] italic text-center py-2">No files uploaded yet.</Text>
-                        )}
-                    </View>
                 </View>
-
-                {/* Upload Action Button */}
-                <TouchableOpacity
-                    activeOpacity={0.85}
-                    className="bg-[#F67300] rounded-[20px] py-4 items-center justify-center mt-1 mb-10 shadow-sm"
-                >
-                    <Text className="text-[16px] font-semibold text-white">Upload</Text>
-                </TouchableOpacity>
             </ScrollView>
         </View>
     );

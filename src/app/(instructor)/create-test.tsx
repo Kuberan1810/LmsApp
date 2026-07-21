@@ -64,7 +64,7 @@ export default function CreateTestScreen() {
 
         <View className="mb-5">
           <Text className="text-sm font-medium text-[#4B5563] mb-2">Course Name / ID</Text>
-          <CustomDropdown 
+          <CustomDropdown
             value={courseName}
             onChange={setCourseName}
             options={DUMMY_COURSES}
@@ -74,7 +74,7 @@ export default function CreateTestScreen() {
 
         <View className="mb-5">
           <Text className="text-sm font-medium text-[#4B5563] mb-2">Batch ID</Text>
-          <CustomDropdown 
+          <CustomDropdown
             value={batchId}
             onChange={setBatchId}
             options={DUMMY_BATCHES}
@@ -86,7 +86,7 @@ export default function CreateTestScreen() {
           <Text className="text-sm font-medium text-[#4B5563] mb-2">Module</Text>
           <TextInput
             value={moduleName}
-            onChange={setModuleName}
+            onChangeText={setModuleName}
             placeholder="E.g. Module 1"
             placeholderTextColor="#D1D5DB"
             className="bg-[#FAFAFA] border border-[#F3F4F6] rounded-xl px-4 py-3.5 text-base text-[#1F2937]"
