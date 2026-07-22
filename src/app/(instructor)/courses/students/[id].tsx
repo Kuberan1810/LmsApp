@@ -183,71 +183,124 @@ export default function StudentProfileScreen() {
 
         {activeTab === 'Attendance' && (
           <View className="mx-5 mt-6">
-            {/* Calendar Mock */}
-            <View className="bg-white rounded-[16px] p-5 border border-[#F2EEF4] mb-5 shadow-sm shadow-black/5">
-                <View className="flex-row justify-between items-center mb-5">
-                    <Text className="text-[16px] font-bold text-[#1E1E2D]">Monthly calendar</Text>
-                    <View className="flex-row items-center gap-4">
-                        <TouchableOpacity className="w-6 h-6 rounded-full bg-[#FFF5ED] items-center justify-center">
-                            <Ionicons name="caret-back" size={12} color="#F67300" />
-                        </TouchableOpacity>
-                        <Text className="text-[13px] font-medium text-[#1E1E2D]">Jan 2026</Text>
-                        <TouchableOpacity className="w-6 h-6 rounded-full bg-[#FFF5ED] items-center justify-center">
-                            <Ionicons name="caret-forward" size={12} color="#F67300" />
-                        </TouchableOpacity>
+            {/* Summary Stats */}
+            <View className="flex-row justify-between mb-5">
+                <View className="flex-1 bg-[#E8F8F0] rounded-[18px] p-4 items-center mr-3 border border-[#E8F8F0]">
+                    <Text className="text-[#1DD75B] text-[24px] font-bold">18</Text>
+                    <Text className="text-[#888] text-[12px] mt-0.5 text-center">Days Present</Text>
+                </View>
+                <View className="flex-1 bg-[#FDE8E8] rounded-[18px] p-4 items-center mr-3 border border-[#FDE8E8]">
+                    <Text className="text-[#E61026] text-[24px] font-bold">2</Text>
+                    <Text className="text-[#888] text-[12px] mt-0.5 text-center">Days Absent</Text>
+                </View>
+                <View className="flex-1 bg-[#EEF2FF] rounded-[18px] p-4 items-center border border-[#EEF2FF]">
+                    <Text className="text-[#6366F1] text-[24px] font-bold">4</Text>
+                    <Text className="text-[#888] text-[12px] mt-0.5 text-center">Leaves</Text>
+                </View>
+            </View>
+
+            {/* Calendar Mock (Student Dashboard Style) */}
+            <View className="bg-white rounded-[28px] p-5 border border-[#F2EEF4] mb-5 shadow-sm shadow-black/5">
+                {/* Header */}
+                <View className="flex-row justify-between items-center mb-6">
+                    <Text className="text-[20px] font-semibold text-[#333333] tracking-tight">Attendance</Text>
+                    
+                    <View className="flex-row items-center">
+                    <View 
+                        style={{ width: 56, height: 52 }} 
+                        className="bg-[#FFEDDD] rounded-[16px] mr-3 items-center justify-center gap-0.5"
+                    >
+                        <Text className="text-[#F67300] text-[14px] font-medium leading-none">Fri</Text>
+                        <Text className="text-[#F67300] text-[14px] font-medium leading-none">15</Text>
+                    </View>
+                    <View>
+                        <Text className="text-[13px] text-[#626262] mb-0.5">15-Jan-2026</Text>
+                        <Text className="text-[14px] font-bold text-[#333333]">Friday</Text>
+                    </View>
                     </View>
                 </View>
-                <View className="flex-row justify-between mb-4">
-                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => (
-                        <Text key={d} className="w-8 text-center text-[11px] font-medium text-[#6B7280]">{d}</Text>
-                    ))}
+
+                {/* Month Selector */}
+                <View className="flex-row justify-center items-center mb-6">
+                    <TouchableOpacity className="bg-[#FFEDDD] w-[30px] h-[30px] items-center justify-center rounded-[8px]">
+                        <Ionicons name="play" size={14} color="#F67300" style={{ transform: [{ rotate: '180deg' }] }} />
+                    </TouchableOpacity>
+                    <Text className="mx-6 font-semibold text-[14px] text-[#333333]">Jan 2026</Text>
+                    <TouchableOpacity className="bg-[#FFEDDD] w-[30px] h-[30px] items-center justify-center rounded-[8px]">
+                        <Ionicons name="play" size={14} color="#F67300" />
+                    </TouchableOpacity>
                 </View>
-                <View className="flex-row justify-between mb-4">
-                    <Text className="w-8 text-center text-[12px] text-[#A0A0AB]">29</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#A0A0AB]">30</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#A0A0AB]">31</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">1</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">2</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">3</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">4</Text>
+
+                {/* Grid */}
+                <View className="flex-row flex-wrap justify-between gap-y-3">
+                    {[
+                        {day: 'Thu', date: '1', status: 'present'},
+                        {day: 'Fri', date: '2', status: 'present'},
+                        {day: 'Sat', date: '3', status: 'weekend'},
+                        {day: 'Sun', date: '4', status: 'weekend'},
+                        {day: 'Mon', date: '5', status: 'present'},
+                        {day: 'Tue', date: '6', status: 'present'},
+                        {day: 'Wed', date: '7', status: 'present'},
+                        {day: 'Thu', date: '8', status: 'present'},
+                        {day: 'Fri', date: '9', status: 'present'},
+                        {day: 'Sat', date: '10', status: 'weekend'},
+                        {day: 'Sun', date: '11', status: 'weekend'},
+                        {day: 'Mon', date: '12', status: 'present'},
+                        {day: 'Tue', date: '13', status: 'present'},
+                        {day: 'Wed', date: '14', status: 'absent'},
+                        {day: 'Thu', date: '15', status: 'holiday'},
+                        {day: 'Fri', date: '16', status: 'present'},
+                        {day: 'Sat', date: '17', status: 'weekend'},
+                        {day: 'Sun', date: '18', status: 'weekend'},
+                        {day: 'Mon', date: '19', status: 'absent'},
+                        {day: 'Tue', date: '20', status: 'present'},
+                        {day: 'Wed', date: '21', status: 'present'},
+                        {day: 'Thu', date: '22', status: 'present'},
+                        {day: 'Fri', date: '23', status: 'present'},
+                        {day: 'Sat', date: '24', status: 'weekend'},
+                        {day: 'Sun', date: '25', status: 'weekend'},
+                        {day: 'Mon', date: '26', status: 'none'},
+                        {day: 'Tue', date: '27', status: 'none'},
+                        {day: 'Wed', date: '28', status: 'none'},
+                    ].map((item, index) => {
+                        const getStatusStyles = (s: string) => {
+                            switch (s) {
+                            case 'present': return { bg: '#DCFCE780', day: '#3EA465', date: '#3EA465', border: 'transparent' };
+                            case 'absent': return { bg: '#FEE2E280', day: '#CE1919', date: '#CE1919', border: 'transparent' };
+                            case 'holiday': return { bg: '#FFEDDD', day: '#FFBE85', date: '#FFBE85', border: 'transparent' };
+                            case 'weekend': return { bg: '#FFEDDD', day: '#333333', date: '#777777', border: 'transparent' };
+                            case 'none': default: return { bg: '#FFFFFF', day: '#333333', date: '#777777', border: '#E5E7EB' };
+                            }
+                        };
+                        const styles = getStatusStyles(item.status);
+                        
+                        return (
+                            <View 
+                                key={index}
+                                style={{ width: '13%', aspectRatio: 44 / 43, backgroundColor: styles.bg, borderColor: styles.border, borderWidth: item.status === 'none' ? 1 : 0 }}
+                                className="rounded-[14px] items-center justify-center py-1.5 gap-0.5"
+                            >
+                                <Text style={{ color: styles.day }} className="text-[14px] font-semibold leading-none text-center">{item.day}</Text>
+                                <Text style={{ color: styles.date }} className="text-[12px] font-medium leading-none text-center">{item.date}</Text>
+                            </View>
+                        );
+                    })}
                 </View>
-                <View className="flex-row justify-between mb-4">
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">5</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">6</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">7</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">8</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">9</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">10</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">11</Text>
-                </View>
-                <View className="flex-row justify-between mb-4">
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">12</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">13</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">14</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">15</Text>
-                    <View className="w-8 h-8 rounded-lg bg-[#FFF5ED] items-center justify-center -my-2">
-                        <Text className="text-[12px] text-[#1E1E2D] font-medium">16</Text>
+
+                {/* Legend */}
+                <View className="flex-row justify-center items-center mt-8 gap-5">
+                    <View className="flex-row items-center">
+                        <View className="w-3.5 h-3.5 rounded-[4px] bg-[#3EA465] mr-2" />
+                        <Text className="text-[14px] text-[#626262] font-medium">Present</Text>
                     </View>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">17</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">18</Text>
-                </View>
-                <View className="flex-row justify-between mb-4">
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">19</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">20</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">21</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">22</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">23</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">24</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">25</Text>
-                </View>
-                <View className="flex-row justify-between">
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">26</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">27</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">28</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">29</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">30</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">31</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#808080]">1</Text>
+                    <View className="flex-row items-center">
+                        <View className="w-3.5 h-3.5 rounded-[4px] bg-[#CE1919] mr-2" />
+                        <Text className="text-[14px] text-[#626262] font-medium">Absent</Text>
+                    </View>
+                    <View className="flex-row items-center">
+                        <View className="w-3.5 h-3.5 rounded-[4px] bg-[#FFBE85] mr-2" />
+                        <Text className="text-[14px] text-[#626262] font-medium">Holiday</Text>
+                    </View>
                 </View>
             </View>
 

@@ -455,7 +455,7 @@ export default function Curriculum() {
                                         </View>
                                         <View className="gap-2.5">
                                             {item.tests.map((ts) => (
-                                                <TouchableOpacity key={ts.id} onPress={() => router.push('/(instructor)/tests/results')} activeOpacity={0.7} className="flex-row items-center justify-between bg-white border border-[#F2EEF4] rounded-[12px] p-3">
+                                                <TouchableOpacity key={ts.id} onPress={() => router.push('/(instructor)/courses/tests/results')} activeOpacity={0.7} className="flex-row items-center justify-between bg-white border border-[#F2EEF4] rounded-[12px] p-3">
                                                     <View className="flex-1 mr-2">
                                                         <Text className="text-[15px] text-[#333333] font-medium" numberOfLines={1}>{ts.title}</Text>
                                                         <Text className="text-[12px] text-[#808080] mt-0.5">Due: {ts.due}</Text>

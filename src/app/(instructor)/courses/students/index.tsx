@@ -1,9 +1,9 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import InstructorHeader from '@/components/Instructor/header';
-import { FilterSearch } from 'iconsax-react-native';
+import { FilterSearch, Sms, DocumentDownload, Profile2User, Trash } from 'iconsax-react-native';
 import { MoreVertical } from 'lucide-react-native';
 
 const MOCK_STUDENTS = [
@@ -16,6 +16,18 @@ const MOCK_STUDENTS = [
 
 export default function StudentListScreen() {
     const router = useRouter();
+    const [isActionsModalVisible, setActionsModalVisible] = useState(false);
+    const [selectedStudent, setSelectedStudent] = useState<any>(null);
+
+    const openActionsModal = (student: any) => {
+        setSelectedStudent(student);
+        setActionsModalVisible(true);
+    };
+
+    const closeActionsModal = () => {
+        setActionsModalVisible(false);
+        setSelectedStudent(null);
+    };
 
     return (
         <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
@@ -37,7 +49,7 @@ export default function StudentListScreen() {
                 {MOCK_STUDENTS.map((student, index) => (
                     <TouchableOpacity 
                         key={index} 
-                        onPress={() => router.push(`/(instructor)/students/${student.id}`)}
+                        onPress={() => router.push(`/(instructor)/courses/students/${student.id}`)}
                         activeOpacity={0.7}
                         className="bg-white rounded-[24px] p-5 mb-4 flex-row items-start shadow-sm shadow-black/5 border border-[#F2EEF4]"
                     >
@@ -52,7 +64,7 @@ export default function StudentListScreen() {
                         <View className="flex-1">
                             <View className="flex-row justify-between items-center">
                                 <Text className="text-[18px] font-semibold text-[#1E1E2D]">{student.name}</Text>
-                                <TouchableOpacity className="p-1 -mr-2">
+                                <TouchableOpacity className="p-1 -mr-2" onPress={() => openActionsModal(student)}>
                                     <MoreVertical size={18} color="#8C8E90" />
                                 </TouchableOpacity>
                             </View>
@@ -74,6 +86,47 @@ export default function StudentListScreen() {
                     </TouchableOpacity>
                 ))}
             </ScrollView>
+
+            {/* Student Actions Modal */}
+            <Modal
+                visible={isActionsModalVisible}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={closeActionsModal}
+            >
+                <TouchableOpacity 
+                    activeOpacity={1} 
+                    onPress={closeActionsModal} 
+                    className="flex-1 bg-black/50 justify-end"
+                >
+                    <TouchableWithoutFeedback>
+                        <View className="bg-white rounded-t-[32px] px-6 pt-6 pb-10">
+                            <View className="w-12 h-1.5 bg-[#E5E7EB] rounded-full mx-auto mb-6" />
+                            <Text className="text-[18px] font-bold text-[#1E1E2D] mb-6">Student Actions</Text>
+                            
+                            <TouchableOpacity className="flex-row items-center py-4 border-b border-[#F2EEF4]">
+                                <Sms size={22} color="#4B5563" variant="Outline" />
+                                <Text className="text-[16px] font-medium text-[#4B5563] ml-4">Send Message</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity className="flex-row items-center py-4 border-b border-[#F2EEF4]">
+                                <DocumentDownload size={22} color="#4B5563" variant="Outline" />
+                                <Text className="text-[16px] font-medium text-[#4B5563] ml-4">Export Report</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity className="flex-row items-center py-4 border-b border-[#F2EEF4]">
+                                <Profile2User size={22} color="#4B5563" variant="Outline" />
+                                <Text className="text-[16px] font-medium text-[#4B5563] ml-4">View Full Profile</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity className="flex-row items-center py-4">
+                                <Trash size={22} color="#EF4444" variant="Outline" />
+                                <Text className="text-[16px] font-medium text-[#EF4444] ml-4">Remove from Batch</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </TouchableOpacity>
+            </Modal>
         </SafeAreaView>
     );
 }

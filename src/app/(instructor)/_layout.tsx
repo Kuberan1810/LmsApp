@@ -31,14 +31,14 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
   const currentRouteName = state.routes[state.index].name;
   
   // Only show tab bar on these specific root routes
-  const isMainRoute = ['dashboard/dashboard', 'courses/index', 'profile/index'].includes(currentRouteName);
+  const isMainRoute = ['dashboard/dashboard', 'courses', 'profile/index'].includes(currentRouteName);
 
   if (!isMainRoute || !isTabBarVisible) {
     return null;
   }
 
   const visibleRoutes = state.routes.filter(r =>
-    ['dashboard/dashboard', 'courses/index', 'profile/index'].includes(r.name)
+    ['dashboard/dashboard', 'courses', 'profile/index'].includes(r.name)
   );
 
   const tabContent = visibleRoutes.map((route) => {
@@ -62,7 +62,7 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
       if (!isFocused && !event.defaultPrevented) {
         if (route.name === 'dashboard/dashboard') {
           router.navigate('/(instructor)/dashboard/dashboard');
-        } else if (route.name === 'courses/index') {
+        } else if (route.name === 'courses') {
           router.navigate('/(instructor)/courses');
         } else if (route.name === 'profile/index') {
           router.navigate('/(instructor)/profile');
@@ -73,7 +73,7 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
     };
 
     let IconComponent: any = Home2;
-    if (route.name === 'courses/index') IconComponent = isFocused ? DocumentText : DocumentText1;
+    if (route.name === 'courses') IconComponent = isFocused ? DocumentText : DocumentText1;
     if (route.name === 'profile/index') IconComponent = User;
 
     return (
@@ -184,9 +184,8 @@ export default function InstructorLayout() {
         screenOptions={{ headerShown: false }}
       >
         <Tabs.Screen name="dashboard/dashboard" options={{ title: 'Home' }} />
-        <Tabs.Screen name="courses/index" options={{ title: 'Courses' }} />
+        <Tabs.Screen name="courses" options={{ title: 'Courses' }} />
         <Tabs.Screen name="profile/index" options={{ title: 'Profile' }} />
-        <Tabs.Screen name="tests/index" options={{ href: null }} />
        
       </Tabs>
 
