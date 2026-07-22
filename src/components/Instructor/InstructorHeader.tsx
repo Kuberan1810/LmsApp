@@ -10,20 +10,24 @@ import { ArrowLeft2 } from 'iconsax-react-native';
 
 export interface HeaderProps {
   title?: string;
+  subtitle?: string;
   onBackPress?: () => void;
   showSearch?: boolean;
   showNotification?: boolean;
   showProfile?: boolean;
   titleAlign?: 'left' | 'center';
+  rightContent?: React.ReactNode;
 }
 
 export default function InstructorHeader({
   title,
+  subtitle,
   onBackPress,
   showSearch = true,
   showNotification = true,
   showProfile = true,
-  titleAlign = 'left'
+  titleAlign = 'left',
+  rightContent
 }: HeaderProps = {}) {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
@@ -60,6 +64,11 @@ export default function InstructorHeader({
                 <Text className="text-[22px] font-semibold text-[#333333] leading-tight text-center" numberOfLines={1}>
                   {title}
                 </Text>
+                {subtitle && (
+                  <Text className="text-[12px] font-medium text-[#808080] mt-0.5 text-center" numberOfLines={1}>
+                    {subtitle}
+                  </Text>
+                )}
               </View>
             )}
 
@@ -76,9 +85,16 @@ export default function InstructorHeader({
                     </TouchableOpacity>
                   )}
                   {titleAlign === 'left' && (
-                    <Text className="text-[22px] font-semibold text-[#333333] leading-tight flex-1" numberOfLines={1}>
-                      {title}
-                    </Text>
+                    <View className="flex-1 justify-center">
+                      <Text className="text-[22px] font-semibold text-[#333333] leading-tight" numberOfLines={1}>
+                        {title}
+                      </Text>
+                      {subtitle && (
+                        <Text className="text-[12px] font-medium text-[#808080] mt-0.5" numberOfLines={1}>
+                          {subtitle}
+                        </Text>
+                      )}
+                    </View>
                   )}
                 </>
               ) : (
@@ -94,46 +110,50 @@ export default function InstructorHeader({
 
             {/* Right: Actions */}
             <View className="flex-row items-center gap-2.5">
-              {/* Search Button */}
-              {showSearch && (
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={() => setIsSearchExpanded(true)}
-                  className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-white items-center justify-center"
-                >
-                  <SearchNormal1 size={18} color="#1E1E2D" />
-                </TouchableOpacity>
-              )}
+              {rightContent ? (
+                rightContent
+              ) : (
+                <>
+                  {/* Search Button */}
+                  {showSearch && (
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => setIsSearchExpanded(true)}
+                      className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-white items-center justify-center"
+                    >
+                      <SearchNormal1 size={18} color="#1E1E2D" />
+                    </TouchableOpacity>
+                  )}
 
-              {/* Notifications Button */}
-              {showNotification && (
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={() => router.push("/(student)/notification/notifications")}
-                  className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-white items-center justify-center relative"
-                >
-                  <NotificationBing
+                  {/* Notifications Button */}
+                  {showNotification && (
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => router.push("/(student)/notification/notifications")}
+                      className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-white items-center justify-center relative"
+                    >
+                      <NotificationBing
+                        size={18} color="#1E1E2D" />
+                      {/* Notification Dot */}
+                      <View className="absolute top-[10px] right-[10px] w-2.5 h-2.5 bg-[#EE8B3A] rounded-full border-[1.5px] border-white" />
+                    </TouchableOpacity>
+                  )}
 
-                    size={18} color="#1E1E2D" />
-                  {/* Notification Dot */}
-                  <View className="absolute top-[10px] right-[10px] w-2.5 h-2.5 bg-[#EE8B3A] rounded-full border-[1.5px] border-white" />
-                </TouchableOpacity>
-              )}
-
-              {/* Profile Button */}
-              {showProfile && (
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={() => router.push('/(instructor)/profile')}
-                  className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-[#F67300] items-center justify-center ml-1"
-                >
-                  <Text className="text-[14px] font-bold text-white tracking-wider">PS</Text>
-                </TouchableOpacity>
+                  {/* Profile Button */}
+                  {showProfile && (
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => router.push('/(instructor)/profile')}
+                      className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-[#F67300] items-center justify-center ml-1"
+                    >
+                      <Text className="text-[14px] font-bold text-white tracking-wider">PS</Text>
+                    </TouchableOpacity>
+                  )}
+                </>
               )}
             </View>
           </Animated.View>
         )}
-
       </View>
     </View>
   );

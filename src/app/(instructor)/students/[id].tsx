@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ArrowLeft2, Calendar, DocumentText, TrendUp, Profile2User, Teacher, TaskSquare, ClipboardText } from 'iconsax-react-native';
+import InstructorHeader from '@/components/Instructor/InstructorHeader';
+import { ArrowLeft2, Calendar, DocumentText, TrendUp, Profile2User, Teacher, TaskSquare, ClipboardText, DocumentDownload, ExportSquare } from 'iconsax-react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Sms } from 'iconsax-react-native';
 
@@ -121,18 +122,16 @@ export default function StudentProfileScreen() {
   return (
     <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
       {/* Header */}
-      <View className="px-5 pt-4 pb-4 flex-row justify-between items-center bg-white border-b border-[#F2EEF4]">
-        <View className="flex-row items-center">
-          <TouchableOpacity onPress={() => router.back()} className="mr-3 p-1">
-            <ArrowLeft2 size={24} color="#1F2937" />
+      <InstructorHeader
+        title="Student Profile"
+        onBackPress={() => router.back()}
+        rightContent={
+          <TouchableOpacity className="flex-row items-center border border-[#E2E8F0] px-3 py-1.5 rounded-[12px] bg-white h-10 mt-1">
+            <ExportSquare size={16} color="#4B5563" />
+            <Text className="text-[#4B5563] text-[13px] font-medium ml-1.5">Export</Text>
           </TouchableOpacity>
-          <Text className="text-[20px] font-medium text-[#333333]">Student Profile</Text>
-        </View>
-        <TouchableOpacity className="flex-row items-center border border-[#E2E8F0] px-3 py-1.5 rounded-lg bg-white">
-          <DocumentText size={16} color="#4B5563" />
-          <Text className="text-[#4B5563] text-[13px] font-medium ml-1.5">Export</Text>
-        </TouchableOpacity>
-      </View>
+        }
+      />
 
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 60 }}>
         

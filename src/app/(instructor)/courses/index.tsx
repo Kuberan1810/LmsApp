@@ -1,42 +1,37 @@
 import { useRouter } from 'expo-router';
-import { ScrollView } from 'react-native';
+import { ScrollView, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import InstructorHeader from '@/components/Instructor/InstructorHeader';
+import CourseCard from '@/components/Instructor/CourseCard';
+import { COURSES } from '@/features/instructor/dashboard/MyClasses';
 
-// Modular Feature Imports
-import Header from '@/components/Instructor/InstructorHeader';
-import CoursesStats from '@/features/instructor/Courses/coursesStats';
-import Curriculum from '@/features/instructor/Courses/Curriculum';
-import ExistingResources from '@/features/instructor/Courses/ExistingResources';
-import FAQ from '@/features/instructor/Courses/faq';
-import UpcomingSchedule from '@/features/instructor/Courses/UpcomingSchedule';
-
-export default function CoursesScreen() {
+export default function CoursesListScreen() {
     const router = useRouter();
 
     return (
         <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
-            {/* Header with Logo */}
-            <Header />
+      <InstructorHeader 
+        title="My Courses" 
+      />
 
             <ScrollView
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 120 }}
+                contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: 120 }}
             >
-                {/* Stats 2x2 Grid Component */}
-                <CoursesStats />
+                {COURSES.map((course) => (
+                    <CourseCard
+                        key={course.id}
+                        course={course}
+                        onPress={() => router.push(`/(instructor)/courses/${course.id}`)}
+                        style={{ width: '100%', marginBottom: 16 }}
+                    />
+                ))}
 
-                {/* Upcoming Schedule Component */}
-                <UpcomingSchedule />
-
-                {/* Curriculum Component */}
-                <Curriculum />
-
-                {/* Frequently Asked Questions */}
-                <FAQ />
-
-                {/* Existing Resources Component */}
-                <ExistingResources />
-
+                {COURSES.length === 0 && (
+                    <View className="items-center justify-center py-10">
+                        <Text className="text-[#8C8E90] text-[14px] font-medium">No courses available.</Text>
+                    </View>
+                )}
             </ScrollView>
         </SafeAreaView>
     );

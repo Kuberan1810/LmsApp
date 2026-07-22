@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import InstructorHeader from '@/components/Instructor/header';
+import InstructorHeader from '@/components/Instructor/InstructorHeader';
 import { FilterSearch, Sms, DocumentDownload, Profile2User, Trash, ArrowSwapHorizontal } from 'iconsax-react-native';
 import { MoreVertical } from 'lucide-react-native';
 
