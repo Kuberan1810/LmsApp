@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { ClipboardText, DocumentText1, NotificationBing, Teacher } from 'iconsax-react-native';
 import { ChevronRight, X } from 'lucide-react-native';
 import React from 'react';
@@ -188,8 +189,17 @@ export default function QuickActionsModal({ visible, onClose }: QuickActionsModa
                 style={styles.actionItem}
                 activeOpacity={0.7}
                 onPress={() => {
-                  console.log(`Clicked ${item.title}`);
                   onClose();
+                  
+                  if (item.id === 'test') {
+                    router.push('/(instructor)/create-test');
+                  } else if (item.id === 'assignment') {
+                    router.push('/(instructor)/create-assignment');
+                  } else if (item.id === 'announcement') {
+                    router.push('/(instructor)/create-announcement');
+                  } else if (item.id === 'resources') {
+                    router.push('/(instructor)/create-resource');
+                  }
                 }}
               >
                 <View style={[styles.iconContainer, { backgroundColor: item.bgColor }]}>
