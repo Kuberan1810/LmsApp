@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import EditAssignment, { EditAssignmentData } from './editassignment';
 import ReviewAssignment from './reviewAssignment';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { Image as ExpoImage } from 'expo-image';
 import InstructorHeader from '@/components/Instructor/InstructorHeader';
-import { DocumentUpload, Maximize, Link as IconsaxLink } from 'iconsax-react-native';
+import { DocumentUpload, Maximize, Link as IconsaxLink, Import, ImportCurve, Calendar as IconsaxCalendar, CalendarRemove } from 'iconsax-react-native';
 import { Calendar } from 'lucide-react-native';
 
 const getFileIconSource = (fileName: string) => {
@@ -79,12 +78,10 @@ export interface AssignmentData {
 interface AssignmentsProps {
     assignment?: AssignmentData;
     onBack?: () => void;
-    initialIsEditing?: boolean;
-    onSave?: (data: EditAssignmentData) => void;
+    onSave?: (data: AssignmentData) => void;
 }
 
-export default function Assignments({ assignment, onBack, initialIsEditing = false, onSave }: AssignmentsProps) {
-    const [isEditing, setIsEditing] = useState(initialIsEditing);
+export default function Assignments({ assignment, onBack, onSave }: AssignmentsProps) {
     const [isReviewing, setIsReviewing] = useState(false);
     const [title, setTitle] = useState(assignment?.title || 'Build Q&A system using RAG');
     const [status] = useState(assignment?.status || 'In Progress');
@@ -96,46 +93,29 @@ export default function Assignments({ assignment, onBack, initialIsEditing = fal
     const [moduleName] = useState(assignment?.moduleName || 'Module 1: Module-1');
 
     // Description
-    const [description, setDescription] = useState(assignment?.description || '');
-    const [objective, setObjective] = useState(assignment?.objective || '');
-    const [expectedOutcome, setExpectedOutcome] = useState(assignment?.expectedOutcome || '');
-    const [resources, setResources] = useState<ResourceItem[]>(assignment?.resources || []);
-
-    const handleToggleEditMode = (editing: boolean) => {
-        setIsEditing(editing);
-    };
-
-    const handleSaveFromEdit = (data: EditAssignmentData) => {
-        if (data.title) setTitle(data.title);
-        if (data.dueDate) setDueDate(data.dueDate);
-        if (data.dueTime) setDueTime(data.dueTime);
-        if (data.description !== undefined) setDescription(data.description);
-        if (data.objective !== undefined) setObjective(data.objective);
-        if (data.expectedOutcome !== undefined) setExpectedOutcome(data.expectedOutcome);
-        if (data.resources) setResources(data.resources);
-        if (onSave) {
-            onSave(data);
-        }
-        setIsEditing(false);
-    };
-
-    if (isEditing) {
-        return (
-            <EditAssignment
-                assignment={{
-                    title,
-                    dueDate,
-                    dueTime,
-                    description,
-                    objective,
-                    expectedOutcome,
-                    resources,
-                }}
-                onBack={() => setIsEditing(false)}
-                onSave={handleSaveFromEdit}
-            />
-        );
-    }
+    const [description, setDescription] = useState(
+        assignment?.description !== undefined
+            ? assignment.description
+            : 'Build a complete Question & Answering (Q&A) system using Retrieval-Augmented Generation (RAG) architecture with LangChain and vector databases.'
+    );
+    const [objective, setObjective] = useState(
+        assignment?.objective !== undefined
+            ? assignment.objective
+            : 'Understand and implement vector embeddings, document chunking, semantic retrieval, and LLM prompt orchestration.'
+    );
+    const [expectedOutcome, setExpectedOutcome] = useState(
+        assignment?.expectedOutcome !== undefined
+            ? assignment.expectedOutcome
+            : 'A functional Python notebook or script demonstrating end-to-end RAG pipeline querying custom documents with accurate answers.'
+    );
+    const [resources, setResources] = useState<ResourceItem[]>(
+        assignment?.resources !== undefined
+            ? assignment.resources
+            : [
+                { id: '1', name: 'RAG_Architecture_Guide.pdf', size: '3.1 MB', status: 'Ready to submit' },
+                { id: '2', name: 'Dataset_Sample_Docs.zip', size: '12.5 MB', status: 'Ready to submit' },
+            ]
+    );
 
     const fullDueDateStr = `${dueDate}${dueTime ? `, ${dueTime}` : ''}`;
 
@@ -173,8 +153,10 @@ export default function Assignments({ assignment, onBack, initialIsEditing = fal
                             <Text className="text-[#F67300] text-[12px] font-semibold">{status}</Text>
                         </View>
                         <View className="flex-row items-center">
-                            <Calendar size={14} color="#6A7282" />
-                            <Text className="text-[14px] text-[#626262] ml-1.5 font-medium">
+                            <View className="bg-white border border-[#F3F5F7] rounded-[5px] p-[4px] mr-2 justify-center items-center">
+                                <CalendarRemove size={14} color="#626262" variant="Linear" />
+                            </View>
+                            <Text className="text-[14px] text-[#626262] font-medium">
                                 Due {fullDueDateStr}
                             </Text>
                         </View>
@@ -221,7 +203,7 @@ export default function Assignments({ assignment, onBack, initialIsEditing = fal
                         const isFile = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'png', 'jpg'].includes(ext || '');
                         const iconBg = isFile ? getFileBgColor(title) : 'bg-[#EFF6FF]';
                         const actionIcon = isFile ? (
-                            <DocumentUpload size={18} color="#808080" variant="Linear" />
+                            <ImportCurve size={18} color="#808080" variant="Linear" />
                         ) : (
                             <Maximize size={18} color="#808080" variant="Linear" />
                         );
@@ -279,26 +261,26 @@ export default function Assignments({ assignment, onBack, initialIsEditing = fal
                         <Text className="text-[13px] text-[#8C8E90] italic text-center py-2">No resources available.</Text>
                     )}
                 </View>
-
-                {/* Action Buttons */}
-                <View className="flex-row gap-3 mt-1 mb-6">
-                    <TouchableOpacity
-                        onPress={() => setIsReviewing(true)}
-                        className="flex-1 h-12 rounded-[15px] bg-[#F67300] items-center justify-center"
-                        activeOpacity={0.8}
-                    >
-                        <Text className="text-white text-[16px] font-semibold">Review Assignment</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={() => handleToggleEditMode(true)}
-                        className="flex-1 h-12 rounded-[15px] bg-[#F67300] items-center justify-center"
-                        activeOpacity={0.8}
-                    >
-                        <Text className="text-white text-[16px] font-semibold">Edit Assignment</Text>
-                    </TouchableOpacity>
-                </View>
             </ScrollView>
+
+            {/* Action Buttons Bar */}
+            <View className="px-5 py-4 bg-[#FAFAFA] flex-row gap-3">
+                <TouchableOpacity
+                    onPress={() => setIsReviewing(true)}
+                    className="flex-1 h-12 rounded-[15px] bg-[#F67300] items-center justify-center"
+                    activeOpacity={0.8}
+                >
+                    <Text className="text-white text-[16px] font-semibold">Review Assignment</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    onPress={() => { }}
+                    className="flex-1 h-12 rounded-[15px] bg-[#F67300] items-center justify-center"
+                    activeOpacity={0.8}
+                >
+                    <Text className="text-white text-[16px] font-semibold">Edit Assignment</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }

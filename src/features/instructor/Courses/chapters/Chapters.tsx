@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { Image as ExpoImage } from 'expo-image';
 import InstructorHeader from '@/components/Instructor/InstructorHeader';
-import { DocumentUpload, Maximize, Link as IconsaxLink } from 'iconsax-react-native';
+import { DocumentUpload, Maximize, Link as IconsaxLink, ImportCurve } from 'iconsax-react-native';
 import EditChapter, { EditChapterData } from './EditChapter';
 
 const getFileIconSource = (fileName: string) => {
@@ -89,9 +89,24 @@ export default function Chapters({
     const [title, setTitle] = useState(chapter?.title || chapter?.chapterTitle || chapterTitle);
     const [modName, setModName] = useState(chapter?.moduleName || moduleName);
 
-    const [classContent, setClassContent] = useState(chapter?.classContent || '');
-    const [keyTopics, setKeyTopics] = useState(chapter?.keyTopics || '');
-    const [resources, setResources] = useState<FileItem[]>(chapter?.resources || []);
+    const [classContent, setClassContent] = useState(
+        chapter?.classContent !== undefined
+            ? chapter.classContent
+            : 'AI Agents are systems powered by Large Language Models (LLMs) that can autonomously perform tasks, make decisions, and interact with environments using tools and reasoning frameworks like ReAct.'
+    );
+    const [keyTopics, setKeyTopics] = useState(
+        chapter?.keyTopics !== undefined
+            ? chapter.keyTopics
+            : 'Introduction to AI Agents & Autonomous Workflows\nLangChain Fundamentals & Agent Executors\nCrewAI Multi-Agent Collaboration Framework\nAutoGen Framework for Conversational AI\nBuilding Real-World AI Agents'
+    );
+    const [resources, setResources] = useState<FileItem[]>(
+        chapter?.resources !== undefined
+            ? chapter.resources
+            : [
+                { id: '1', name: 'Agent_Architecture_Overview.pdf', size: '2.4 MB', status: 'ready' },
+                { id: '2', name: 'LangChain_CrewAI_Guide.docx', size: '1.8 MB', status: 'ready' },
+            ]
+    );
 
     const handleSaveFromEdit = (data: EditChapterData) => {
         if (data.title) setTitle(data.title);
@@ -173,7 +188,7 @@ export default function Chapters({
                         const isFile = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'png', 'jpg'].includes(ext || '');
                         const iconBg = isFile ? getFileBgColor(resTitle) : 'bg-[#EFF6FF]';
                         const actionIcon = isFile ? (
-                            <DocumentUpload size={18} color="#808080" variant="Linear" />
+                            <ImportCurve size={18} color="#808080" variant="Linear" />
                         ) : (
                             <Maximize size={18} color="#808080" variant="Linear" />
                         );
@@ -234,7 +249,7 @@ export default function Chapters({
                 </View>
 
                 {/* Edit Chapter */}
-                <View className="flex-row mt-1 mb-6">
+                <View className="flex-row mt-20">
                     <TouchableOpacity
                         onPress={() => setIsEditing(true)}
                         className="flex-1 h-12 rounded-[15px] bg-[#F67300] items-center justify-center"

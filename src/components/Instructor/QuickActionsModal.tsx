@@ -1,7 +1,7 @@
+import { ClipboardText, DocumentText1, NotificationBing, Teacher } from 'iconsax-react-native';
+import { ChevronRight, X } from 'lucide-react-native';
 import React from 'react';
-import { View, Text, Modal, TouchableOpacity, Animated, StyleSheet, Dimensions, Platform, PanResponder } from 'react-native';
-import { ClipboardText, Teacher, DocumentText, Notification, ArrowRight2, CloseCircle } from 'iconsax-react-native';
-import { useRouter } from 'expo-router';
+import { Animated, Dimensions, Modal, PanResponder, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface QuickActionsModalProps {
   visible: boolean;
@@ -31,7 +31,7 @@ const ACTION_ITEMS = [
     id: 'resources',
     title: 'Resources',
     description: 'Upload new study materials.',
-    icon: DocumentText,
+    icon: DocumentText1,
     color: '#8B5CF6', // Purple
     bgColor: '#F5F3FF',
   },
@@ -39,22 +39,21 @@ const ACTION_ITEMS = [
     id: 'announcement',
     title: 'Announcement',
     description: 'Broadcast a message to the class.',
-    icon: Notification,
+    icon: NotificationBing,
     color: '#F97316', // Orange/Peach
     bgColor: '#FFF7ED',
   },
 ];
 
 export default function QuickActionsModal({ visible, onClose }: QuickActionsModalProps) {
-  const router = useRouter();
   const [showModal, setShowModal] = React.useState(visible);
   const slideAnim = React.useRef(new Animated.Value(height)).current;
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
   const panResponder = React.useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onStartShouldSetPanResponderCapture: () => false,
+      onStartShouldSetPanResponder: () => true, // Catch touches on empty spaces immediately!
+      onStartShouldSetPanResponderCapture: () => false, // Let buttons be clicked
       onMoveShouldSetPanResponder: (_, gestureState) => {
         return Math.abs(gestureState.dy) > 2 && Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
       },
@@ -64,12 +63,14 @@ export default function QuickActionsModal({ visible, onClose }: QuickActionsModa
       onPanResponderMove: (_, gestureState) => {
         if (gestureState.dy > 0) {
           slideAnim.setValue(gestureState.dy);
+          // Fade out background slightly as you drag down
           const opacity = Math.max(0, 1 - (gestureState.dy / (height / 2)));
           fadeAnim.setValue(opacity);
         }
       },
       onPanResponderRelease: (_, gestureState) => {
         if (gestureState.dy > 60 || gestureState.vy > 0.3) {
+          // Animate fully off-screen with the velocity of the swipe
           Animated.parallel([
             Animated.spring(slideAnim, {
               toValue: height,
@@ -88,6 +89,7 @@ export default function QuickActionsModal({ visible, onClose }: QuickActionsModa
             onClose();
           });
         } else {
+          // Spring back smoothly
           Animated.parallel([
             Animated.spring(slideAnim, {
               toValue: 0,
@@ -96,7 +98,7 @@ export default function QuickActionsModal({ visible, onClose }: QuickActionsModa
             }),
             Animated.timing(fadeAnim, {
               toValue: 1,
-              duration: 150,
+              duration: 200,
               useNativeDriver: true,
             })
           ]).start();
@@ -108,12 +110,16 @@ export default function QuickActionsModal({ visible, onClose }: QuickActionsModa
   React.useEffect(() => {
     if (visible) {
       setShowModal(true);
+      // Immediately reset position to bottom so it doesn't animate from wherever it was left off if canceled
+      slideAnim.setValue(height);
+      fadeAnim.setValue(0);
       Animated.parallel([
         Animated.spring(slideAnim, {
           toValue: 0,
           useNativeDriver: true,
-          bounciness: 5,
-          speed: 14,
+          damping: 20,
+          mass: 0.8,
+          stiffness: 100,
         }),
         Animated.timing(fadeAnim, {
           toValue: 1,
@@ -123,110 +129,67 @@ export default function QuickActionsModal({ visible, onClose }: QuickActionsModa
       ]).start();
     } else {
       Animated.parallel([
-        Animated.spring(slideAnim, {
+        Animated.timing(slideAnim, {
           toValue: height,
+          duration: 250,
           useNativeDriver: true,
-          damping: 20,
-          mass: 0.8,
-          stiffness: 120,
         }),
         Animated.timing(fadeAnim, {
           toValue: 0,
-          duration: 200,
+          duration: 250,
           useNativeDriver: true,
         })
-      ]).start(() => {
-        setShowModal(false);
-      });
+      ]).start(() => setShowModal(false));
     }
   }, [visible]);
-
-  if (!showModal) return null;
-
-  const handleClose = () => {
-    Animated.parallel([
-      Animated.spring(slideAnim, {
-        toValue: height,
-        useNativeDriver: true,
-        damping: 20,
-        mass: 0.8,
-        stiffness: 120,
-      }),
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      })
-    ]).start(() => {
-      onClose();
-    });
-  };
-
+  // Removed if (!showModal) return null; to prevent slow unmount/remount cycles that cause delays.
   return (
     <Modal
-      transparent
       visible={showModal}
+      transparent
       animationType="none"
-      onRequestClose={handleClose}
-      statusBarTranslucent
+      onRequestClose={onClose}
     >
+
       <View style={styles.overlay}>
-        {/* Animated Backdrop */}
         <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]}>
-          <TouchableOpacity 
-            style={styles.backdropTouch} 
-            activeOpacity={1} 
-            onPress={handleClose} 
+          <TouchableOpacity
+            style={styles.backdropTouch}
+            activeOpacity={1}
+            onPress={onClose}
           />
         </Animated.View>
 
-        {/* Sliding Bottom Sheet */}
         <Animated.View
+          {...panResponder.panHandlers}
           style={[
             styles.modalContainer,
-            {
-              transform: [{ translateY: slideAnim }],
-            },
+            { transform: [{ translateY: slideAnim }] }
           ]}
         >
-          {/* Top Drag Zone */}
-          <View {...panResponder.panHandlers} style={styles.dragArea}>
+          <View style={styles.dragArea}>
             <View style={styles.dragHandle} />
           </View>
 
-          {/* Header */}
           <View style={styles.header}>
             <View>
               <Text style={styles.title}>Quick Actions</Text>
               <Text style={styles.subtitle}>What would you like to create?</Text>
             </View>
-            <TouchableOpacity 
-              onPress={handleClose}
-              style={styles.closeButton}
-              activeOpacity={0.7}
-            >
-              <CloseCircle size={24} color="#9CA3AF" variant="Linear" />
+            <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
+              <X size={18} color="#6B7280" strokeWidth={2.5} />
             </TouchableOpacity>
           </View>
 
-          {/* Action Items List */}
-          <View style={styles.itemsContainer}>
+          <View style={styles.listContainer}>
             {ACTION_ITEMS.map((item) => (
               <TouchableOpacity
                 key={item.id}
                 style={styles.actionItem}
                 activeOpacity={0.7}
                 onPress={() => {
-                  handleClose();
-                  if (item.id === 'test') {
-                    router.push('/(instructor)/create-test');
-                  } else if (item.id === 'assignment') {
-                    router.push('/(instructor)/create-assignment');
-                  } else if (item.id === 'announcement') {
-                    router.push('/(instructor)/create-announcement');
-                  } else if (item.id === 'resources') {
-                    router.push('/(instructor)/create-resource');
-                  }
+                  console.log(`Clicked ${item.title}`);
+                  onClose();
                 }}
               >
                 <View style={[styles.iconContainer, { backgroundColor: item.bgColor }]}>
@@ -236,7 +199,7 @@ export default function QuickActionsModal({ visible, onClose }: QuickActionsModa
                   <Text style={styles.itemTitle}>{item.title}</Text>
                   <Text style={styles.itemDescription}>{item.description}</Text>
                 </View>
-                <ArrowRight2 size={16} color="#D1D5DB" variant="Linear" />
+                <ChevronRight size={16} color="#D1D5DB" strokeWidth={2} />
               </TouchableOpacity>
             ))}
           </View>
@@ -305,41 +268,46 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     fontWeight: '500',
   },
-  closeButton: {
-    padding: 4,
+  closeBtn: {
+    padding: 8,
+    backgroundColor: '#F3F4F6',
+    borderRadius: 20,
   },
-  itemsContainer: {
-    gap: 16,
+  listContainer: {
+    gap: 12,
   },
   actionItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
-    borderRadius: 20,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#F3F4F6',
+    borderColor: '#F1F5F9', // Even softer border
   },
   iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 16,
-    alignItems: 'center',
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     justifyContent: 'center',
-    marginRight: 16,
+    alignItems: 'center',
+    marginRight: 14,
   },
   textContainer: {
     flex: 1,
+    justifyContent: 'center',
   },
   itemTitle: {
-    fontSize: 16,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '600',
     color: '#1F2937',
     marginBottom: 2,
+    letterSpacing: -0.2,
   },
   itemDescription: {
-    fontSize: 13,
-    color: '#6B7280',
-    fontWeight: '400',
+    fontSize: 12.5,
+    color: '#9CA3AF',
+    letterSpacing: -0.1,
   },
 });
