@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, TextInput, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import InstructorHeader from '@/components/Instructor/header';
+import InstructorHeader from '@/components/Instructor/InstructorHeader';
 import { SearchNormal1, Filter, Sort } from 'iconsax-react-native';
 import PerformanceReviewModal from '@/components/Instructor/PerformanceReviewModal';
 
@@ -53,7 +53,6 @@ export default function InstructorTestResultsScreen() {
     <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
       <InstructorHeader 
         title="Test Results" 
-        subtitle="View and analyze student test performance." 
         onBackPress={() => router.back()} 
       />
 
