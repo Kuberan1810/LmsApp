@@ -31,7 +31,9 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
   const segments = useSegments();
 
   // Only show tab bar on root routes: /(instructor)/courses, /(instructor)/students, /(instructor)/dashboard/dashboard
-  const isMainRoute = (segments.length <= 2) || (segments.length === 3 && segments[1] === 'dashboard' && segments[2] === 'dashboard');
+  const isMainRoute = 
+    (segments.length === 3 && segments[1] === 'dashboard' && segments[2] === 'dashboard') ||
+    (segments.length === 2 && (segments[1] === 'courses' || segments[1] === 'students'));
 
   if (!isMainRoute || !isTabBarVisible) {
     return null;

@@ -16,7 +16,7 @@ import { push, router } from 'expo-router/build/global-state/router';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-type AttendanceStatus = 'present' | 'absent' | 'holiday' | 'weekend' | 'none' | 'late';
+type AttendanceStatus = 'present' | 'absent' | 'holiday' | 'weekend' | 'none';
 
 interface DayRecord {
   dayName: string;
@@ -40,7 +40,7 @@ const ATTENDANCE_DATA: DayRecord[] = [
   { dayName: 'Mon', date: '21', month: 'Jul', fullDate: 'Mon, 21 Jul 2025', status: 'present', checkIn: '09:02 AM', checkOut: '05:45 PM', totalHours: '8h 43m' },
   { dayName: 'Tue', date: '22', month: 'Jul', fullDate: 'Tue, 22 Jul 2025', status: 'present', checkIn: '09:10 AM', checkOut: '06:00 PM', totalHours: '8h 50m' },
   { dayName: 'Wed', date: '23', month: 'Jul', fullDate: 'Wed, 23 Jul 2025', status: 'present', checkIn: '09:00 AM', checkOut: '05:30 PM', totalHours: '8h 30m' },
-  { dayName: 'Thu', date: '24', month: 'Jul', fullDate: 'Thu, 24 Jul 2025', status: 'late', checkIn: '10:15 AM', checkOut: '06:30 PM', totalHours: '8h 15m' },
+  { dayName: 'Thu', date: '24', month: 'Jul', fullDate: 'Thu, 24 Jul 2025', status: 'present', checkIn: '10:15 AM', checkOut: '06:30 PM', totalHours: '8h 15m' },
   { dayName: 'Fri', date: '25', month: 'Jul', fullDate: 'Fri, 25 Jul 2025', status: 'absent', checkIn: undefined, checkOut: undefined },
   { dayName: 'Sat', date: '26', month: 'Jul', fullDate: 'Sat, 26 Jul 2025', status: 'weekend' },
   { dayName: 'Sun', date: '27', month: 'Jul', fullDate: 'Sun, 27 Jul 2025', status: 'weekend' },
@@ -63,19 +63,18 @@ const statusConfig = {
   present: { bg: '#E8F8F0', color: '#1DD75B', label: 'Present', Icon: TickCircle },
   absent: { bg: '#FDE8E8', color: '#E61026', label: 'Absent', Icon: CloseCircle },
   late: { bg: '#FFF3E8', color: '#EE8B3A', label: 'Late', Icon: Clock },
-  holiday: { bg: '#EEF2FF', color: '#6366F1', label: 'Holiday', Icon: Calendar },
+  holiday: { bg: '#FFEDDD', color: '#FFBE85', label: 'Holiday', Icon: Calendar },
   weekend: { bg: '#F5F5F5', color: '#AAAAAA', label: 'Weekend', Icon: InfoCircle },
   none: { bg: '#FFFFFF', color: '#CCCCCC', label: 'No Data', Icon: InfoCircle },
 };
 
 function calcSummary(data: DayRecord[]) {
   const workdays = data.filter(d => d.status !== 'weekend');
-  const present = workdays.filter(d => d.status === 'present' || d.status === 'late').length;
+  const present = workdays.filter(d => d.status === 'present').length;
   const absent = workdays.filter(d => d.status === 'absent').length;
-  const late = workdays.filter(d => d.status === 'late').length;
   const holiday = workdays.filter(d => d.status === 'holiday').length;
   const pct = workdays.length > 0 ? Math.round((present / (workdays.length - holiday)) * 100) : 0;
-  return { present, absent, late, holiday, total: workdays.length - holiday, pct };
+  return { present, absent, holiday, total: workdays.length - holiday, pct };
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -164,26 +163,41 @@ export default function AttendanceScreen() {
   const prevMonth = () => setCurrentMonthIndex(i => (i === 0 ? 11 : i - 1));
   const nextMonth = () => setCurrentMonthIndex(i => (i === 11 ? 0 : i + 1));
 
-  // Build 5-week grid (35 cells) for current month
-  const firstDayOfMonth = new Date(year, currentMonthIndex, 1).getDay(); // 0=Sun
+  // Build 4, 5, or 6-week grid
+  const startOffset = new Date(year, currentMonthIndex, 1).getDay();
   const daysInMonth = new Date(year, currentMonthIndex + 1, 0).getDate();
+  const totalSlots = startOffset + daysInMonth <= 28 ? 28 : (startOffset + daysInMonth <= 35 ? 35 : 42);
 
-  const calendarCells: (DayRecord | null)[] = [];
-  for (let i = 0; i < firstDayOfMonth; i++) calendarCells.push(null);
-  for (let d = 1; d <= daysInMonth; d++) {
-    const padded = String(d).padStart(2, '0');
-    const found = ATTENDANCE_DATA.find(r => r.date === padded && r.month === monthName);
-    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const dayOfWeek = new Date(year, currentMonthIndex, d).getDay();
-    calendarCells.push(found ?? {
-      dayName: dayNames[dayOfWeek],
-      date: padded,
-      month: monthName,
-      fullDate: '',
-      status: (dayOfWeek === 0 || dayOfWeek === 6) ? 'weekend' : 'none',
-    });
+  const calendarCells: DayRecord[] = [];
+  const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  
+  for (let i = 0; i < totalSlots; i++) {
+    const dateObj = new Date(year, currentMonthIndex, i - startOffset + 1);
+    const dayOfWeek = dateObj.getDay();
+    
+    if (dateObj.getMonth() !== currentMonthIndex) {
+      calendarCells.push({
+        dayName: DAYS[dayOfWeek],
+        date: String(dateObj.getDate()).padStart(2, '0'),
+        month: MONTHS[dateObj.getMonth()],
+        fullDate: '',
+        status: 'none'
+      });
+    } else {
+      const padded = String(dateObj.getDate()).padStart(2, '0');
+      const found = ATTENDANCE_DATA.find(r => r.date === padded && r.month === monthName);
+      
+      const defaultStatus = (dayOfWeek === 0 || dayOfWeek === 6) ? 'weekend' : 'none';
+      
+      calendarCells.push(found ?? {
+        dayName: DAYS[dayOfWeek],
+        date: padded,
+        month: monthName,
+        fullDate: '',
+        status: defaultStatus,
+      });
+    }
   }
-  while (calendarCells.length % 7 !== 0) calendarCells.push(null);
 
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -227,7 +241,6 @@ export default function AttendanceScreen() {
         <View className="flex-row px-4 mb-5">
           <SummaryChip label="Present" value={summary.present} color="#1DD75B" bg="#E8F8F0" />
           <SummaryChip label="Absent" value={summary.absent} color="#E61026" bg="#FDE8E8" />
-          <SummaryChip label="Late" value={summary.late} color="#EE8B3A" bg="#FFF3E8" />
           <SummaryChip label="Attendance" value={summary.pct} color="#6366F1" bg="#EEF2FF" />
         </View>
 
@@ -247,44 +260,48 @@ export default function AttendanceScreen() {
                 </TouchableOpacity>
               </View>
 
-              {/* Day headers */}
-              <View className="flex-row mb-3">
-                {weekDays.map(d => (
-                  <View key={d} className="flex-1 items-center">
-                    <Text className="text-[11px] font-semibold text-[#AAAAAA]">{d}</Text>
-                  </View>
-                ))}
-              </View>
-
               {/* Calendar grid */}
-              <View className="flex-row flex-wrap">
+              <View className="flex-row flex-wrap justify-between gap-y-3 mt-4">
                 {calendarCells.map((cell, idx) => {
-                  if (!cell) {
-                    return <View key={`e-${idx}`} style={{ width: '14.28%', height: 48 }} />;
-                  }
-                  const cfg = statusConfig[cell.status] ?? statusConfig.none;
-                  const isSelected = selectedDay?.date === cell.date && selectedDay?.month === cell.month;
+                  const getStatusStyles = (status: AttendanceStatus) => {
+                    switch (status) {
+                      case 'present': return { bg: '#DCFCE780', day: '#3EA465', date: '#3EA465', border: 'transparent' };
+                      case 'absent': return { bg: '#FEE2E280', day: '#CE1919', date: '#CE1919', border: 'transparent' };
+                      case 'holiday': return { bg: '#FFEDDD', day: '#FFBE85', date: '#FFBE85', border: 'transparent' };
+                      case 'weekend': return { bg: '#FFEDDD', day: '#333333', date: '#777777', border: 'transparent' };
+                      case 'none':
+                      default: return { bg: '#FFFFFF', day: '#333333', date: '#777777', border: '#E5E7EB' };
+                    }
+                  };
+                  
+                  const styles = getStatusStyles(cell.status);
+                  const isSelected = selectedDay?.date === cell.date && selectedDay?.month === cell.month && cell.status !== 'none';
+                  const isCurrentMonth = cell.month === monthName;
+                  
                   return (
                     <TouchableOpacity
-                      key={`${cell.date}-${idx}`}
-                      onPress={() => setSelectedDay(isSelected ? null : cell)}
-                      style={{ width: '14.28%', paddingVertical: 2 }}
-                      className="items-center"
+                      key={idx}
+                      onPress={() => {
+                        if (isCurrentMonth && cell.status !== 'none') {
+                          setSelectedDay(isSelected ? null : cell);
+                        }
+                      }}
+                      activeOpacity={0.7}
+                      style={{
+                        width: '13%', 
+                        aspectRatio: 44 / 43,
+                        backgroundColor: isSelected ? styles.day : styles.bg,
+                        borderColor: isSelected ? styles.day : styles.border,
+                        borderWidth: isSelected ? 1.5 : (cell.status === 'none' ? 1 : 0),
+                      }}
+                      className={`rounded-[14px] items-center justify-center py-1.5 gap-0.5 ${!isCurrentMonth ? 'opacity-30' : ''}`}
                     >
-                      <View style={{
-                        backgroundColor: isSelected ? cfg.color : cfg.bg,
-                        width: 40, height: 44,
-                        borderRadius: 12,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderWidth: isSelected ? 0 : cell.status === 'none' ? 1 : 0,
-                        borderColor: '#E5E5E5',
-                      }}>
-                        <Text style={{ color: isSelected ? '#FFF' : cfg.color }}
-                          className="text-[10px] font-medium">{cell.dayName}</Text>
-                        <Text style={{ color: isSelected ? '#FFF' : cell.status === 'none' || cell.status === 'weekend' ? '#888' : cfg.color }}
-                          className="text-[13px] font-bold">{cell.date}</Text>
-                      </View>
+                      <Text style={{ color: isSelected ? '#FFF' : styles.day }} className="text-[14px] font-semibold leading-none text-center">
+                        {cell.dayName}
+                      </Text>
+                      <Text style={{ color: isSelected ? '#FFF' : styles.date }} className="text-[12px] font-medium leading-none text-center">
+                        {cell.date}
+                      </Text>
                     </TouchableOpacity>
                   );
                 })}
@@ -292,7 +309,7 @@ export default function AttendanceScreen() {
 
               {/* Legend */}
               <View className="flex-row justify-center flex-wrap gap-4 mt-5">
-                {(['present', 'absent', 'late', 'holiday'] as AttendanceStatus[]).map(s => {
+                {(['present', 'absent', 'holiday'] as AttendanceStatus[]).map(s => {
                   const cfg = statusConfig[s];
                   return (
                     <View key={s} className="flex-row items-center gap-1.5">
