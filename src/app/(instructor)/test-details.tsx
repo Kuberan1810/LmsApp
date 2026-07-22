@@ -1,15 +1,22 @@
-import { router } from 'expo-router';
-import { ArrowLeft2 } from 'iconsax-react-native';
-import { Edit2, Calendar, Clock, Image as ImageIcon, Square, CheckSquare, X, ChevronDown, ClipboardCheck, Trash2, Circle, CircleDot, Check, ChevronUp, RefreshCcw } from 'lucide-react-native';
-import CustomDropdown from '../../components/Instructor/CustomDropdown';
-import { useState, useRef, useEffect } from 'react';
-import { ScrollView, Text, TextInput, TouchableOpacity, View, Switch, Animated as RNAnimated, Easing as RNEasing, Platform } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as DocumentPicker from 'expo-document-picker';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router, useLocalSearchParams } from 'expo-router';
+import { Calendar2, Clock, CloseCircle, Refresh, TickCircle, Trash } from 'iconsax-react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Animated as RNAnimated, Easing as RNEasing, ScrollView, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import CustomDropdown from '../../components/Instructor/CustomDropdown';
+import UploadModalHeader from '../../components/Instructor/UploadModalHeader';
 
 export default function TestDetailsScreen() {
-  const [testTitle, setTestTitle] = useState('Test name');
+  const params = useLocalSearchParams<{ title?: string; batch?: string }>();
+  const [testTitle, setTestTitle] = useState(params.title || 'Test name');
+  const [batchName, setBatchName] = useState(params.batch || 'Batch 02');
+
+  useEffect(() => {
+    if (params.title) setTestTitle(params.title);
+    if (params.batch) setBatchName(params.batch);
+  }, [params.title, params.batch]);
   const [description, setDescription] = useState('');
 
   const questionTypeOptions = [
@@ -18,7 +25,7 @@ export default function TestDetailsScreen() {
     { label: 'Multiple choice', value: 'multiple_choice' },
     { label: 'Checkboxes', value: 'checkboxes' },
   ];
-  
+
   type Option = { id: string; text: string; checked: boolean };
   type Question = {
     id: string;
@@ -31,13 +38,13 @@ export default function TestDetailsScreen() {
   };
 
   const [questions, setQuestions] = useState<Question[]>([
-    { id: Math.random().toString(), text: '', type: 'short_answer', isRequired: false, points: '0', isAnswerKeyMode: false, options: [{ id: Math.random().toString(), text: 'Option 1', checked: false }] }
+    { id: Math.random().toString(), text: '', type: 'short_answer', isRequired: false, points: '', isAnswerKeyMode: false, options: [{ id: Math.random().toString(), text: 'Option 1', checked: false }] }
   ]);
 
   const addQuestion = () => {
     setQuestions(prev => [
       ...prev,
-      { id: Math.random().toString(), text: '', type: 'multiple_choice', isRequired: false, points: '0', isAnswerKeyMode: false, options: [{ id: Math.random().toString(), text: 'Option 1', checked: false }] }
+      { id: Math.random().toString(), text: '', type: 'multiple_choice', isRequired: false, points: '', isAnswerKeyMode: false, options: [{ id: Math.random().toString(), text: 'Option 1', checked: false }] }
     ]);
   };
 
@@ -69,7 +76,7 @@ export default function TestDetailsScreen() {
       return q;
     }));
   };
-  
+
   const updateOptionText = (questionId: string, optionId: string, text: string) => {
     setQuestions(prev => prev.map(q => {
       if (q.id === questionId) {
@@ -93,7 +100,7 @@ export default function TestDetailsScreen() {
 
   const [isUploadingDoc, setIsUploadingDoc] = useState(false);
   const spinValue = useRef(new RNAnimated.Value(0)).current;
-  
+
   useEffect(() => {
     if (isUploadingDoc) {
       RNAnimated.loop(
@@ -168,33 +175,21 @@ export default function TestDetailsScreen() {
     <View className="flex-1 bg-[#F9FAFB]">
 
       {/* Header */}
-      <View className="pt-16 pb-4 px-5 flex-row items-center">
-        <TouchableOpacity onPress={() => router.back()} className="mr-2 p-1">
-          <ArrowLeft2 size={24} color="#111827" />
-        </TouchableOpacity>
-        
-        <View className="flex-row items-center flex-1 pr-4">
-          <TextInput
-            value={testTitle}
-            onChangeText={setTestTitle}
-            className="text-xl font-medium text-[#111827] mr-2 p-0"
-            placeholder="Test name"
-            placeholderTextColor="#9CA3AF"
-          />
-          <Edit2 size={14} color="#9CA3AF" />
-        </View>
-
-        <View className="ml-4 bg-[#FFEDD5] px-3 py-1 rounded-full">
-          <Text className="text-[#F97316] text-xs font-medium">Batch 02</Text>
-        </View>
-      </View>
+      <UploadModalHeader
+        title=""
+        onBackPress={() => router.back()}
+        showSearch={false}
+        showNotification={false}
+        showProfile={false}
+        titleAlign="left"
+      />
 
       <ScrollView className="flex-1 px-5" showsVerticalScrollIndicator={false}>
-        
+
         {/* Date & Time Row */}
         <View className="flex-row justify-between mb-8 mt-2">
           {/* Due Date */}
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => setShowDatePicker(true)}
             className="bg-white rounded-2xl p-4 flex-1 mr-3 flex-row items-center justify-between"
           >
@@ -202,11 +197,11 @@ export default function TestDetailsScreen() {
               <Text className="text-sm font-medium text-[#4B5563] mb-1">Due date</Text>
               <Text className="text-[#9CA3AF] text-sm">{formattedDate}</Text>
             </View>
-            <Calendar size={20} color="#9CA3AF" strokeWidth={1.5} />
+            <Calendar2 size={20} color="#9CA3AF" variant="Linear" />
           </TouchableOpacity>
 
           {/* Due Time */}
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => setShowTimePicker(true)}
             className="bg-white rounded-2xl p-4 flex-1 ml-3 flex-row items-center justify-between"
           >
@@ -214,7 +209,7 @@ export default function TestDetailsScreen() {
               <Text className="text-sm font-medium text-[#4B5563] mb-1">Due Time(IST)</Text>
               <Text className="text-[#9CA3AF] text-sm">{formattedTime}</Text>
             </View>
-            <Clock size={20} color="#9CA3AF" strokeWidth={1.5} />
+            <Clock size={20} color="#9CA3AF" variant="Linear" />
           </TouchableOpacity>
         </View>
 
@@ -226,7 +221,7 @@ export default function TestDetailsScreen() {
             onChange={onChangeDate}
           />
         )}
-        
+
         {showTimePicker && (
           <DateTimePicker
             value={date}
@@ -268,7 +263,7 @@ export default function TestDetailsScreen() {
                   className="flex-1 text-base text-[#1F2937] font-medium"
                 />
               </View>
-              <View className="w-[160px] z-50">
+              <View className="w-[135px] z-50">
                 <CustomDropdown
                   value={q.type}
                   onChange={(val) => updateQuestion(q.id, { type: val })}
@@ -289,7 +284,7 @@ export default function TestDetailsScreen() {
               {(q.type === 'multiple_choice' || q.type === 'checkboxes') && (
                 <>
                   {q.options.map((opt) => (
-                    <View key={opt.id} className="flex-row items-center mb-2">
+                    <View key={opt.id} className="flex-row items-center mb-4">
                       <View className="mr-3">
                         {q.type === 'checkboxes' ? (
                           <View className="w-5 h-5 rounded border-[2px] border-[#D1D5DB]" />
@@ -307,11 +302,11 @@ export default function TestDetailsScreen() {
                         />
                       </View>
                       <TouchableOpacity onPress={() => removeOption(q.id, opt.id)}>
-                        <X size={18} color="#9CA3AF" />
+                        <CloseCircle size={18} color="#9CA3AF" variant="Linear" />
                       </TouchableOpacity>
                     </View>
                   ))}
-                  <TouchableOpacity className="mt-1" onPress={() => addOption(q.id)}>
+                  <TouchableOpacity className="mt-2" onPress={() => addOption(q.id)}>
                     <Text className="text-[#F67300] text-sm font-medium">+ Add option</Text>
                   </TouchableOpacity>
                 </>
@@ -327,7 +322,7 @@ export default function TestDetailsScreen() {
               <View className="flex-row items-center">
                 {questions.length > 1 && (
                   <TouchableOpacity className="mr-4" onPress={() => removeQuestion(q.id)}>
-                    <Trash2 size={18} color="#9CA3AF" />
+                    <Trash size={18} color="#9CA3AF" variant="Linear" />
                   </TouchableOpacity>
                 )}
                 <Text className="text-[#374151] text-sm mr-2">Required</Text>
@@ -344,7 +339,7 @@ export default function TestDetailsScreen() {
 
             {/* ANSWER KEY MODE (EXPANDABLE) */}
             {q.isAnswerKeyMode && (
-              <View className="mt-6 border border-[#E5E5E5] rounded-xl p-4 bg-white shadow-sm">
+              <View className="mt-6 border border-[#E5E5E5] rounded-xl p-4 bg-white">
                 {(q.type === 'short_answer' || q.type === 'long_answer') && (
                   <>
                     {/* HEADER ROW */}
@@ -352,8 +347,10 @@ export default function TestDetailsScreen() {
                       <Text className="text-sm font-medium text-[#1F2937]">Enter the key words</Text>
                       <View className="flex-row items-center">
                         <TextInput
-                          value={String(q.points || '0')}
+                          value={q.points}
                           onChangeText={(val) => updateQuestion(q.id, { points: val })}
+                          placeholder="0"
+                          placeholderTextColor="#9CA3AF"
                           keyboardType="numeric"
                           className="w-16 border border-[#E5E5E5] rounded px-2 py-1 text-sm text-center mr-2"
                         />
@@ -374,7 +371,7 @@ export default function TestDetailsScreen() {
 
                     {/* DONE BUTTON */}
                     <View className="flex-row justify-end">
-                      <TouchableOpacity 
+                      <TouchableOpacity
                         className="bg-[#F67300] px-6 py-2 rounded-full"
                         onPress={() => updateQuestion(q.id, { isAnswerKeyMode: false })}
                       >
@@ -391,8 +388,10 @@ export default function TestDetailsScreen() {
                       <Text className="text-sm font-medium text-[#1F2937]">Choose correct answers:</Text>
                       <View className="flex-row items-center">
                         <TextInput
-                          value={String(q.points || '0')}
+                          value={q.points}
                           onChangeText={(val) => updateQuestion(q.id, { points: val })}
+                          placeholder="0"
+                          placeholderTextColor="#9CA3AF"
                           keyboardType="numeric"
                           className="w-16 border border-[#E5E5E5] rounded px-2 py-1 text-sm text-center mr-2"
                         />
@@ -410,22 +409,22 @@ export default function TestDetailsScreen() {
                         <View className="mr-3">
                           {q.type === 'checkboxes' ? (
                             <View className={`w-5 h-5 rounded border ${opt.checked ? 'border-transparent bg-[#22C55E]' : 'border-[#D1D5DB]'} items-center justify-center`}>
-                              {opt.checked && <Check size={14} color="#FFFFFF" strokeWidth={3} />}
+                              {opt.checked && <TickCircle size={14} color="#FFFFFF" variant="Linear" />}
                             </View>
                           ) : (
                             <View className={`w-5 h-5 rounded-full border ${opt.checked ? 'border-transparent bg-[#22C55E]' : 'border-[#D1D5DB]'} items-center justify-center`}>
-                              {opt.checked && <Check size={14} color="#FFFFFF" strokeWidth={3} />}
+                              {opt.checked && <TickCircle size={14} color="#FFFFFF" variant="Linear" />}
                             </View>
                           )}
                         </View>
                         <Text className="flex-1 text-[#1F2937] text-base">{opt.text || 'Option'}</Text>
-                        {opt.checked && <Check size={18} color="#22C55E" />}
+                        {opt.checked && <TickCircle size={18} color="#22C55E" variant="Linear" />}
                       </TouchableOpacity>
                     ))}
 
                     {/* DONE BUTTON */}
                     <View className="flex-row justify-end mt-4">
-                      <TouchableOpacity 
+                      <TouchableOpacity
                         className="bg-[#F67300] px-6 py-2 rounded-full"
                         onPress={() => updateQuestion(q.id, { isAnswerKeyMode: false })}
                       >
@@ -469,10 +468,10 @@ export default function TestDetailsScreen() {
             {isUploadingDoc && (
               <View className="absolute inset-[2px] bg-white rounded-[10px] z-0" />
             )}
-            
+
             <View className="flex-row items-center z-10">
               <RNAnimated.View style={isUploadingDoc ? { transform: [{ rotate: spin }] } : {}}>
-                <RefreshCcw size={18} color="#F67300" className="mr-2" />
+                <Refresh size={18} color="#F67300" className="mr-2" />
               </RNAnimated.View>
               <Text className="text-[#374151] font-semibold text-sm">
                 {isUploadingDoc ? 'Generating...' : 'Auto-generate from Doc'}

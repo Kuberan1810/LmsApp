@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, Modal, TouchableOpacity, Animated, StyleSheet, Dimensions, Platform, PanResponder } from 'react-native';
-import { BlurView } from 'expo-blur';
-import { X, ClipboardList, GraduationCap, FileText, Bell, ChevronRight } from 'lucide-react-native';
+import { ClipboardText, Teacher, DocumentText, Notification, ArrowRight2, CloseCircle } from 'iconsax-react-native';
 import { useRouter } from 'expo-router';
 
 interface QuickActionsModalProps {
@@ -16,7 +15,7 @@ const ACTION_ITEMS = [
     id: 'assignment',
     title: 'Assignment',
     description: 'Create a new assignment for students.',
-    icon: ClipboardList,
+    icon: ClipboardText,
     color: '#3B82F6', // Blue
     bgColor: '#EFF6FF',
   },
@@ -24,7 +23,7 @@ const ACTION_ITEMS = [
     id: 'test',
     title: 'Test',
     description: 'Set up a new test or quiz.',
-    icon: GraduationCap,
+    icon: Teacher,
     color: '#F59E0B', // Orange
     bgColor: '#FEF3C7',
   },
@@ -32,7 +31,7 @@ const ACTION_ITEMS = [
     id: 'resources',
     title: 'Resources',
     description: 'Upload new study materials.',
-    icon: FileText,
+    icon: DocumentText,
     color: '#8B5CF6', // Purple
     bgColor: '#F5F3FF',
   },
@@ -40,8 +39,8 @@ const ACTION_ITEMS = [
     id: 'announcement',
     title: 'Announcement',
     description: 'Broadcast a message to the class.',
-    icon: Bell,
-    color: '#F97316', // Another Orange/Peach like the 4th item in the image
+    icon: Notification,
+    color: '#F97316', // Orange/Peach
     bgColor: '#FFF7ED',
   },
 ];
@@ -54,8 +53,8 @@ export default function QuickActionsModal({ visible, onClose }: QuickActionsModa
 
   const panResponder = React.useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: () => true, // Catch touches on empty spaces immediately!
-      onStartShouldSetPanResponderCapture: () => false, // Let buttons be clicked
+      onStartShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponderCapture: () => false,
       onMoveShouldSetPanResponder: (_, gestureState) => {
         return Math.abs(gestureState.dy) > 2 && Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
       },
@@ -65,14 +64,12 @@ export default function QuickActionsModal({ visible, onClose }: QuickActionsModa
       onPanResponderMove: (_, gestureState) => {
         if (gestureState.dy > 0) {
           slideAnim.setValue(gestureState.dy);
-          // Fade out background slightly as you drag down
           const opacity = Math.max(0, 1 - (gestureState.dy / (height / 2)));
           fadeAnim.setValue(opacity);
         }
       },
       onPanResponderRelease: (_, gestureState) => {
         if (gestureState.dy > 60 || gestureState.vy > 0.3) {
-          // Animate fully off-screen with the velocity of the swipe
           Animated.parallel([
             Animated.spring(slideAnim, {
               toValue: height,
@@ -91,7 +88,6 @@ export default function QuickActionsModal({ visible, onClose }: QuickActionsModa
             onClose();
           });
         } else {
-          // Spring back smoothly
           Animated.parallel([
             Animated.spring(slideAnim, {
               toValue: 0,
@@ -100,7 +96,7 @@ export default function QuickActionsModal({ visible, onClose }: QuickActionsModa
             }),
             Animated.timing(fadeAnim, {
               toValue: 1,
-              duration: 200,
+              duration: 150,
               useNativeDriver: true,
             })
           ]).start();
@@ -112,16 +108,12 @@ export default function QuickActionsModal({ visible, onClose }: QuickActionsModa
   React.useEffect(() => {
     if (visible) {
       setShowModal(true);
-      // Immediately reset position to bottom so it doesn't animate from wherever it was left off if canceled
-      slideAnim.setValue(height);
-      fadeAnim.setValue(0);
       Animated.parallel([
         Animated.spring(slideAnim, {
           toValue: 0,
           useNativeDriver: true,
-          damping: 20,
-          mass: 0.8,
-          stiffness: 100,
+          bounciness: 5,
+          speed: 14,
         }),
         Animated.timing(fadeAnim, {
           toValue: 1,
@@ -131,71 +123,105 @@ export default function QuickActionsModal({ visible, onClose }: QuickActionsModa
       ]).start();
     } else {
       Animated.parallel([
-        Animated.timing(slideAnim, {
+        Animated.spring(slideAnim, {
           toValue: height,
-          duration: 250,
           useNativeDriver: true,
+          damping: 20,
+          mass: 0.8,
+          stiffness: 120,
         }),
         Animated.timing(fadeAnim, {
           toValue: 0,
-          duration: 250,
+          duration: 200,
           useNativeDriver: true,
         })
-      ]).start(() => setShowModal(false));
+      ]).start(() => {
+        setShowModal(false);
+      });
     }
   }, [visible]);
-  // Removed if (!showModal) return null; to prevent slow unmount/remount cycles that cause delays.
+
+  if (!showModal) return null;
+
+  const handleClose = () => {
+    Animated.parallel([
+      Animated.spring(slideAnim, {
+        toValue: height,
+        useNativeDriver: true,
+        damping: 20,
+        mass: 0.8,
+        stiffness: 120,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      })
+    ]).start(() => {
+      onClose();
+    });
+  };
+
   return (
     <Modal
-      visible={showModal}
       transparent
+      visible={showModal}
       animationType="none"
-      onRequestClose={onClose}
+      onRequestClose={handleClose}
+      statusBarTranslucent
     >
-
       <View style={styles.overlay}>
+        {/* Animated Backdrop */}
         <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]}>
-          <TouchableOpacity
-            style={styles.backdropTouch}
-            activeOpacity={1}
-            onPress={onClose}
+          <TouchableOpacity 
+            style={styles.backdropTouch} 
+            activeOpacity={1} 
+            onPress={handleClose} 
           />
         </Animated.View>
 
+        {/* Sliding Bottom Sheet */}
         <Animated.View
-          {...panResponder.panHandlers}
           style={[
             styles.modalContainer,
-            { transform: [{ translateY: slideAnim }] }
+            {
+              transform: [{ translateY: slideAnim }],
+            },
           ]}
         >
-          <View style={styles.dragArea}>
+          {/* Top Drag Zone */}
+          <View {...panResponder.panHandlers} style={styles.dragArea}>
             <View style={styles.dragHandle} />
           </View>
 
+          {/* Header */}
           <View style={styles.header}>
             <View>
               <Text style={styles.title}>Quick Actions</Text>
               <Text style={styles.subtitle}>What would you like to create?</Text>
             </View>
-            <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-              <X size={18} color="#6B7280" strokeWidth={2.5} />
+            <TouchableOpacity 
+              onPress={handleClose}
+              style={styles.closeButton}
+              activeOpacity={0.7}
+            >
+              <CloseCircle size={24} color="#9CA3AF" variant="Linear" />
             </TouchableOpacity>
           </View>
 
-          <View style={styles.listContainer}>
+          {/* Action Items List */}
+          <View style={styles.itemsContainer}>
             {ACTION_ITEMS.map((item) => (
               <TouchableOpacity
                 key={item.id}
                 style={styles.actionItem}
                 activeOpacity={0.7}
                 onPress={() => {
-                  console.log(`Clicked ${item.title}`);
-                  onClose();
-                  if (item.id === 'assignment') {
-                    router.push('/(instructor)/create-assignment');
-                  } else if (item.id === 'test') {
+                  handleClose();
+                  if (item.id === 'test') {
                     router.push('/(instructor)/create-test');
+                  } else if (item.id === 'assignment') {
+                    router.push('/(instructor)/create-assignment');
                   } else if (item.id === 'announcement') {
                     router.push('/(instructor)/create-announcement');
                   } else if (item.id === 'resources') {
@@ -204,13 +230,13 @@ export default function QuickActionsModal({ visible, onClose }: QuickActionsModa
                 }}
               >
                 <View style={[styles.iconContainer, { backgroundColor: item.bgColor }]}>
-                  <item.icon size={20} color={item.color} strokeWidth={2.5} />
+                  <item.icon size={22} color={item.color} variant="Linear" />
                 </View>
                 <View style={styles.textContainer}>
                   <Text style={styles.itemTitle}>{item.title}</Text>
                   <Text style={styles.itemDescription}>{item.description}</Text>
                 </View>
-                <ChevronRight size={16} color="#D1D5DB" strokeWidth={2} />
+                <ArrowRight2 size={16} color="#D1D5DB" variant="Linear" />
               </TouchableOpacity>
             ))}
           </View>
@@ -279,46 +305,41 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     fontWeight: '500',
   },
-  closeBtn: {
-    padding: 8,
-    backgroundColor: '#F3F4F6',
-    borderRadius: 20,
+  closeButton: {
+    padding: 4,
   },
-  listContainer: {
-    gap: 12,
+  itemsContainer: {
+    gap: 16,
   },
   actionItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 16,
+    padding: 16,
+    borderRadius: 20,
+    backgroundColor: '#FAFAFA',
     borderWidth: 1,
-    borderColor: '#F1F5F9', // Even softer border
+    borderColor: '#F3F4F6',
   },
   iconContainer: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    justifyContent: 'center',
+    width: 48,
+    height: 48,
+    borderRadius: 16,
     alignItems: 'center',
-    marginRight: 14,
+    justifyContent: 'center',
+    marginRight: 16,
   },
   textContainer: {
     flex: 1,
-    justifyContent: 'center',
   },
   itemTitle: {
-    fontSize: 15,
-    fontWeight: '600',
+    fontSize: 16,
+    fontWeight: '700',
     color: '#1F2937',
     marginBottom: 2,
-    letterSpacing: -0.2,
   },
   itemDescription: {
-    fontSize: 12.5,
-    color: '#9CA3AF',
-    letterSpacing: -0.1,
+    fontSize: 13,
+    color: '#6B7280',
+    fontWeight: '400',
   },
 });

@@ -59,55 +59,55 @@ export default function CreateTestScreen() {
       </View>
 
       {/* Form Section */}
-      <ScrollView 
-        className="flex-1 px-6 pt-8" 
+      <ScrollView
+        className="flex-1 px-6 pt-8"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
       >
         <View className="flex-1">
           <Text className="text-xl font-bold text-[#1F2937] mb-6">Test</Text>
 
-        <View className="mb-5">
-          <Text className="text-sm font-medium text-[#4B5563] mb-2">Course Name / ID</Text>
-          <CustomDropdown
-            value={courseName}
-            onChange={setCourseName}
-            options={DUMMY_COURSES}
-            placeholder="E.g Am101"
-          />
-        </View>
+          <View className="mb-5">
+            <Text className="text-sm font-medium text-[#4B5563] mb-2">Course Name / ID</Text>
+            <CustomDropdown
+              value={courseName}
+              onChange={setCourseName}
+              options={DUMMY_COURSES}
+              placeholder="E.g Am101"
+            />
+          </View>
 
-        <View className="mb-5">
-          <Text className="text-sm font-medium text-[#4B5563] mb-2">Batch ID</Text>
-          <CustomDropdown
-            value={batchId}
-            onChange={setBatchId}
-            options={DUMMY_BATCHES}
-            placeholder="E.g. Batch-01"
-          />
-        </View>
+          <View className="mb-5">
+            <Text className="text-sm font-medium text-[#4B5563] mb-2">Batch ID</Text>
+            <CustomDropdown
+              value={batchId}
+              onChange={setBatchId}
+              options={DUMMY_BATCHES}
+              placeholder="E.g. Batch-01"
+            />
+          </View>
 
-        <View className="mb-5">
-          <Text className="text-sm font-medium text-[#4B5563] mb-2">Module</Text>
-          <TextInput
-            value={moduleName}
-            onChangeText={setModuleName}
-            placeholder="E.g. Module 1"
-            placeholderTextColor="#9CA3AF"
-            className="bg-white border border-[#D3D3D3] rounded-[10px] h-[45px] px-[15px] text-[14px] text-[#1F2937]"
-          />
-        </View>
+          <View className="mb-5">
+            <Text className="text-sm font-medium text-[#4B5563] mb-2">Module</Text>
+            <TextInput
+              value={moduleName}
+              onChangeText={setModuleName}
+              placeholder="E.g. Module 1"
+              placeholderTextColor="#9CA3AF"
+              className="bg-white border border-[#D3D3D3] rounded-[10px] h-[45px] px-[15px] text-[14px] text-[#1F2937]"
+            />
+          </View>
 
-        <View className="mb-8">
-          <Text className="text-sm font-medium text-[#4B5563] mb-2">Title</Text>
-          <TextInput
-            value={title}
-            onChangeText={setTitle}
-            placeholder="E.g. Midterm Test"
-            placeholderTextColor="#9CA3AF"
-            className="bg-white border border-[#D3D3D3] rounded-[10px] h-[45px] px-[15px] text-[14px] text-[#1F2937]"
-          />
-        </View>
+          <View className="mb-8">
+            <Text className="text-sm font-medium text-[#4B5563] mb-2">Title</Text>
+            <TextInput
+              value={title}
+              onChangeText={setTitle}
+              placeholder="E.g. Midterm Test"
+              placeholderTextColor="#9CA3AF"
+              className="bg-white border border-[#D3D3D3] rounded-[10px] h-[45px] px-[15px] text-[14px] text-[#1F2937]"
+            />
+          </View>
         </View>
 
         {/* Buttons */}
@@ -120,7 +120,17 @@ export default function CreateTestScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => router.push('/(instructor)/test-details')}
+            onPress={() => {
+              router.push({
+                pathname: '/(instructor)/test-details',
+                params: {
+                  title: title.trim(),
+                  batch: batchId.trim(),
+                  course: courseName,
+                  module: moduleName,
+                },
+              });
+            }}
             className="flex-1 py-4 rounded-xl bg-[#F67300] items-center justify-center ml-3"
           >
             <Text className="text-white font-semibold text-base">Next</Text>

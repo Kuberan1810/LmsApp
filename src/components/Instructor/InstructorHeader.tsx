@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { NotificationBing, SearchNormal1 } from 'iconsax-react-native';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
@@ -113,7 +113,7 @@ export default function InstructorHeader({
                   className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-white items-center justify-center relative"
                 >
                   <NotificationBing
-                   
+
                     size={18} color="#1E1E2D" />
                   {/* Notification Dot */}
                   <View className="absolute top-[10px] right-[10px] w-2.5 h-2.5 bg-[#EE8B3A] rounded-full border-[1.5px] border-white" />

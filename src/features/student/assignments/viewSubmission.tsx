@@ -1,11 +1,10 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Image as ExpoImage } from 'expo-image';
-import { ArrowLeft2, CalendarRemove, Award, Message2, ImportCurve } from 'iconsax-react-native';
-import { Assignment } from './AssignmentCard';
-import { router } from 'expo-router';
 import Header from '@/components/Student/Header';
+import { Image as ExpoImage } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
+import { ArrowLeft2, Award, CalendarRemove, ImportCurve, Message2 } from 'iconsax-react-native';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Assignment } from './AssignmentCard';
+import { getFileConfig } from '@/components/uploadmodal';
 
 const getFileIconSource = (fileName: string) => {
     const ext = fileName.split('.').pop()?.toLowerCase();
@@ -59,14 +58,14 @@ export default function ViewSubmission({ assignment, onBack }: ViewSubmissionPro
 
     return (
         <View className="flex-1 bg-[#FAFAFA]">
-      <Header
-          title='Assignment Submission'
-          onBackPress={onBack}
-          showSearch={false}
-          showNotification={false}
-          showProfile={false}
-          titleAlign="center"
-      />
+            <Header
+                title='Assignment Submission'
+                onBackPress={onBack}
+                showSearch={false}
+                showNotification={false}
+                showProfile={false}
+                titleAlign="center"
+            />
 
 
             <ScrollView
@@ -77,7 +76,7 @@ export default function ViewSubmission({ assignment, onBack }: ViewSubmissionPro
                 {/* Header Brief Card */}
                 <View className="bg-white border border-[#F2EEF4] p-5 rounded-[16px] mb-5 shadow-xs">
                     <View className="flex-row items-center mb-3">
-                       
+
                         <Text className="text-[20px] font-medium text-[#333333]">
                             {assignment.title}
                         </Text>

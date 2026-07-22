@@ -57,44 +57,44 @@ export default function CreateAssignmentScreen() {
       </View>
 
       {/* Form Section */}
-      <ScrollView 
-        className="flex-1 px-6 pt-8" 
+      <ScrollView
+        className="flex-1 px-6 pt-8"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
       >
         <View className="flex-1">
           <Text className="text-xl font-bold text-[#1F2937] mb-6">Assignment Details</Text>
 
-        <View className="mb-5">
-          <Text className="text-[14px] font-medium text-[#4B5563] mb-2">Course Name / ID</Text>
-          <CustomDropdown
-            value={courseName}
-            onChange={setCourseName}
-            options={DUMMY_COURSES}
-            placeholder="E.g Am101"
-          />
-        </View>
+          <View className="mb-5">
+            <Text className="text-[14px] font-medium text-[#4B5563] mb-2">Course Name / ID</Text>
+            <CustomDropdown
+              value={courseName}
+              onChange={setCourseName}
+              options={DUMMY_COURSES}
+              placeholder="E.g Am101"
+            />
+          </View>
 
-        <View className="mb-5">
-          <Text className="text-[14px] font-medium text-[#4B5563] mb-2">Batch ID</Text>
-          <CustomDropdown
-            value={batchId}
-            onChange={setBatchId}
-            options={DUMMY_BATCHES}
-            placeholder="E.g. Batch-01"
-          />
-        </View>
+          <View className="mb-5">
+            <Text className="text-[14px] font-medium text-[#4B5563] mb-2">Batch ID</Text>
+            <CustomDropdown
+              value={batchId}
+              onChange={setBatchId}
+              options={DUMMY_BATCHES}
+              placeholder="E.g. Batch-01"
+            />
+          </View>
 
-        <View className="mb-8">
-          <Text className="text-[14px] font-medium text-[#4B5563] mb-2">Module</Text>
-          <TextInput
-            value={moduleName}
-            onChangeText={setModuleName}
-            placeholder="E.g. Module 1"
-            placeholderTextColor="#9CA3AF"
-            className="bg-white border border-[#D3D3D3] rounded-[10px] h-[45px] px-[15px] text-[14px] text-[#1F2937]"
-          />
-        </View>
+          <View className="mb-8">
+            <Text className="text-[14px] font-medium text-[#4B5563] mb-2">Module</Text>
+            <TextInput
+              value={moduleName}
+              onChangeText={setModuleName}
+              placeholder="E.g. Module 1"
+              placeholderTextColor="#9CA3AF"
+              className="bg-white border border-[#D3D3D3] rounded-[10px] h-[45px] px-[15px] text-[14px] text-[#1F2937]"
+            />
+          </View>
         </View>
 
         {/* Buttons */}
