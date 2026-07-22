@@ -1,10 +1,11 @@
 import { Stack } from 'expo-router';
 
-export default function CoursesLayout() {
+export default function StudentsLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
-      <Stack.Screen name="tests" />
+      <Stack.Screen name="list" />
+      <Stack.Screen name="[id]" />
     </Stack>
   );
 }

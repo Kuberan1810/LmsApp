@@ -1,8 +1,8 @@
 import { TabBarVisibilityProvider, useTabBarVisibility } from '@/context/TabBarVisibilityContext';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { BlurView } from 'expo-blur';
-import { Tabs, useRouter } from 'expo-router';
-import {  Home2, User, Add, DocumentText1, DocumentText } from 'iconsax-react-native';
+import { Tabs, useRouter, useSegments } from 'expo-router';
+import {  Home2, User, Add, DocumentText1, DocumentText, Profile2User } from 'iconsax-react-native';
 import { LayoutAnimation, LogBox, Platform, Text, TouchableOpacity, UIManager, View } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useState } from 'react';
@@ -28,17 +28,17 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
     };
   });
 
-  const currentRouteName = state.routes[state.index].name;
+  const segments = useSegments();
   
-  // Only show tab bar on these specific root routes
-  const isMainRoute = ['dashboard/dashboard', 'courses', 'profile/index'].includes(currentRouteName);
+  // Only show tab bar on root routes: /(instructor)/courses, /(instructor)/students, /(instructor)/dashboard/dashboard
+  const isMainRoute = (segments.length <= 2) || (segments.length === 3 && segments[1] === 'dashboard' && segments[2] === 'dashboard');
 
   if (!isMainRoute || !isTabBarVisible) {
     return null;
   }
 
   const visibleRoutes = state.routes.filter(r =>
-    ['dashboard/dashboard', 'courses', 'profile/index'].includes(r.name)
+    ['dashboard/dashboard', 'courses', 'students'].includes(r.name)
   );
 
   const tabContent = visibleRoutes.map((route) => {
@@ -64,8 +64,8 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
           router.navigate('/(instructor)/dashboard/dashboard');
         } else if (route.name === 'courses') {
           router.navigate('/(instructor)/courses');
-        } else if (route.name === 'profile/index') {
-          router.navigate('/(instructor)/profile');
+        } else if (route.name === 'students') {
+          router.navigate('/(instructor)/students');
         } else {
           navigation.navigate(route.name);
         }
@@ -74,7 +74,7 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
 
     let IconComponent: any = Home2;
     if (route.name === 'courses') IconComponent = isFocused ? DocumentText : DocumentText1;
-    if (route.name === 'profile/index') IconComponent = User;
+    if (route.name === 'students') IconComponent = Profile2User;
 
     return (
       <TouchableOpacity
@@ -185,7 +185,7 @@ export default function InstructorLayout() {
       >
         <Tabs.Screen name="dashboard/dashboard" options={{ title: 'Home' }} />
         <Tabs.Screen name="courses" options={{ title: 'Courses' }} />
-        <Tabs.Screen name="profile/index" options={{ title: 'Profile' }} />
+        <Tabs.Screen name="students" options={{ title: 'Students' }} />
        
       </Tabs>
 

@@ -40,7 +40,7 @@ export default function CoursesStats() {
                         <Text className="text-[12px] text-[#8C8E90] mt-0.5">AA101 - AI</Text>
                     </View>
                     <TouchableOpacity
-                        onPress={() => router.push('/(instructor)/courses/students')}
+                        onPress={() => router.push('/(instructor)/students/list')}
                         className="bg-[#F67300] px-4 py-2 rounded-[6px]"
                         activeOpacity={0.8}
                     >

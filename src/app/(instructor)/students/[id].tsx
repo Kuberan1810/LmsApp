@@ -6,10 +6,12 @@ import { ArrowLeft2, Calendar, DocumentText, TrendUp, Profile2User, Teacher, Tas
 import { Ionicons } from '@expo/vector-icons';
 import { Sms } from 'iconsax-react-native';
 
+type Status = 'present' | 'absent' | 'holiday' | 'weekend' | 'none';
+
 const MOCK_HISTORY = [
-  { id: 1, title: 'AI Agent Logic', status: 'On Time', date: '12 Jan 2026', marks: '86' },
-  { id: 2, title: 'AI Agent Logic', status: 'On Time', date: '12 Jan 2026', marks: '86' },
-  { id: 3, title: 'AI Agent Logic', status: 'On Time', date: '12 Jan 2026', marks: '86' },
+  { id: 1, title: 'AI Agent Logic', status: 'On time', date: '12 Jan 2026', marks: '86' },
+  { id: 2, title: 'AI Agent Logic', status: 'On time', date: '12 Jan 2026', marks: '86' },
+  { id: 3, title: 'AI Agent Logic', status: 'On time', date: '12 Jan 2026', marks: '86' },
 ];
 
 const MOCK_TESTS = [
@@ -18,8 +20,9 @@ const MOCK_TESTS = [
 ];
 
 const MOCK_ATTENDANCE = [
-  { id: 1, code: 'AM101', time: '09:30', title: 'AI / ML Frontier AI Engineer', duration: '09:30 - 10:30', status: 'Present' },
-  { id: 2, code: 'AM101', time: '09:30', title: 'AI / ML Frontier AI Engineer', duration: '09:30 - 10:30', status: 'Present' },
+  { id: 1, code: 'AM101', date: '15', time: '09:30', title: 'AI / ML Frontier AI Engineer', duration: '09:30 - 10:30', status: 'Present' },
+  { id: 2, code: 'AM101', date: '15', time: '11:00', title: 'Advanced Data Structures', duration: '11:00 - 12:00', status: 'Present' },
+  { id: 3, code: 'AM101', date: '14', time: '09:30', title: 'AI / ML Frontier AI Engineer', duration: '09:30 - 10:30', status: 'Absent' },
 ];
 
 const MOCK_ACTIVITY = [
@@ -42,9 +45,78 @@ export default function StudentProfileScreen() {
   const { id } = useLocalSearchParams();
   const [activeTab, setActiveTab] = useState('Assignments');
 
-  // We could fetch dynamic data based on ID here.
-  // For now, we simulate dynamic mapping.
   const dynamicName = id === 'BT011' ? 'Aarav' : id === 'BT012' ? 'Priya' : id === 'BT013' ? 'Rohan' : 'Name of the student';
+
+  // Calendar State
+  const [currentDate, setCurrentDate] = useState(new Date(2026, 0, 1)); // Jan 2026
+  const [selectedDate, setSelectedDate] = useState<string | null>('15');
+
+  const handlePrevMonth = () => {
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+  };
+
+  const generateDays = () => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    
+    const firstDayOfMonth = new Date(year, month, 1);
+    const startOffset = firstDayOfMonth.getDay(); 
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    const totalSlots = startOffset + daysInMonth <= 28 ? 28 : (startOffset + daysInMonth <= 35 ? 35 : 42);
+    
+    const daysArray = [];
+    const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    
+    for (let i = 0; i < totalSlots; i++) {
+      const date = new Date(year, month, i - startOffset + 1);
+      
+      let status: Status = 'none';
+      if (date.getMonth() !== month) {
+         status = 'none'; 
+      } else {
+         const dayOfWeek = date.getDay();
+         if (dayOfWeek === 0 || dayOfWeek === 6) {
+            status = 'weekend';
+         } else {
+            const d = date.getDate();
+            if (d === 15) status = 'holiday';
+            else if (d === 14 || d === 18) status = 'absent';
+            else if (d > 23 && year === 2026 && month === 0) status = 'none'; 
+            else status = 'present';
+         }
+      }
+      
+      daysArray.push({
+        day: DAYS[date.getDay()],
+        date: date.getDate().toString().padStart(2, '0'),
+        status,
+        isCurrentMonth: date.getMonth() === month,
+        fullDateObj: date
+      });
+    }
+    return daysArray;
+  };
+
+  const calendarData = generateDays();
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const monthTitle = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+
+  const getStatusStyles = (status: Status) => {
+    switch (status) {
+      case 'present': return { bg: '#DCFCE780', day: '#3EA465', date: '#3EA465', border: 'transparent' };
+      case 'absent': return { bg: '#FEE2E280', day: '#CE1919', date: '#CE1919', border: 'transparent' };
+      case 'holiday': return { bg: '#FFEDDD', day: '#FFBE85', date: '#FFBE85', border: 'transparent' };
+      case 'weekend': return { bg: '#FFEDDD', day: '#333333', date: '#777777', border: 'transparent' };
+      case 'none': default: return { bg: '#FFFFFF', day: '#333333', date: '#777777', border: '#E5E7EB' };
+    }
+  };
+
+  const filteredAttendance = MOCK_ATTENDANCE.filter(a => a.date === selectedDate);
 
   return (
     <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
@@ -67,7 +139,6 @@ export default function StudentProfileScreen() {
         {/* Profile Card */}
         <View className="bg-white mx-5 mt-5 p-5 rounded-[24px] border border-[#F2EEF4] shadow-sm shadow-black/5">
           <View className="flex-row items-center mb-5">
-            {/* Avatar */}
             <View className="relative w-20 h-20 rounded-full mr-4 bg-[#FFF5ED]">
               <Image 
                 source={{ uri: 'https://i.pravatar.cc/150?u=' + id }} 
@@ -76,7 +147,6 @@ export default function StudentProfileScreen() {
               />
               <View className="absolute bottom-0 right-1 w-4 h-4 bg-[#2BB290] border-2 border-white rounded-full" />
             </View>
-            {/* Info */}
             <View className="flex-1">
               <Text className="text-[20px] font-bold text-[#1E1E2D] mb-1">{dynamicName}</Text>
               <Text className="text-[13px] text-[#6B7280] mb-2">Student Id : {id || 'N/A'}</Text>
@@ -99,11 +169,7 @@ export default function StudentProfileScreen() {
 
         {/* Stats */}
         <View className="mt-4">
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false} 
-            contentContainerStyle={{ paddingHorizontal: 20 }}
-          >
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20 }}>
             {STUDENT_STATS.map((stat, idx) => (
               <View key={idx} className="w-[160px] bg-white p-4 rounded-[20px] border border-[#F2EEF4] shadow-sm shadow-black/5 mr-4">
                 <View className="flex-row justify-between items-start mb-2">
@@ -139,17 +205,17 @@ export default function StudentProfileScreen() {
           <View className="mx-5 mt-6">
             <Text className="text-[14px] font-medium text-[#6B7280] mb-3">Assignment History</Text>
             {MOCK_HISTORY.map((item) => (
-              <View key={item.id} className="bg-white p-4 rounded-[16px] border border-[#F2EEF4] mb-3 flex-row justify-between items-center shadow-sm shadow-black/5">
-                <View>
-                  <Text className="text-[15px] font-semibold text-[#1E1E2D] mb-2">{item.title}</Text>
+              <View key={item.id} className="bg-white min-h-[88px] px-5 py-4 rounded-[16px] border border-[#F2EEF4] mb-3 flex-row justify-between items-center shadow-sm shadow-black/5">
+                <View className="flex-1">
+                  <Text className="text-[15px] font-semibold text-[#1E1E2D] mb-4">{item.title}</Text>
                   <View className="flex-row items-center gap-3">
-                    <View className="bg-[#2A9A46]/10 px-2.5 py-1 rounded-full">
-                      <Text className="text-[#2A9A46] text-[10px] font-bold tracking-wide uppercase">{item.status}</Text>
+                    <View className="bg-[#2A9A46]/10 px-3 py-1 rounded-full">
+                      <Text className="text-[#2A9A46] text-[12px] font-medium text-center">{item.status}</Text>
                     </View>
                     <Text className="text-[12px] text-[#8C8E90]">{item.date}</Text>
                   </View>
                 </View>
-                <View className="items-center">
+                <View className="items-center justify-center">
                   <Text className="text-[20px] font-bold text-[#1E1E2D]">{item.marks}</Text>
                   <Text className="text-[11px] text-[#8C8E90] mt-0.5">Marks</Text>
                 </View>
@@ -162,17 +228,17 @@ export default function StudentProfileScreen() {
           <View className="mx-5 mt-6">
             <Text className="text-[14px] font-medium text-[#6B7280] mb-3">Test History</Text>
             {MOCK_TESTS.map((item) => (
-              <View key={item.id} className="bg-white p-4 rounded-[16px] border border-[#F2EEF4] mb-3 flex-row justify-between items-center shadow-sm shadow-black/5">
-                <View>
-                  <Text className="text-[15px] font-semibold text-[#1E1E2D] mb-2">{item.title}</Text>
+              <View key={item.id} className="bg-white min-h-[88px] px-5 py-4 rounded-[16px] border border-[#F2EEF4] mb-3 flex-row justify-between items-center shadow-sm shadow-black/5">
+                <View className="flex-1">
+                  <Text className="text-[15px] font-semibold text-[#1E1E2D] mb-4">{item.title}</Text>
                   <View className="flex-row items-center gap-3">
-                    <View className="bg-[#2A9A46]/10 px-2.5 py-1 rounded-full">
-                      <Text className="text-[#2A9A46] text-[10px] font-bold tracking-wide">{item.status}</Text>
+                    <View className="bg-[#2A9A46]/10 px-3 py-1 rounded-full">
+                      <Text className="text-[#2A9A46] text-[12px] font-medium text-center">{item.status}</Text>
                     </View>
                     <Text className="text-[12px] text-[#8C8E90]">{item.date}</Text>
                   </View>
                 </View>
-                <View className="items-center">
+                <View className="items-center justify-center">
                   <Text className="text-[20px] font-bold text-[#1E1E2D]">{item.score}</Text>
                   <Text className="text-[11px] text-[#8C8E90] mt-0.5">Score</Text>
                 </View>
@@ -183,7 +249,6 @@ export default function StudentProfileScreen() {
 
         {activeTab === 'Attendance' && (
           <View className="mx-5 mt-6">
-            {/* Summary Stats */}
             <View className="flex-row justify-between mb-5">
                 <View className="flex-1 bg-[#E8F8F0] rounded-[18px] p-4 items-center mr-3 border border-[#E8F8F0]">
                     <Text className="text-[#1DD75B] text-[24px] font-bold">18</Text>
@@ -199,90 +264,50 @@ export default function StudentProfileScreen() {
                 </View>
             </View>
 
-            {/* Calendar Mock (Student Dashboard Style) */}
+            {/* Calendar */}
             <View className="bg-white rounded-[28px] p-5 border border-[#F2EEF4] mb-5 shadow-sm shadow-black/5">
-                {/* Header */}
                 <View className="flex-row justify-between items-center mb-6">
                     <Text className="text-[20px] font-semibold text-[#333333] tracking-tight">Attendance</Text>
-                    
-                    <View className="flex-row items-center">
-                    <View 
-                        style={{ width: 56, height: 52 }} 
-                        className="bg-[#FFEDDD] rounded-[16px] mr-3 items-center justify-center gap-0.5"
-                    >
-                        <Text className="text-[#F67300] text-[14px] font-medium leading-none">Fri</Text>
-                        <Text className="text-[#F67300] text-[14px] font-medium leading-none">15</Text>
-                    </View>
-                    <View>
-                        <Text className="text-[13px] text-[#626262] mb-0.5">15-Jan-2026</Text>
-                        <Text className="text-[14px] font-bold text-[#333333]">Friday</Text>
-                    </View>
-                    </View>
                 </View>
 
                 {/* Month Selector */}
                 <View className="flex-row justify-center items-center mb-6">
-                    <TouchableOpacity className="bg-[#FFEDDD] w-[30px] h-[30px] items-center justify-center rounded-[8px]">
+                    <TouchableOpacity onPress={handlePrevMonth} className="bg-[#FFEDDD] w-[30px] h-[30px] items-center justify-center rounded-[8px]">
                         <Ionicons name="play" size={14} color="#F67300" style={{ transform: [{ rotate: '180deg' }] }} />
                     </TouchableOpacity>
-                    <Text className="mx-6 font-semibold text-[14px] text-[#333333]">Jan 2026</Text>
-                    <TouchableOpacity className="bg-[#FFEDDD] w-[30px] h-[30px] items-center justify-center rounded-[8px]">
+                    <Text className="mx-6 font-semibold text-[14px] text-[#333333]">{monthTitle}</Text>
+                    <TouchableOpacity onPress={handleNextMonth} className="bg-[#FFEDDD] w-[30px] h-[30px] items-center justify-center rounded-[8px]">
                         <Ionicons name="play" size={14} color="#F67300" />
                     </TouchableOpacity>
                 </View>
 
                 {/* Grid */}
                 <View className="flex-row flex-wrap justify-between gap-y-3">
-                    {[
-                        {day: 'Thu', date: '1', status: 'present'},
-                        {day: 'Fri', date: '2', status: 'present'},
-                        {day: 'Sat', date: '3', status: 'weekend'},
-                        {day: 'Sun', date: '4', status: 'weekend'},
-                        {day: 'Mon', date: '5', status: 'present'},
-                        {day: 'Tue', date: '6', status: 'present'},
-                        {day: 'Wed', date: '7', status: 'present'},
-                        {day: 'Thu', date: '8', status: 'present'},
-                        {day: 'Fri', date: '9', status: 'present'},
-                        {day: 'Sat', date: '10', status: 'weekend'},
-                        {day: 'Sun', date: '11', status: 'weekend'},
-                        {day: 'Mon', date: '12', status: 'present'},
-                        {day: 'Tue', date: '13', status: 'present'},
-                        {day: 'Wed', date: '14', status: 'absent'},
-                        {day: 'Thu', date: '15', status: 'holiday'},
-                        {day: 'Fri', date: '16', status: 'present'},
-                        {day: 'Sat', date: '17', status: 'weekend'},
-                        {day: 'Sun', date: '18', status: 'weekend'},
-                        {day: 'Mon', date: '19', status: 'absent'},
-                        {day: 'Tue', date: '20', status: 'present'},
-                        {day: 'Wed', date: '21', status: 'present'},
-                        {day: 'Thu', date: '22', status: 'present'},
-                        {day: 'Fri', date: '23', status: 'present'},
-                        {day: 'Sat', date: '24', status: 'weekend'},
-                        {day: 'Sun', date: '25', status: 'weekend'},
-                        {day: 'Mon', date: '26', status: 'none'},
-                        {day: 'Tue', date: '27', status: 'none'},
-                        {day: 'Wed', date: '28', status: 'none'},
-                    ].map((item, index) => {
-                        const getStatusStyles = (s: string) => {
-                            switch (s) {
-                            case 'present': return { bg: '#DCFCE780', day: '#3EA465', date: '#3EA465', border: 'transparent' };
-                            case 'absent': return { bg: '#FEE2E280', day: '#CE1919', date: '#CE1919', border: 'transparent' };
-                            case 'holiday': return { bg: '#FFEDDD', day: '#FFBE85', date: '#FFBE85', border: 'transparent' };
-                            case 'weekend': return { bg: '#FFEDDD', day: '#333333', date: '#777777', border: 'transparent' };
-                            case 'none': default: return { bg: '#FFFFFF', day: '#333333', date: '#777777', border: '#E5E7EB' };
-                            }
-                        };
+                    {calendarData.map((item, index) => {
                         const styles = getStatusStyles(item.status);
+                        const isSelected = selectedDate === item.date && item.isCurrentMonth;
                         
                         return (
-                            <View 
+                            <TouchableOpacity 
                                 key={index}
-                                style={{ width: '13%', aspectRatio: 44 / 43, backgroundColor: styles.bg, borderColor: styles.border, borderWidth: item.status === 'none' ? 1 : 0 }}
-                                className="rounded-[14px] items-center justify-center py-1.5 gap-0.5"
+                                onPress={() => {
+                                    if (item.isCurrentMonth && item.status !== 'none') {
+                                        setSelectedDate(item.date);
+                                    }
+                                }}
+                                activeOpacity={0.7}
+                                style={{ 
+                                    width: '13%', 
+                                    aspectRatio: 44 / 43, 
+                                    backgroundColor: styles.bg, 
+                                    borderColor: isSelected ? styles.day : styles.border, 
+                                    borderWidth: isSelected ? 1.5 : (item.status === 'none' ? 1 : 0) 
+                                }}
+                                className={`rounded-[14px] items-center justify-center py-1.5 gap-0.5 ${!item.isCurrentMonth ? 'opacity-30' : ''}`}
                             >
                                 <Text style={{ color: styles.day }} className="text-[14px] font-semibold leading-none text-center">{item.day}</Text>
                                 <Text style={{ color: styles.date }} className="text-[12px] font-medium leading-none text-center">{item.date}</Text>
-                            </View>
+                            </TouchableOpacity>
                         );
                     })}
                 </View>
@@ -305,22 +330,36 @@ export default function StudentProfileScreen() {
             </View>
 
             {/* Attendance List */}
-            {MOCK_ATTENDANCE.map((item) => (
-                <View key={item.id} className="bg-white p-4 rounded-[16px] border border-[#F2EEF4] mb-3 flex-row items-center shadow-sm shadow-black/5 overflow-hidden">
-                    <View className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#2A9A46]" />
-                    <View className="ml-2 mr-4 items-center border-r border-[#E2E8F0] pr-4">
-                        <Text className="text-[12px] font-medium text-[#8C8E90]">{item.code}</Text>
-                        <Text className="text-[14px] font-medium text-[#1E1E2D] mt-1">{item.time}</Text>
+            <View>
+              <Text className="text-[14px] font-medium text-[#6B7280] mb-3 mt-2">
+                Classes on {selectedDate ? `${selectedDate} ${monthTitle}` : 'Selected Date'}
+              </Text>
+              
+              {filteredAttendance.length > 0 ? (
+                filteredAttendance.map((item) => (
+                    <View key={item.id} className="bg-white min-h-[88px] px-4 py-4 rounded-[16px] border border-[#F2EEF4] mb-3 flex-row items-center shadow-sm shadow-black/5 overflow-hidden">
+                        <View className={`absolute left-0 top-0 bottom-0 w-1.5 ${item.status === 'Present' ? 'bg-[#2A9A46]' : 'bg-[#E61026]'}`} />
+                        <View className="ml-2 mr-4 items-center border-r border-[#E2E8F0] pr-4">
+                            <Text className="text-[12px] font-medium text-[#8C8E90]">{item.code}</Text>
+                            <Text className="text-[14px] font-medium text-[#1E1E2D] mt-1">{item.time}</Text>
+                        </View>
+                        <View className="flex-1">
+                            <Text className="text-[14px] font-medium text-[#1E1E2D] mb-3">{item.title}</Text>
+                            <Text className="text-[12px] text-[#8C8E90]">{item.duration}</Text>
+                        </View>
+                        <View className={`px-3 py-1 rounded-full ml-2 ${item.status === 'Present' ? 'bg-[#2A9A46]/10' : 'bg-[#E61026]/10'}`}>
+                            <Text className={`text-[12px] font-medium text-center ${item.status === 'Present' ? 'text-[#2A9A46]' : 'text-[#E61026]'}`}>
+                                {item.status}
+                            </Text>
+                        </View>
                     </View>
-                    <View className="flex-1">
-                        <Text className="text-[14px] font-medium text-[#1E1E2D] mb-1">{item.title}</Text>
-                        <Text className="text-[12px] text-[#8C8E90]">{item.duration}</Text>
-                    </View>
-                    <View className="bg-[#2A9A46]/10 px-2.5 py-1 rounded-full ml-2">
-                        <Text className="text-[#2A9A46] text-[10px] font-bold tracking-wide">{item.status}</Text>
-                    </View>
+                ))
+              ) : (
+                <View className="bg-white rounded-[16px] border border-[#F2EEF4] py-8 items-center shadow-sm shadow-black/5">
+                   <Text className="text-[#8C8E90] text-[14px] font-medium">No classes scheduled for this day.</Text>
                 </View>
-            ))}
+              )}
+            </View>
           </View>
         )}
 
@@ -328,15 +367,14 @@ export default function StudentProfileScreen() {
         <View className="mx-5 mt-6">
           <Text className="text-[14px] font-medium text-[#6B7280] mb-3">Recent Activity</Text>
           {MOCK_ACTIVITY.map((item) => {
-            const isSubmitted = item.type === 'submitted';
             return (
-              <View key={item.id} className="bg-white p-4 rounded-[16px] border border-[#F2EEF4] mb-3 flex-row justify-between items-center shadow-sm shadow-black/5">
+              <View key={item.id} className="bg-white min-h-[88px] px-5 py-4 rounded-[16px] border border-[#F2EEF4] mb-3 flex-row justify-between items-center shadow-sm shadow-black/5">
                 <View>
-                  <Text className="text-[14px] font-medium text-[#333333] mb-1">{item.title}</Text>
+                  <Text className="text-[14px] font-medium text-[#333333] mb-4">{item.title}</Text>
                   <Text className="text-[12px] text-[#8C8E90]">{item.date}</Text>
                 </View>
-                <View className={`px-2.5 py-1 rounded-full ${isSubmitted ? 'bg-[#2BB290]/10' : 'bg-[#2BB290]/10'}`}>
-                  <Text className={`text-[10px] font-bold tracking-wide ${isSubmitted ? 'text-[#2BB290]' : 'text-[#2BB290]'}`}>
+                <View className="bg-[#2A9A46]/10 px-3 py-1 rounded-full">
+                  <Text className="text-[#2A9A46] text-[12px] font-medium text-center">
                     {item.status}
                   </Text>
                 </View>

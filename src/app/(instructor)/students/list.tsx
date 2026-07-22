@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Modal, TouchableWithoutFeedba
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import InstructorHeader from '@/components/Instructor/header';
-import { FilterSearch, Sms, DocumentDownload, Profile2User, Trash } from 'iconsax-react-native';
+import { FilterSearch, Sms, DocumentDownload, Profile2User, Trash, ArrowSwapHorizontal } from 'iconsax-react-native';
 import { MoreVertical } from 'lucide-react-native';
 
 const MOCK_STUDENTS = [
@@ -18,6 +18,16 @@ export default function StudentListScreen() {
     const router = useRouter();
     const [isActionsModalVisible, setActionsModalVisible] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState<any>(null);
+    const [sortOption, setSortOption] = useState<'Default' | 'Name-ASC' | 'Name-DESC' | 'Attendance-HIGH' | 'Attendance-LOW'>('Default');
+    const [isSortModalOpen, setIsSortModalOpen] = useState(false);
+
+    const sortedStudents = [...MOCK_STUDENTS].sort((a, b) => {
+        if (sortOption === 'Name-ASC') return a.name.localeCompare(b.name);
+        if (sortOption === 'Name-DESC') return b.name.localeCompare(a.name);
+        if (sortOption === 'Attendance-HIGH') return parseInt(b.attendance) - parseInt(a.attendance);
+        if (sortOption === 'Attendance-LOW') return parseInt(a.attendance) - parseInt(b.attendance);
+        return 0;
+    });
 
     const openActionsModal = (student: any) => {
         setSelectedStudent(student);
@@ -33,12 +43,43 @@ export default function StudentListScreen() {
         <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
             <InstructorHeader title="Student List" onBackPress={() => router.back()} />
 
-            <View className="px-5 pt-3 pb-3 flex-row justify-between items-center">
+            <View className="px-5 pt-3 pb-3 flex-row justify-between items-center relative z-40">
                 <Text className="text-[14px] text-[#8C8E90] font-medium">Showing {MOCK_STUDENTS.length} Students</Text>
-                <TouchableOpacity className="flex-row items-center">
-                    <FilterSearch size={16} color="#F67300" variant="Outline" />
-                    <Text className="text-[#F67300] font-medium text-[13px] ml-1.5">Filter</Text>
-                </TouchableOpacity>
+                
+                <View className="relative z-50">
+                    <TouchableOpacity 
+                        onPress={() => setIsSortModalOpen(prev => !prev)}
+                        className="flex-row items-center"
+                    >
+                        <ArrowSwapHorizontal size={16} color="#F67300" />
+                        <Text className="text-[#F67300] font-medium text-[13px] ml-1.5">Sort</Text>
+                    </TouchableOpacity>
+
+                    {isSortModalOpen && (
+                        <View className="absolute top-8 right-0 w-52 bg-white border border-[#F2EEF4] rounded-[14px] p-1.5 shadow-xl z-50">
+                            {[
+                                { label: 'Default', value: 'Default' },
+                                { label: 'Student Name (A - Z)', value: 'Name-ASC' },
+                                { label: 'Student Name (Z - A)', value: 'Name-DESC' },
+                                { label: 'Attendance (High to Low)', value: 'Attendance-HIGH' },
+                                { label: 'Attendance (Low to High)', value: 'Attendance-LOW' },
+                            ].map((opt) => (
+                                <TouchableOpacity
+                                    key={opt.value}
+                                    onPress={() => {
+                                        setSortOption(opt.value as any);
+                                        setIsSortModalOpen(false);
+                                    }}
+                                    className={`flex-row items-center justify-between px-3 py-2.5 rounded-[8px] ${sortOption === opt.value ? 'bg-[#FFF5ED]' : 'active:bg-[#F9FAFB]'}`}
+                                >
+                                    <Text className={`text-[13px] font-medium ${sortOption === opt.value ? 'text-[#F67300]' : 'text-[#333333]'}`}>
+                                        {opt.label}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    )}
+                </View>
             </View>
 
             <ScrollView 
@@ -46,10 +87,10 @@ export default function StudentListScreen() {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 40 }}
             >
-                {MOCK_STUDENTS.map((student, index) => (
+                {sortedStudents.map((student, index) => (
                     <TouchableOpacity 
                         key={index} 
-                        onPress={() => router.push(`/(instructor)/courses/students/${student.id}`)}
+                        onPress={() => router.push(`/(instructor)/students/${student.id}`)}
                         activeOpacity={0.7}
                         className="bg-white rounded-[24px] p-5 mb-4 flex-row items-start shadow-sm shadow-black/5 border border-[#F2EEF4]"
                     >
