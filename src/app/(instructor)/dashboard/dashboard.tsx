@@ -26,13 +26,11 @@ export default function InstructorDashboard() {
                 {/* My Courses Section */}
                 <MyClasses />
 
-
-
                 {/* Upcoming Teaching Schedule */}
                 <UpcomingSchedule />
                 {/* Pending Student Reviews */}
                 <PendingReview />
-            </Animated.ScrollView>
+            </Animated.ScrollView>                                                                                                                                                                                                                                                                          
         </SafeAreaView>
     );
 }

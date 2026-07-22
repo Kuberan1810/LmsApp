@@ -25,7 +25,7 @@ const COURSES = [
 
 export default function MyClasses() {
   return (
-    <View className="mt-2 bg-white rounded-2xl py-4 mb-4 px-1 border border-[#F2EEF4] mx-4">
+    <View className="mt-2 mb-4 mx-4">
       <View className="mb-3.5">
         <Text className="text-[20px] font-medium text-[#333333]">My Classes</Text>
       </View>

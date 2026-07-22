@@ -7,6 +7,8 @@ import { LayoutAnimation, LogBox, Platform, Text, TouchableOpacity, UIManager, V
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useState } from 'react';
 import QuickActionsModal from '@/components/Instructor/QuickActionsModal';
+import * as Haptics from 'expo-haptics';
+import { useHaptics } from '@/context/HapticsContext';
 
 LogBox.ignoreLogs(['setLayoutAnimationEnabledExperimental is currently a no-op']);
 
@@ -21,6 +23,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: BottomTabBarProps & { onAddPress: () => void }) {
   const { tabBarOffset, isTabBarVisible } = useTabBarVisibility();
   const router = useRouter();
+  const { hapticsEnabled } = useHaptics();
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -47,6 +50,10 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
     const isFocused = state.index === state.routes.findIndex(r => r.key === route.key);
 
     const onPress = () => {
+      // You can change intensity here: Light, Medium, or Heavy
+      if (hapticsEnabled) {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
       LayoutAnimation.configureNext({
         duration: 500,
         create: { type: LayoutAnimation.Types.spring, property: LayoutAnimation.Properties.opacity, springDamping: 0.85 },
@@ -152,7 +159,13 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
 
       <TouchableOpacity 
         activeOpacity={0.8}
-        onPress={onAddPress}
+        onPress={() => {
+          // You can change intensity here: Light, Medium, or Heavy
+          if (hapticsEnabled) {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          }
+          onAddPress();
+        }}
         style={{
           width: 60,
           height: 60,
