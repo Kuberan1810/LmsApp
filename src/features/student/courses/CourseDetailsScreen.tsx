@@ -194,7 +194,7 @@ export const CourseDetailsScreen = () => {
           <View className="bg-white rounded-[24px] p-5 mb-6 border border-gray-200">
             <View className="flex-row justify-between items-center mb-4">
               <Text className="text-[#333333] font-semibold text-[16px]">Assignments</Text>
-              <BtnCom label="View All" onClick={() => router.push('/(student)/assignments/assignments' as any)} />
+              <BtnCom label="View All" onClick={() => router.push('/(student)/assignments' as any)} />
             </View>
 
             {COURSE_DATA.assignments.map((assignment, idx) => (
