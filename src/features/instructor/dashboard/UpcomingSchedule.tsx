@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Modal, TextInput } from 'react-native';
 import React, { useState } from 'react';
 import { ArrowLeft2, ArrowRight2, Clock, Calendar, Edit2, Edit } from 'iconsax-react-native';
 
@@ -38,10 +38,36 @@ const SCHEDULE_DATA: Record<string, any> = {
 export default function UpcomingSchedule() {
     const [weekOffset, setWeekOffset] = useState(0);
     const [selectedDate, setSelectedDate] = useState('18');
+    const [scheduleData, setScheduleData] = useState<Record<string, any>>(SCHEDULE_DATA);
+    
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [editDate, setEditDate] = useState('');
+    const [editTimeRange, setEditTimeRange] = useState('');
 
     const days = getDaysOfWeek(weekOffset);
     const selectedDayInfo = days.find(d => d.date === selectedDate);
-    const activeClass = SCHEDULE_DATA[selectedDate];
+    const activeClass = scheduleData[selectedDate];
+
+    const handleOpenEdit = () => {
+        if (activeClass) {
+            setEditDate(activeClass.dateLabel);
+            setEditTimeRange(activeClass.time);
+            setIsEditModalOpen(true);
+        }
+    };
+
+    const handleSave = () => {
+        if (!activeClass) return;
+        setScheduleData(prev => ({
+            ...prev,
+            [selectedDate]: {
+                ...prev[selectedDate],
+                time: editTimeRange,
+                dateLabel: editDate,
+            }
+        }));
+        setIsEditModalOpen(false);
+    };
 
     const handlePrevWeek = () => {
         const newOffset = weekOffset - 1;
@@ -151,6 +177,7 @@ export default function UpcomingSchedule() {
                     {/* Buttons Row */}
                     <View className="flex-row items-center gap-3">
                         <TouchableOpacity
+                            onPress={handleOpenEdit}
                             className="w-12 h-10 rounded-xl border border-[#E2E8F0] items-center justify-center"
                             activeOpacity={0.7}
                         >
@@ -179,6 +206,68 @@ export default function UpcomingSchedule() {
                     </Text>
                 </View>
             )}
-        </View>
-    );
+
+            {/* Edit Modal */}
+            <Modal
+            visible={isEditModalOpen}
+            transparent
+            animationType="fade"
+            onRequestClose={() => setIsEditModalOpen(false)}
+        >
+            <View className="flex-1 bg-black/40 items-center justify-center px-6">
+                <View className="bg-white rounded-[24px] p-6 w-full max-w-[320px] shadow-lg">
+                    <Text className="text-[20px] font-semibold text-[#0B1C30] mb-4">Edit Schedule</Text>
+
+                    {/* Date field */}
+                    <View className="mb-4">
+                        <Text className="text-[14px] font-semibold text-[#626262] mb-1.5">Date</Text>
+                        <View className="flex-row items-center border border-[#E2E8F0] rounded-[12px] px-3.5 h-11 bg-[#FFFFFF]">
+                            <TextInput
+                                value={editDate}
+                                onChangeText={setEditDate}
+                                placeholder="DD-MM-YYYY"
+                                placeholderTextColor="#A0A0AB"
+                                className="flex-1 text-[14px] text-[#626262]"
+                            />
+                            <Calendar size={16} color="#626262" />
+                        </View>
+                    </View>
+
+                    {/* Time Range field */}
+                    <View className="mb-6">
+                        <Text className="text-[14px] font-semibold text-[#626262] mb-1.5">Time Range</Text>
+                        <View className="flex-row items-center border border-[#E2E8F0] rounded-[12px] px-3.5 h-11 bg-[#FFFFFF]">
+                            <TextInput
+                                value={editTimeRange}
+                                onChangeText={setEditTimeRange}
+                                placeholder="HH:MM AM/PM - HH:MM AM/PM"
+                                placeholderTextColor="#626262"
+                                className="flex-1 text-[14px] text-[#626262]"
+                            />
+                        </View>
+                    </View>
+
+                    {/* Action Buttons */}
+                    <View className="flex-row gap-3">
+                        <TouchableOpacity
+                            onPress={() => setIsEditModalOpen(false)}
+                            className="flex-1 h-11 rounded-[12px] border border-[#E5E7EB] items-center justify-center bg-white"
+                            activeOpacity={0.7}
+                        >
+                            <Text className="text-[#0B1C30] text-[14px] font-semibold">Cancel</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={handleSave}
+                            className="flex-1 h-11 rounded-[12px] bg-[#F67300] items-center justify-center"
+                            activeOpacity={0.8}
+                        >
+                            <Text className="text-white text-[14px] font-semibold">Save</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
+        </Modal>
+    </View>
+  );
 }

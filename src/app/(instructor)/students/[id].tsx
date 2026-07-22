@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ArrowLeft2, Calendar, DocumentText, TrendUp, Profile2User, Teacher, TaskSquare, ClipboardText } from 'iconsax-react-native';
@@ -63,14 +64,14 @@ export default function StudentProfileScreen() {
       </View>
 
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 60 }}>
-        
+
         {/* Profile Card */}
         <View className="bg-white mx-5 mt-5 p-5 rounded-[24px] border border-[#F2EEF4] shadow-sm shadow-black/5">
           <View className="flex-row items-center mb-5">
             {/* Avatar */}
             <View className="relative w-20 h-20 rounded-full mr-4 bg-[#FFF5ED]">
-              <Image 
-                source={{ uri: 'https://i.pravatar.cc/150?u=' + id }} 
+              <Image
+                source={{ uri: 'https://i.pravatar.cc/150?u=' + id }}
                 className="w-full h-full rounded-full"
                 contentFit="cover"
               />
@@ -90,7 +91,7 @@ export default function StudentProfileScreen() {
               </View>
             </View>
           </View>
-          
+
           <TouchableOpacity className="border border-[#F67300] py-2.5 rounded-xl flex-row items-center justify-center bg-white">
             <Sms size={16} color="#F67300" variant="Outline" />
             <Text className="text-[#F67300] font-medium ml-2">Message</Text>
@@ -99,9 +100,9 @@ export default function StudentProfileScreen() {
 
         {/* Stats */}
         <View className="mt-4">
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false} 
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingHorizontal: 20 }}
           >
             {STUDENT_STATS.map((stat, idx) => (
@@ -123,8 +124,8 @@ export default function StudentProfileScreen() {
           {['Assignments', 'Tests', 'Attendance'].map((tab) => {
             const isActive = activeTab === tab;
             return (
-              <TouchableOpacity 
-                key={tab} 
+              <TouchableOpacity
+                key={tab}
                 onPress={() => setActiveTab(tab)}
                 className={`flex-1 py-2 rounded-full items-center ${isActive ? 'bg-[#F67300]' : 'bg-transparent'}`}
               >
@@ -185,88 +186,88 @@ export default function StudentProfileScreen() {
           <View className="mx-5 mt-6">
             {/* Calendar Mock */}
             <View className="bg-white rounded-[16px] p-5 border border-[#F2EEF4] mb-5 shadow-sm shadow-black/5">
-                <View className="flex-row justify-between items-center mb-5">
-                    <Text className="text-[16px] font-bold text-[#1E1E2D]">Monthly calendar</Text>
-                    <View className="flex-row items-center gap-4">
-                        <TouchableOpacity className="w-6 h-6 rounded-full bg-[#FFF5ED] items-center justify-center">
-                            <Ionicons name="caret-back" size={12} color="#F67300" />
-                        </TouchableOpacity>
-                        <Text className="text-[13px] font-medium text-[#1E1E2D]">Jan 2026</Text>
-                        <TouchableOpacity className="w-6 h-6 rounded-full bg-[#FFF5ED] items-center justify-center">
-                            <Ionicons name="caret-forward" size={12} color="#F67300" />
-                        </TouchableOpacity>
-                    </View>
+              <View className="flex-row justify-between items-center mb-5">
+                <Text className="text-[16px] font-bold text-[#1E1E2D]">Monthly calendar</Text>
+                <View className="flex-row items-center gap-4">
+                  <TouchableOpacity className="w-6 h-6 rounded-full bg-[#FFF5ED] items-center justify-center">
+                    <Ionicons name="caret-back" size={12} color="#F67300" />
+                  </TouchableOpacity>
+                  <Text className="text-[13px] font-medium text-[#1E1E2D]">Jan 2026</Text>
+                  <TouchableOpacity className="w-6 h-6 rounded-full bg-[#FFF5ED] items-center justify-center">
+                    <Ionicons name="caret-forward" size={12} color="#F67300" />
+                  </TouchableOpacity>
                 </View>
-                <View className="flex-row justify-between mb-4">
-                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => (
-                        <Text key={d} className="w-8 text-center text-[11px] font-medium text-[#6B7280]">{d}</Text>
-                    ))}
+              </View>
+              <View className="flex-row justify-between mb-4">
+                {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => (
+                  <Text key={d} className="w-8 text-center text-[11px] font-medium text-[#6B7280]">{d}</Text>
+                ))}
+              </View>
+              <View className="flex-row justify-between mb-4">
+                <Text className="w-8 text-center text-[12px] text-[#A0A0AB]">29</Text>
+                <Text className="w-8 text-center text-[12px] text-[#A0A0AB]">30</Text>
+                <Text className="w-8 text-center text-[12px] text-[#A0A0AB]">31</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">1</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">2</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">3</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">4</Text>
+              </View>
+              <View className="flex-row justify-between mb-4">
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">5</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">6</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">7</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">8</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">9</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">10</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">11</Text>
+              </View>
+              <View className="flex-row justify-between mb-4">
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">12</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">13</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">14</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">15</Text>
+                <View className="w-8 h-8 rounded-lg bg-[#FFF5ED] items-center justify-center -my-2">
+                  <Text className="text-[12px] text-[#1E1E2D] font-medium">16</Text>
                 </View>
-                <View className="flex-row justify-between mb-4">
-                    <Text className="w-8 text-center text-[12px] text-[#A0A0AB]">29</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#A0A0AB]">30</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#A0A0AB]">31</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">1</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">2</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">3</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">4</Text>
-                </View>
-                <View className="flex-row justify-between mb-4">
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">5</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">6</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">7</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">8</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">9</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">10</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">11</Text>
-                </View>
-                <View className="flex-row justify-between mb-4">
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">12</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">13</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">14</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">15</Text>
-                    <View className="w-8 h-8 rounded-lg bg-[#FFF5ED] items-center justify-center -my-2">
-                        <Text className="text-[12px] text-[#1E1E2D] font-medium">16</Text>
-                    </View>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">17</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">18</Text>
-                </View>
-                <View className="flex-row justify-between mb-4">
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">19</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">20</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">21</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">22</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">23</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">24</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">25</Text>
-                </View>
-                <View className="flex-row justify-between">
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">26</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">27</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">28</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">29</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">30</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">31</Text>
-                    <Text className="w-8 text-center text-[12px] text-[#808080]">1</Text>
-                </View>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">17</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">18</Text>
+              </View>
+              <View className="flex-row justify-between mb-4">
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">19</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">20</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">21</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">22</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">23</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">24</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">25</Text>
+              </View>
+              <View className="flex-row justify-between">
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">26</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">27</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">28</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">29</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">30</Text>
+                <Text className="w-8 text-center text-[12px] text-[#1E1E2D]">31</Text>
+                <Text className="w-8 text-center text-[12px] text-[#808080]">1</Text>
+              </View>
             </View>
 
             {/* Attendance List */}
             {MOCK_ATTENDANCE.map((item) => (
-                <View key={item.id} className="bg-white p-4 rounded-[16px] border border-[#F2EEF4] mb-3 flex-row items-center shadow-sm shadow-black/5 overflow-hidden">
-                    <View className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#2A9A46]" />
-                    <View className="ml-2 mr-4 items-center border-r border-[#E2E8F0] pr-4">
-                        <Text className="text-[12px] font-medium text-[#8C8E90]">{item.code}</Text>
-                        <Text className="text-[14px] font-medium text-[#1E1E2D] mt-1">{item.time}</Text>
-                    </View>
-                    <View className="flex-1">
-                        <Text className="text-[14px] font-medium text-[#1E1E2D] mb-1">{item.title}</Text>
-                        <Text className="text-[12px] text-[#8C8E90]">{item.duration}</Text>
-                    </View>
-                    <View className="bg-[#2A9A46]/10 px-2.5 py-1 rounded-full ml-2">
-                        <Text className="text-[#2A9A46] text-[10px] font-bold tracking-wide">{item.status}</Text>
-                    </View>
+              <View key={item.id} className="bg-white p-4 rounded-[16px] border border-[#F2EEF4] mb-3 flex-row items-center shadow-sm shadow-black/5 overflow-hidden">
+                <View className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#2A9A46]" />
+                <View className="ml-2 mr-4 items-center border-r border-[#E2E8F0] pr-4">
+                  <Text className="text-[12px] font-medium text-[#8C8E90]">{item.code}</Text>
+                  <Text className="text-[14px] font-medium text-[#1E1E2D] mt-1">{item.time}</Text>
                 </View>
+                <View className="flex-1">
+                  <Text className="text-[14px] font-medium text-[#1E1E2D] mb-1">{item.title}</Text>
+                  <Text className="text-[12px] text-[#8C8E90]">{item.duration}</Text>
+                </View>
+                <View className="bg-[#2A9A46]/10 px-2.5 py-1 rounded-full ml-2">
+                  <Text className="text-[#2A9A46] text-[10px] font-bold tracking-wide">{item.status}</Text>
+                </View>
+              </View>
             ))}
           </View>
         )}

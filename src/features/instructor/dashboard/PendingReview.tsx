@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { ArrowRight2 } from 'iconsax-react-native';
+import { router } from 'expo-router';
 
 const ITEMS = [
     {
@@ -47,7 +48,10 @@ export default function PendingReview() {
             {/* Header */}
             <View className="flex-row justify-between items-center mb-1">
                 <Text className="text-[20px] font-semibold text-[#333333]">Pending Review</Text>
-                <TouchableOpacity className="border border-[#F2EEF4] rounded-[10px] px-4 py-2 bg-white">
+                <TouchableOpacity
+                    onPress={() => router.push('/(instructor)/review')}
+                    className="border border-[#F2EEF4] rounded-[10px] px-4 py-2 bg-white"
+                >
                     <Text className="text-[14px] text-[#808080] font-medium">View all</Text>
                 </TouchableOpacity>
             </View>
@@ -103,6 +107,27 @@ export default function PendingReview() {
 
                         {/* Review Button */}
                         <TouchableOpacity
+                            onPress={() => {
+                                if (item.type === 'ASSIGNMENT') {
+                                    router.push({
+                                        pathname: '/(instructor)/dashboard/assignment-review',
+                                        params: {
+                                            studentId: '10',
+                                            studentName: item.studentName,
+                                            submittedOn: item.submittedAt,
+                                            notes: 'Attached is the completed assignment for your review.',
+                                            fileName: 'Text_to_PDF_Onlinenotpad',
+                                        }
+                                    });
+                                } else if (item.type === 'TEST') {
+                                    router.push({
+                                        pathname: '/(instructor)/dashboard/test-review',
+                                        params: {
+                                            studentId: '10',
+                                        }
+                                    });
+                                }
+                            }}
                             className="w-full bg-[#F67300] h-12 rounded-[12px] items-center justify-center flex-row"
                             activeOpacity={0.8}
                         >

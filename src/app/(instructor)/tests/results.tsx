@@ -47,14 +47,14 @@ export default function InstructorTestResultsScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
-      <InstructorHeader 
-        title="Test Results" 
-        subtitle="View and analyze student test performance." 
-        onBackPress={() => router.back()} 
+      <InstructorHeader
+        title="Test Results"
+        subtitle="View and analyze student test performance."
+        onBackPress={() => router.back()}
       />
 
       <ScrollView className="flex-1 px-5 pt-2" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
-        
+
         {/* Test Info Section */}
         <View className="flex-row justify-between items-start mb-6 mt-4">
           <View>
@@ -81,11 +81,11 @@ export default function InstructorTestResultsScreen() {
               <Text className="text-[#E7000B] font-semibold text-[14px]">0</Text>
             </View>
           </View>
-          
+
           <View className="flex-row items-center gap-2">
             <View className="flex-1 flex-row items-center border border-[#E2E8F0] rounded-xl px-3 h-11 bg-white">
               <SearchNormal1 size={18} color="#A0A0AB" />
-              <TextInput 
+              <TextInput
                 placeholder="Search by name or ID..."
                 placeholderTextColor="#A0A0AB"
                 value={searchQuery}
@@ -119,7 +119,7 @@ export default function InstructorTestResultsScreen() {
                 <Text className="w-[80px] font-semibold text-[13px] text-[#333333]">Mark</Text>
                 <Text className="flex-1 font-semibold text-[13px] text-[#333333] text-center">Action</Text>
               </View>
-              
+
               {/* Rows */}
               {MOCK_STUDENTS.map((student, index) => (
                 <View key={index} className="flex-row items-center px-4 py-4 min-w-[750px] border-b border-[#F2EEF4] bg-white">
@@ -135,7 +135,7 @@ export default function InstructorTestResultsScreen() {
                   </View>
                   <Text className="w-[80px] text-[13px] text-[#4B5563]">{student.mark}</Text>
                   <View className="flex-1 flex-row justify-center">
-                    <TouchableOpacity 
+                    <TouchableOpacity
                       onPress={() => setSelectedStudent(student)}
                       className="bg-[#FFF5ED] px-4 py-1.5 rounded-full"
                     >
@@ -157,12 +157,12 @@ export default function InstructorTestResultsScreen() {
         onRequestClose={() => setSelectedStudent(null)}
       >
         <View className="flex-1 bg-black/40 justify-end">
-          <TouchableOpacity 
-            className="absolute inset-0" 
-            activeOpacity={1} 
-            onPress={() => setSelectedStudent(null)} 
+          <TouchableOpacity
+            className="absolute inset-0"
+            activeOpacity={1}
+            onPress={() => setSelectedStudent(null)}
           />
-          <View 
+          <View
             className="bg-white rounded-t-[24px] w-full"
             style={{ maxHeight: SCREEN_HEIGHT * 0.9 }}
           >
@@ -190,7 +190,7 @@ export default function InstructorTestResultsScreen() {
                   <View className="w-1 h-1 bg-[#D1D5DB] rounded-full mx-2" />
                   <Text className="text-[12px] text-[#808080]">{MOCK_REVIEW.date} · {MOCK_REVIEW.time}</Text>
                 </View>
-                
+
                 <View className="bg-white border border-[#F2EEF4] rounded-[16px] py-4 items-center">
                   <Text className="text-[28px] font-black text-[#F67300]">{MOCK_REVIEW.points}</Text>
                   <Text className="text-[11px] font-black text-[#6B7280] uppercase tracking-widest mt-1">Points</Text>
@@ -199,7 +199,7 @@ export default function InstructorTestResultsScreen() {
 
               {/* Q&A Section */}
               <Text className="text-[13px] font-bold text-[#6B7280] tracking-widest uppercase mb-4">Questions & Answers</Text>
-              
+
               <View className="gap-4 mb-6">
                 {MOCK_REVIEW.questions.map((q, i) => {
                   const isCorrect = q.status === 'CORRECT';
@@ -210,24 +210,21 @@ export default function InstructorTestResultsScreen() {
                         <Text className="flex-1 text-[15px] font-bold text-[#1E1E2D] leading-6 mr-3">
                           {i + 1}. {q.text}
                         </Text>
-                        <View className={`px-2 py-1 rounded-full flex-row items-center border ${
-                          isCorrect ? 'bg-[#2A9A46]/10 border-[#2A9A46]/20' : 'bg-[#FB2C36]/10 border-[#FB2C36]/20'
-                        }`}>
+                        <View className={`px-2 py-1 rounded-full flex-row items-center border ${isCorrect ? 'bg-[#2A9A46]/10 border-[#2A9A46]/20' : 'bg-[#FB2C36]/10 border-[#FB2C36]/20'
+                          }`}>
                           {isCorrect ? (
-                            <TickCircle size={12} color="#2A9A46" variant="Linear" style={{ marginRight: 4 }}/>
+                            <TickCircle size={12} color="#2A9A46" variant="Linear" style={{ marginRight: 4 }} />
                           ) : (
-                            <CloseCircle size={12} color="#FB2C36" variant="Linear" style={{ marginRight: 4 }}/>
+                            <CloseCircle size={12} color="#FB2C36" variant="Linear" style={{ marginRight: 4 }} />
                           )}
-                          <Text className={`text-[10px] font-black tracking-wider ${
-                            isCorrect ? 'text-[#2A9A46]' : 'text-[#FB2C36]'
-                          }`}>{q.status}</Text>
+                          <Text className={`text-[10px] font-black tracking-wider ${isCorrect ? 'text-[#2A9A46]' : 'text-[#FB2C36]'
+                            }`}>{q.status}</Text>
                         </View>
                       </View>
-                      
+
                       {/* Student Answer */}
-                      <View className={`rounded-[16px] p-4 mb-2 border flex-row items-center justify-between ${
-                        isCorrect ? 'bg-[#2A9A46]/5 border-[#2A9A46]/20' : 'bg-[#FB2C36]/5 border-[#FB2C36]/20'
-                      }`}>
+                      <View className={`rounded-[16px] p-4 mb-2 border flex-row items-center justify-between ${isCorrect ? 'bg-[#2A9A46]/5 border-[#2A9A46]/20' : 'bg-[#FB2C36]/5 border-[#FB2C36]/20'
+                        }`}>
                         <View className="flex-1">
                           <Text className="text-[10px] font-black text-[#6B7280] uppercase tracking-widest mb-1">Student Answer</Text>
                           <Text className={`text-[14px] font-semibold ${isCorrect ? 'text-[#2A9A46]' : 'text-[#E7000B]'}`}>
@@ -244,7 +241,7 @@ export default function InstructorTestResultsScreen() {
                       {/* Correct Answer (if wrong) */}
                       {!isCorrect && q.correctAnswer && (
                         <View className="rounded-[16px] p-4 border bg-[#2A9A46]/5 border-[#2A9A46]/20 flex-row items-center justify-between mt-1">
-                           <View className="flex-1">
+                          <View className="flex-1">
                             <Text className="text-[10px] font-black text-[#2A9A46] uppercase tracking-widest mb-1">Correct Answer</Text>
                             <Text className="text-[14px] font-semibold text-[#2A9A46]">
                               {q.correctAnswer}
@@ -257,7 +254,7 @@ export default function InstructorTestResultsScreen() {
                 })}
               </View>
 
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => setSelectedStudent(null)}
                 className="bg-[#F67300] py-4 rounded-2xl items-center mb-8"
               >
