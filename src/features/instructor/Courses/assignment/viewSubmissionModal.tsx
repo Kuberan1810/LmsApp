@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, Modal, TouchableOpacity, TextInput, ScrollView, Animated, Dimensions, PanResponder, StyleSheet } from 'react-native';
 import { Image as ExpoImage } from 'expo-image';
 import { Download, X } from 'lucide-react-native';
+import { BlurView } from 'expo-blur';
 
 export interface SubmissionData {
     studentId?: string;
@@ -21,6 +22,8 @@ interface ViewSubmissionModalProps {
     onUpdateGrade?: (grade: string, feedback: string) => void;
 }
 
+const { height } = Dimensions.get('window');
+
 export default function ViewSubmissionModal({
     visible,
     submission,
@@ -38,27 +41,129 @@ export default function ViewSubmissionModal({
     const [marks, setMarks] = useState(initialGrade);
     const [feedback, setFeedback] = useState('');
 
+    const [showModal, setShowModal] = useState(visible);
+    const slideAnim = useRef(new Animated.Value(height)).current;
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+
+    const panResponder = useRef(
+        PanResponder.create({
+            onStartShouldSetPanResponder: () => false,
+            onStartShouldSetPanResponderCapture: () => false,
+            onMoveShouldSetPanResponder: (_, gestureState) => {
+                return Math.abs(gestureState.dy) > 2 && Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
+            },
+            onMoveShouldSetPanResponderCapture: (_, gestureState) => {
+                return Math.abs(gestureState.dy) > 2 && Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
+            },
+            onPanResponderMove: (_, gestureState) => {
+                if (gestureState.dy > 0) {
+                    slideAnim.setValue(gestureState.dy);
+                    const opacity = Math.max(0, 1 - (gestureState.dy / (height / 2)));
+                    fadeAnim.setValue(opacity);
+                }
+            },
+            onPanResponderRelease: (_, gestureState) => {
+                if (gestureState.dy > 60 || gestureState.vy > 0.3) {
+                    closeModal();
+                } else {
+                    Animated.parallel([
+                        Animated.spring(slideAnim, {
+                            toValue: 0,
+                            useNativeDriver: true,
+                            bounciness: 6,
+                        }),
+                        Animated.timing(fadeAnim, {
+                            toValue: 1,
+                            duration: 150,
+                            useNativeDriver: true,
+                        })
+                    ]).start();
+                }
+            },
+        })
+    ).current;
+
+    useEffect(() => {
+        if (visible) {
+            setShowModal(true);
+            setMarks(submission?.grade ? String(submission.grade) : '90');
+            setFeedback('');
+            Animated.parallel([
+                Animated.spring(slideAnim, {
+                    toValue: 0,
+                    useNativeDriver: true,
+                    tension: 65,
+                    friction: 11,
+                }),
+                Animated.timing(fadeAnim, {
+                    toValue: 1,
+                    duration: 300,
+                    useNativeDriver: true,
+                })
+            ]).start();
+        } else if (showModal) {
+            closeModal();
+        }
+    }, [visible, submission]);
+
+    const closeModal = () => {
+        Animated.parallel([
+            Animated.spring(slideAnim, {
+                toValue: height,
+                useNativeDriver: true,
+                tension: 65,
+                friction: 11,
+            }),
+            Animated.timing(fadeAnim, {
+                toValue: 0,
+                duration: 250,
+                useNativeDriver: true,
+            })
+        ]).start(() => {
+            setShowModal(false);
+            onClose();
+        });
+    };
+
     const handleSaveGrade = () => {
         if (onUpdateGrade) {
             onUpdateGrade(marks, feedback);
         }
-        onClose();
+        closeModal();
     };
+
+    if (!showModal) return null;
 
     return (
         <Modal
-            visible={visible}
+            visible={showModal}
             transparent
-            animationType="slide"
-            onRequestClose={onClose}
+            animationType="none"
+            onRequestClose={closeModal}
         >
-            <View className="flex-1 bg-black/40 justify-end">
+            <Animated.View style={[StyleSheet.absoluteFill, { opacity: fadeAnim }]}>
+                <BlurView intensity={20} tint="dark" style={StyleSheet.absoluteFill}>
+                    <TouchableOpacity
+                        style={StyleSheet.absoluteFill}
+                        activeOpacity={1}
+                        onPress={closeModal}
+                    />
+                </BlurView>
+            </Animated.View>
+
+            <Animated.View
+                style={[
+                    styles.drawerContainer,
+                    { transform: [{ translateY: slideAnim }] }
+                ]}
+                {...panResponder.panHandlers}
+            >
                 <TouchableOpacity
+                    style={{ flex: 1 }}
                     activeOpacity={1}
-                    onPress={onClose}
-                    className="flex-1"
+                    onPress={closeModal}
                 />
-                <View className="bg-white rounded-t-[30px] p-7 w-full max-h-[80%] shadow-2xl">
+                <View className="bg-white rounded-t-[30px] p-7 w-full max-h-[70%] shadow-2xl">
 
                     <ScrollView showsVerticalScrollIndicator={false}>
                         <View className="border-b border-[#F3F4F6] pb-6 mb-6">
@@ -147,7 +252,7 @@ export default function ViewSubmissionModal({
                         {/* Action Buttons */}
                         <View className="flex-row items-center justify-end gap-3 mt-6 pt-4 border-t border-[#F3F4F6]">
                             <TouchableOpacity
-                                onPress={onClose}
+                                onPress={closeModal}
                                 className="bg-white border border-[#E5E7EB] px-6 h-11 rounded-[12px] items-center justify-center"
                                 activeOpacity={0.8}
                             >
@@ -164,7 +269,14 @@ export default function ViewSubmissionModal({
                         </View>
                     </ScrollView>
                 </View>
-            </View>
+            </Animated.View>
         </Modal>
     );
 }
+
+const styles = StyleSheet.create({
+    drawerContainer: {
+        flex: 1,
+        justifyContent: 'flex-end',
+    }
+});

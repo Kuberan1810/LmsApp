@@ -67,8 +67,8 @@ const INITIAL_MODULES: Module[] = [
         id: '2',
         title: 'Module 2: Module-2',
         status: 'Completed',
-        statusBg: 'bg-[#DDF0EB]',
-        statusColor: 'text-[#2BB290]',
+        statusBg: 'bg-[#2A9A46]/10',
+        statusColor: 'text-[#2A9A46]',
         chapters: [
             { id: 'c2', title: 'Chapter 2.1 - Intro to AI' },
         ],

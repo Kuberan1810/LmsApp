@@ -140,7 +140,7 @@ export default function Chapters({
         <View className="flex-1 bg-[#FAFAFA]">
             {/* Header */}
             <InstructorHeader
-                title="Chapter"
+                title={title}
                 onBackPress={onBack}
                 showSearch={false}
                 showNotification={false}
@@ -155,9 +155,9 @@ export default function Chapters({
             >
                 {/* Chapter Overview Card */}
                 <View className="bg-white rounded-[16px] p-6 mb-4 border border-[#F2EEF4]">
-                    <View className="flex-row items-center justify-between mb-4">
+                    {/* <View className="flex-row items-center justify-between mb-4">
                         <Text className="text-[20px] font-medium text-[#333333] flex-1 mr-2">{title}</Text>
-                    </View>
+                    </View> */}
 
                     {/* Class Content Section */}
                     <View className="mb-6">
