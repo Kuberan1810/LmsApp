@@ -1,12 +1,12 @@
+import QuickActionsModal from '@/components/Instructor/QuickActionsModal';
 import { TabBarVisibilityProvider, useTabBarVisibility } from '@/context/TabBarVisibilityContext';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { BlurView } from 'expo-blur';
 import { Tabs, useRouter, useSegments } from 'expo-router';
-import {  Home2, User, Add, DocumentText1, DocumentText, Profile2User } from 'iconsax-react-native';
+import { Add, DocumentText, DocumentText1, Home2, Profile2User } from 'iconsax-react-native';
+import { useState } from 'react';
 import { LayoutAnimation, LogBox, Platform, Text, TouchableOpacity, UIManager, View } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
-import { useState } from 'react';
-import QuickActionsModal from '@/components/Instructor/QuickActionsModal';
 
 LogBox.ignoreLogs(['setLayoutAnimationEnabledExperimental is currently a no-op']);
 
@@ -29,7 +29,7 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
   });
 
   const segments = useSegments();
-  
+
   // Only show tab bar on root routes: /(instructor)/courses, /(instructor)/students, /(instructor)/dashboard/dashboard
   const isMainRoute = (segments.length <= 2) || (segments.length === 3 && segments[1] === 'dashboard' && segments[2] === 'dashboard');
 
@@ -122,7 +122,7 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
       alignItems: 'center',
       justifyContent: 'space-between',
     }, animatedStyle]}>
-      
+
       <View style={{
         flex: 1,
         marginRight: 16,
@@ -150,7 +150,7 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
         )}
       </View>
 
-      <TouchableOpacity 
+      <TouchableOpacity
         activeOpacity={0.8}
         onPress={onAddPress}
         style={{
@@ -186,10 +186,10 @@ export default function InstructorLayout() {
         <Tabs.Screen name="dashboard/dashboard" options={{ title: 'Home' }} />
         <Tabs.Screen name="courses" options={{ title: 'Courses' }} />
         <Tabs.Screen name="students" options={{ title: 'Students' }} />
-       
+
       </Tabs>
 
-      <QuickActionsModal 
+      <QuickActionsModal
         visible={isQuickActionsVisible}
         onClose={() => setQuickActionsVisible(false)}
       />

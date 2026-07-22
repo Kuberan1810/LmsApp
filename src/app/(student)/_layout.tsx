@@ -3,9 +3,9 @@ import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { BlurView } from 'expo-blur';
 import { Tabs, usePathname } from 'expo-router';
 import { CalendarTick, ClipboardText, DocumentText, DocumentText1, Home2, NoteText } from 'iconsax-react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { LayoutAnimation, LogBox, Platform, Text, TouchableOpacity, UIManager, View } from 'react-native';
-import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, LinearTransition, FadeIn, FadeOut, withTiming, Easing } from 'react-native-reanimated';
 
 LogBox.ignoreLogs(['setLayoutAnimationEnabledExperimental is currently a no-op']);
 
@@ -20,6 +20,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const { tabBarOffset, isTabBarVisible } = useTabBarVisibility();
   const pathname = usePathname();
+  const [tabLayouts, setTabLayouts] = useState<{ [key: string]: { x: number; y: number; width: number; height: number } }>({});
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -27,11 +28,27 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     };
   });
 
+  const activeRouteKey = state.routes[state.index]?.key;
+  const activeLayout = tabLayouts[activeRouteKey];
+
+  const indicatorStyle = useAnimatedStyle(() => {
+    if (!activeLayout) return { opacity: 0 };
+    return {
+      position: 'absolute',
+      left: withTiming(activeLayout.x, { duration: 350, easing: Easing.out(Easing.exp) }),
+      top: withTiming(activeLayout.y, { duration: 350, easing: Easing.out(Easing.exp) }),
+      width: withTiming(activeLayout.width, { duration: 350, easing: Easing.out(Easing.exp) }),
+      height: withTiming(activeLayout.height, { duration: 350, easing: Easing.out(Easing.exp) }),
+      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+      borderRadius: 30,
+      opacity: 1,
+    };
+  }, [activeLayout]);
+
   const mainRoutes = [
     '/dashboard', '/dashboard/dashboard', 
     '/courses', '/courses/index',
     '/assignments', '/assignments/assignments', 
-    '/attendance', '/attendance/attendance', 
     '/tests', '/tests/index'
   ];
   const isMainRoute = mainRoutes.includes(pathname);
@@ -41,7 +58,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   }
 
   const visibleRoutes = state.routes.filter(r =>
-    ['dashboard/dashboard', 'courses', 'assignments', 'attendance/attendance', 'tests/index'].includes(r.name)
+    ['dashboard/dashboard', 'courses', 'assignments', 'tests/index'].includes(r.name)
   );
 
   const tabContent = visibleRoutes.map((route, index) => {
@@ -50,23 +67,6 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     const isFocused = state.index === state.routes.findIndex(r => r.key === route.key);
 
     const onPress = () => {
-      LayoutAnimation.configureNext({
-        duration: 500,
-        create: {
-          type: LayoutAnimation.Types.spring,
-          property: LayoutAnimation.Properties.opacity,
-          springDamping: 0.85,
-        },
-        update: {
-          type: LayoutAnimation.Types.spring,
-          springDamping: 0.85,
-        },
-        delete: {
-          type: LayoutAnimation.Types.spring,
-          property: LayoutAnimation.Properties.opacity,
-          springDamping: 0.85,
-        },
-      });
       const event = navigation.emit({
         type: 'tabPress',
         target: route.key,
@@ -84,28 +84,43 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     if (route.name === 'attendance/attendance') IconComponent = CalendarTick;
     if (route.name === 'tests/index') IconComponent = ClipboardText;
 
+    const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
+
+    const onLayout = (event: any) => {
+      const { x, y, width, height } = event.nativeEvent.layout;
+      setTabLayouts(prev => ({ ...prev, [route.key]: { x, y, width, height } }));
+    };
+
     return (
-      <TouchableOpacity
+      <AnimatedTouchableOpacity
         key={route.key}
         onPress={onPress}
+        onLayout={onLayout}
         activeOpacity={0.8}
+        layout={LinearTransition.duration(350).easing(Easing.out(Easing.exp))}
         style={{
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: isFocused ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+          backgroundColor: 'transparent',
           paddingHorizontal: isFocused ? 20 : 12,
           paddingVertical: 12,
           borderRadius: 30,
+          zIndex: 1,
         }}
       >
         <IconComponent size={24} color={isFocused ? "#FFFFFF" : "#8A8A8E"} variant={isFocused ? "Bold" : "Linear"} />
         {isFocused && (
-          <Text style={{ color: '#FFFFFF', fontWeight: '600', marginLeft: 8, fontSize: 15 }}>
+          <Animated.Text 
+            entering={FadeIn.duration(200)} 
+            exiting={FadeOut.duration(200)}
+            style={{ color: '#FFFFFF', fontWeight: '600', marginLeft: 8, fontSize: 15 }}
+            numberOfLines={1}
+          >
             {label as string}
-          </Text>
+          </Animated.Text>
         )}
-      </TouchableOpacity>
+      </AnimatedTouchableOpacity>
     );
   });
 
@@ -136,6 +151,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     }, animatedStyle]}>
       {Platform.OS === 'android' ? (
         <View style={tabStyle}>
+          <Animated.View style={indicatorStyle} />
           {tabContent}
         </View>
       ) : (
@@ -145,6 +161,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
           blurMethod="dimezisBlurView"
           style={tabStyle}
         >
+          <Animated.View style={indicatorStyle} />
           {tabContent}
         </BlurView>
       )}
@@ -163,7 +180,7 @@ export default function StudentLayout() {
         <Tabs.Screen name="dashboard/dashboard" options={{ title: 'Home' }} />
         <Tabs.Screen name="courses" options={{ title: 'Courses' }} />
         <Tabs.Screen name="assignments" options={{ title: 'Tasks' }} />
-        <Tabs.Screen name="attendance/attendance" options={{ title: 'Calendar' }} />
+        <Tabs.Screen name="attendance/attendance" options={{ href: null }} />
         <Tabs.Screen name="tests/index" options={{ title: 'Tests' }} />
         <Tabs.Screen name="profile/profile" options={{ href: null }} />
 
