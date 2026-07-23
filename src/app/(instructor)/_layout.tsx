@@ -2,7 +2,7 @@ import { TabBarVisibilityProvider, useTabBarVisibility } from '@/context/TabBarV
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { BlurView } from 'expo-blur';
 import { Tabs, useRouter } from 'expo-router';
-import {  Home2, User, Add, DocumentText1, DocumentText } from 'iconsax-react-native';
+import { Home2, User, Add, DocumentText1, DocumentText } from 'iconsax-react-native';
 import { LayoutAnimation, LogBox, Platform, Text, TouchableOpacity, UIManager, View } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useState } from 'react';
@@ -29,7 +29,7 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
   });
 
   const currentRouteName = state.routes[state.index].name;
-  
+
   // Only show tab bar on these specific root routes
   const isMainRoute = ['dashboard/dashboard', 'courses/index', 'students/index'].includes(currentRouteName);
 
@@ -122,7 +122,7 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
       alignItems: 'center',
       justifyContent: 'space-between',
     }, animatedStyle]}>
-      
+
       <View style={{
         flex: 1,
         marginRight: 16,
@@ -150,7 +150,7 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
         )}
       </View>
 
-      <TouchableOpacity 
+      <TouchableOpacity
         activeOpacity={0.8}
         onPress={onAddPress}
         style={{
@@ -189,12 +189,12 @@ export default function InstructorLayout() {
         <Tabs.Screen name="tests/index" options={{ href: null }} />
         <Tabs.Screen name="test-details" options={{ href: null }} />
         <Tabs.Screen name="review" options={{ href: null }} />
-        <Tabs.Screen name="dashboard/assignment-review" options={{ href: null }} />
-        <Tabs.Screen name="dashboard/test-review" options={{ href: null }} />
-       
+
+
+
       </Tabs>
 
-      <QuickActionsModal 
+      <QuickActionsModal
         visible={isQuickActionsVisible}
         onClose={() => setQuickActionsVisible(false)}
       />

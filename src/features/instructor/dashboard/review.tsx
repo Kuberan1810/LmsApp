@@ -4,6 +4,8 @@ import { router } from 'expo-router';
 import { ArrowLeft2, ArrowRight2, ClipboardText, DocumentText, DocumentText1, CalendarTick } from 'iconsax-react-native';
 import InstructorHeader from '@/components/Instructor/InstructorHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import ReviewModal from '@/app/(instructor)/tests/reviewModal';
+import ViewSubmissionModal from '@/features/instructor/Courses/assignment/viewSubmissionModal';
 
 const ITEMS = [
     {
@@ -112,6 +114,14 @@ const METRICS = [
 ];
 
 export default function ReviewScreen() {
+    const [selectedStudent, setSelectedStudent] = useState<any>(null);
+    const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+    const [selectedSubmission, setSelectedSubmission] = useState<any>(null);
+
+    const handleUpdateGrade = (grade: string, feedback: string) => {
+        console.log('Update grade', grade, feedback);
+    };
+
     const totalCount = ITEMS.length;
     const assignmentCount = ITEMS.filter(item => item.type === 'ASSIGNMENT').length;
     const testCount = ITEMS.filter(item => item.type === 'TEST').length;
@@ -245,22 +255,19 @@ export default function ReviewScreen() {
                             <TouchableOpacity
                                 onPress={() => {
                                     if (item.type === 'ASSIGNMENT') {
-                                        router.push({
-                                            pathname: '/(instructor)/dashboard/assignment-review',
-                                            params: {
-                                                studentId: item.studentId,
-                                                studentName: item.studentName,
-                                                submittedOn: item.submittedAt,
-                                                notes: 'Attached is the completed assignment for your review.',
-                                                fileName: 'Text_to_PDF_Onlinenotpad',
-                                            }
+                                        setSelectedSubmission({
+                                            studentId: item.studentId,
+                                            studentName: item.studentName,
+                                            submittedOn: item.submittedAt,
+                                            notes: 'Attached is the completed assignment for your review.',
+                                            fileName: 'Text_to_PDF_Onlinenotpad',
                                         });
+                                        setIsViewModalOpen(true);
                                     } else if (item.type === 'TEST') {
-                                        router.push({
-                                            pathname: '/(instructor)/dashboard/test-review',
-                                            params: {
-                                                studentId: item.studentId,
-                                            }
+                                        setSelectedStudent({
+                                            name: item.studentName,
+                                            id: item.studentId,
+                                            status: 'Submitted',
                                         });
                                     }
                                 }}
@@ -274,6 +281,21 @@ export default function ReviewScreen() {
                     ))}
                 </View>
             </ScrollView>
+
+            <ReviewModal
+                visible={!!selectedStudent}
+                onClose={() => setSelectedStudent(null)}
+                student={selectedStudent}
+            />
+
+
+
+            <ViewSubmissionModal
+                visible={isViewModalOpen}
+                submission={selectedSubmission}
+                onClose={() => setIsViewModalOpen(false)}
+                onUpdateGrade={handleUpdateGrade}
+            />
         </SafeAreaView>
     );
 }
