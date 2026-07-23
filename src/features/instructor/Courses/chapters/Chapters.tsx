@@ -90,23 +90,24 @@ export default function Chapters({
     const [modName, setModName] = useState(chapter?.moduleName || moduleName);
 
     const [classContent, setClassContent] = useState(
-        chapter?.classContent !== undefined
+        chapter?.classContent !== undefined && chapter.classContent !== ''
             ? chapter.classContent
-            : 'AI Agents are systems powered by Large Language Models (LLMs) that can autonomously perform tasks, make decisions, and interact with environments using tools and reasoning frameworks like ReAct.'
+            : (initialIsEditing ? '' : 'AI Agents are systems powered by Large Language Models (LLMs) that can autonomously perform tasks, make decisions, and interact with environments using tools and reasoning frameworks like ReAct.')
     );
     const [keyTopics, setKeyTopics] = useState(
-        chapter?.keyTopics !== undefined
+        chapter?.keyTopics !== undefined && chapter.keyTopics !== ''
             ? chapter.keyTopics
-            : 'Introduction to AI Agents & Autonomous Workflows\nLangChain Fundamentals & Agent Executors\nCrewAI Multi-Agent Collaboration Framework\nAutoGen Framework for Conversational AI\nBuilding Real-World AI Agents'
+            : (initialIsEditing ? '' : 'Introduction to AI Agents & Autonomous Workflows\nLangChain Fundamentals & Agent Executors\nCrewAI Multi-Agent Collaboration Framework\nAutoGen Framework for Conversational AI\nBuilding Real-World AI Agents')
     );
     const [resources, setResources] = useState<FileItem[]>(
-        chapter?.resources !== undefined
+        chapter?.resources !== undefined && chapter.resources.length > 0
             ? chapter.resources
-            : [
+            : (initialIsEditing ? [] : [
                 { id: '1', name: 'Agent_Architecture_Overview.pdf', size: '2.4 MB', status: 'ready' },
                 { id: '2', name: 'LangChain_CrewAI_Guide.docx', size: '1.8 MB', status: 'ready' },
-            ]
+            ])
     );
+
 
     const handleSaveFromEdit = (data: EditChapterData) => {
         if (data.title) setTitle(data.title);

@@ -36,7 +36,7 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
   const segments = useSegments();
 
   // Only show tab bar on root routes: /(instructor)/courses, /(instructor)/students, /(instructor)/dashboard/dashboard
-  const isMainRoute = 
+  const isMainRoute =
     (segments.length === 3 && segments[1] === 'dashboard' && segments[2] === 'dashboard') ||
     (segments.length === 2 && (segments[1] === 'courses' || segments[1] === 'students'));
 
@@ -205,10 +205,6 @@ export default function InstructorLayout() {
         <Tabs.Screen name="courses" options={{ title: 'Courses' }} />
         <Tabs.Screen name="students" options={{ title: 'Students' }} />
         <Tabs.Screen name="test-details" options={{ href: null }} />
-        <Tabs.Screen name="review" options={{ href: null }} />
-
-
-
       </Tabs>
 
       <QuickActionsModal

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import InstructorHeader from '@/components/Instructor/InstructorHeader';
@@ -63,35 +64,35 @@ export default function StudentProfileScreen() {
   const generateDays = () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
-    
+
     const firstDayOfMonth = new Date(year, month, 1);
-    const startOffset = firstDayOfMonth.getDay(); 
+    const startOffset = firstDayOfMonth.getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    
+
     const totalSlots = startOffset + daysInMonth <= 28 ? 28 : (startOffset + daysInMonth <= 35 ? 35 : 42);
-    
+
     const daysArray = [];
     const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    
+
     for (let i = 0; i < totalSlots; i++) {
       const date = new Date(year, month, i - startOffset + 1);
-      
+
       let status: Status = 'none';
       if (date.getMonth() !== month) {
-         status = 'none'; 
+        status = 'none';
       } else {
-         const dayOfWeek = date.getDay();
-         if (dayOfWeek === 0 || dayOfWeek === 6) {
-            status = 'weekend';
-         } else {
-            const d = date.getDate();
-            if (d === 15) status = 'holiday';
-            else if (d === 14 || d === 18) status = 'absent';
-            else if (d > 23 && year === 2026 && month === 0) status = 'none'; 
-            else status = 'present';
-         }
+        const dayOfWeek = date.getDay();
+        if (dayOfWeek === 0 || dayOfWeek === 6) {
+          status = 'weekend';
+        } else {
+          const d = date.getDate();
+          if (d === 15) status = 'holiday';
+          else if (d === 14 || d === 18) status = 'absent';
+          else if (d > 23 && year === 2026 && month === 0) status = 'none';
+          else status = 'present';
+        }
       }
-      
+
       daysArray.push({
         day: DAYS[date.getDay()],
         date: date.getDate().toString().padStart(2, '0'),
@@ -109,10 +110,10 @@ export default function StudentProfileScreen() {
 
   const getStatusStyles = (status: Status) => {
     switch (status) {
-      case 'present': return { bg: '#DCFCE780', day: '#3EA465', date: '#3EA465', border: 'transparent' };
-      case 'absent': return { bg: '#FEE2E280', day: '#CE1919', date: '#CE1919', border: 'transparent' };
-      case 'holiday': return { bg: '#FFEDDD', day: '#FFBE85', date: '#FFBE85', border: 'transparent' };
-      case 'weekend': return { bg: '#FFEDDD', day: '#333333', date: '#777777', border: 'transparent' };
+      case 'present': return { bg: '#DCFCE780', day: '#3EA465', date: '#3EA465', border: '#3EA465' };
+      case 'absent': return { bg: '#FEE2E280', day: '#CE1919', date: '#CE1919', border: '#CE1919' };
+      case 'holiday': return { bg: '#FFEDDD', day: '#FFBE85', date: '#FFBE85', border: '#FFBE85' };
+      case 'weekend': return { bg: '#FFEDDD', day: '#333333', date: '#777777', border: '#F67300' };
       case 'none': default: return { bg: '#FFFFFF', day: '#333333', date: '#777777', border: '#E5E7EB' };
     }
   };
@@ -134,13 +135,13 @@ export default function StudentProfileScreen() {
       />
 
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 60 }}>
-        
+
         {/* Profile Card */}
         <View className="bg-white mx-5 mt-5 p-5 rounded-[24px] border border-[#F2EEF4] shadow-sm shadow-black/5">
           <View className="flex-row items-center mb-5">
             <View className="relative w-20 h-20 rounded-full mr-4 bg-[#FFF5ED]">
-              <Image 
-                source={{ uri: 'https://i.pravatar.cc/150?u=' + id }} 
+              <Image
+                source={{ uri: 'https://i.pravatar.cc/150?u=' + id }}
                 className="w-full h-full rounded-full"
                
               />
@@ -159,7 +160,7 @@ export default function StudentProfileScreen() {
               </View>
             </View>
           </View>
-          
+
           <TouchableOpacity className="border border-[#F67300] py-2.5 rounded-xl flex-row items-center justify-center bg-white">
             <Sms size={16} color="#F67300" variant="Outline" />
             <Text className="text-[#F67300] font-medium ml-2">Message</Text>
@@ -188,8 +189,8 @@ export default function StudentProfileScreen() {
           {['Assignments', 'Tests', 'Attendance'].map((tab) => {
             const isActive = activeTab === tab;
             return (
-              <TouchableOpacity 
-                key={tab} 
+              <TouchableOpacity
+                key={tab}
                 onPress={() => setActiveTab(tab)}
                 className={`flex-1 py-2 rounded-full items-center ${isActive ? 'bg-[#F67300]' : 'bg-transparent'}`}
               >
@@ -249,83 +250,83 @@ export default function StudentProfileScreen() {
         {activeTab === 'Attendance' && (
           <View className="mx-5 mt-6">
             <View className="flex-row justify-between mb-5">
-                <View className="flex-1 bg-[#E8F8F0] rounded-[18px] p-4 items-center mr-3 border border-[#E8F8F0]">
-                    <Text className="text-[#1DD75B] text-[24px] font-bold">18</Text>
-                    <Text className="text-[#888] text-[12px] mt-0.5 text-center">Days Present</Text>
-                </View>
-                <View className="flex-1 bg-[#FDE8E8] rounded-[18px] p-4 items-center mr-3 border border-[#FDE8E8]">
-                    <Text className="text-[#E61026] text-[24px] font-bold">2</Text>
-                    <Text className="text-[#888] text-[12px] mt-0.5 text-center">Days Absent</Text>
-                </View>
-                <View className="flex-1 bg-[#EEF2FF] rounded-[18px] p-4 items-center border border-[#EEF2FF]">
-                    <Text className="text-[#6366F1] text-[24px] font-bold">4</Text>
-                    <Text className="text-[#888] text-[12px] mt-0.5 text-center">Leaves</Text>
-                </View>
+              <View className="flex-1 bg-[#E8F8F0] rounded-[18px] p-4 items-center mr-3 border border-[#E8F8F0]">
+                <Text className="text-[#1DD75B] text-[24px] font-bold">18</Text>
+                <Text className="text-[#888] text-[12px] mt-0.5 text-center">Days Present</Text>
+              </View>
+              <View className="flex-1 bg-[#FDE8E8] rounded-[18px] p-4 items-center mr-3 border border-[#FDE8E8]">
+                <Text className="text-[#E61026] text-[24px] font-bold">2</Text>
+                <Text className="text-[#888] text-[12px] mt-0.5 text-center">Days Absent</Text>
+              </View>
+              <View className="flex-1 bg-[#EEF2FF] rounded-[18px] p-4 items-center border border-[#EEF2FF]">
+                <Text className="text-[#6366F1] text-[24px] font-bold">4</Text>
+                <Text className="text-[#888] text-[12px] mt-0.5 text-center">Leaves</Text>
+              </View>
             </View>
 
             {/* Calendar */}
             <View className="bg-white rounded-[28px] p-5 border border-[#F2EEF4] mb-5 shadow-sm shadow-black/5">
-                <View className="flex-row justify-between items-center mb-6">
-                    <Text className="text-[20px] font-semibold text-[#333333] tracking-tight">Attendance</Text>
-                </View>
+              <View className="flex-row justify-between items-center mb-6">
+                <Text className="text-[20px] font-semibold text-[#333333] tracking-tight">Attendance</Text>
+              </View>
 
-                {/* Month Selector */}
-                <View className="flex-row justify-center items-center mb-6">
-                    <TouchableOpacity onPress={handlePrevMonth} className="bg-[#FFEDDD] w-[30px] h-[30px] items-center justify-center rounded-[8px]">
-                        <Ionicons name="play" size={14} color="#F67300" style={{ transform: [{ rotate: '180deg' }] }} />
+              {/* Month Selector */}
+              <View className="flex-row justify-center items-center mb-6">
+                <TouchableOpacity onPress={handlePrevMonth} className="bg-[#FFEDDD] w-[30px] h-[30px] items-center justify-center rounded-[8px]">
+                  <Ionicons name="play" size={14} color="#F67300" style={{ transform: [{ rotate: '180deg' }] }} />
+                </TouchableOpacity>
+                <Text className="mx-6 font-semibold text-[14px] text-[#333333]">{monthTitle}</Text>
+                <TouchableOpacity onPress={handleNextMonth} className="bg-[#FFEDDD] w-[30px] h-[30px] items-center justify-center rounded-[8px]">
+                  <Ionicons name="play" size={14} color="#F67300" />
+                </TouchableOpacity>
+              </View>
+
+              {/* Grid */}
+              <View className="flex-row flex-wrap justify-between gap-y-3">
+                {calendarData.map((item, index) => {
+                  const styles = getStatusStyles(item.status);
+                  const isSelected = selectedDate === item.date && item.isCurrentMonth;
+
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => {
+                        if (item.isCurrentMonth) {
+                          setSelectedDate(item.date);
+                        }
+                      }}
+                      activeOpacity={0.7}
+                      style={{
+                        width: '13%',
+                        aspectRatio: 44 / 43,
+                        backgroundColor: styles.bg,
+                        borderColor: isSelected ? styles.border : (item.status === 'none' ? styles.border : 'transparent'),
+                        borderWidth: 1.5
+                      }}
+                      className={`rounded-[14px] items-center justify-center py-1.5 gap-0.5 ${!item.isCurrentMonth ? 'opacity-30' : ''}`}
+                    >
+                      <Text style={{ color: styles.day }} className="text-[14px] font-semibold leading-none text-center">{item.day}</Text>
+                      <Text style={{ color: styles.date }} className="text-[12px] font-medium leading-none text-center">{item.date}</Text>
                     </TouchableOpacity>
-                    <Text className="mx-6 font-semibold text-[14px] text-[#333333]">{monthTitle}</Text>
-                    <TouchableOpacity onPress={handleNextMonth} className="bg-[#FFEDDD] w-[30px] h-[30px] items-center justify-center rounded-[8px]">
-                        <Ionicons name="play" size={14} color="#F67300" />
-                    </TouchableOpacity>
-                </View>
+                  );
+                })}
+              </View>
 
-                {/* Grid */}
-                <View className="flex-row flex-wrap justify-between gap-y-3">
-                    {calendarData.map((item, index) => {
-                        const styles = getStatusStyles(item.status);
-                        const isSelected = selectedDate === item.date && item.isCurrentMonth;
-                        
-                        return (
-                            <TouchableOpacity 
-                                key={index}
-                                onPress={() => {
-                                    if (item.isCurrentMonth && item.status !== 'none') {
-                                        setSelectedDate(item.date);
-                                    }
-                                }}
-                                activeOpacity={0.7}
-                                style={{ 
-                                    width: '13%', 
-                                    aspectRatio: 44 / 43, 
-                                    backgroundColor: styles.bg, 
-                                    borderColor: isSelected ? styles.day : styles.border, 
-                                    borderWidth: isSelected ? 1.5 : (item.status === 'none' ? 1 : 0) 
-                                }}
-                                className={`rounded-[14px] items-center justify-center py-1.5 gap-0.5 ${!item.isCurrentMonth ? 'opacity-30' : ''}`}
-                            >
-                                <Text style={{ color: styles.day }} className="text-[14px] font-semibold leading-none text-center">{item.day}</Text>
-                                <Text style={{ color: styles.date }} className="text-[12px] font-medium leading-none text-center">{item.date}</Text>
-                            </TouchableOpacity>
-                        );
-                    })}
+              {/* Legend */}
+              <View className="flex-row justify-center items-center mt-8 gap-5">
+                <View className="flex-row items-center">
+                  <View className="w-3.5 h-3.5 rounded-[4px] bg-[#3EA465] mr-2" />
+                  <Text className="text-[14px] text-[#626262] font-medium">Present</Text>
                 </View>
-
-                {/* Legend */}
-                <View className="flex-row justify-center items-center mt-8 gap-5">
-                    <View className="flex-row items-center">
-                        <View className="w-3.5 h-3.5 rounded-[4px] bg-[#3EA465] mr-2" />
-                        <Text className="text-[14px] text-[#626262] font-medium">Present</Text>
-                    </View>
-                    <View className="flex-row items-center">
-                        <View className="w-3.5 h-3.5 rounded-[4px] bg-[#CE1919] mr-2" />
-                        <Text className="text-[14px] text-[#626262] font-medium">Absent</Text>
-                    </View>
-                    <View className="flex-row items-center">
-                        <View className="w-3.5 h-3.5 rounded-[4px] bg-[#FFBE85] mr-2" />
-                        <Text className="text-[14px] text-[#626262] font-medium">Holiday</Text>
-                    </View>
+                <View className="flex-row items-center">
+                  <View className="w-3.5 h-3.5 rounded-[4px] bg-[#CE1919] mr-2" />
+                  <Text className="text-[14px] text-[#626262] font-medium">Absent</Text>
                 </View>
+                <View className="flex-row items-center">
+                  <View className="w-3.5 h-3.5 rounded-[4px] bg-[#FFBE85] mr-2" />
+                  <Text className="text-[14px] text-[#626262] font-medium">Holiday</Text>
+                </View>
+              </View>
             </View>
 
             {/* Attendance List */}
@@ -333,29 +334,29 @@ export default function StudentProfileScreen() {
               <Text className="text-[14px] font-medium text-[#6B7280] mb-3 mt-2">
                 Classes on {selectedDate ? `${selectedDate} ${monthTitle}` : 'Selected Date'}
               </Text>
-              
+
               {filteredAttendance.length > 0 ? (
                 filteredAttendance.map((item) => (
-                    <View key={item.id} className="bg-white min-h-[88px] px-4 py-4 rounded-[16px] border border-[#F2EEF4] mb-3 flex-row items-center shadow-sm shadow-black/5 overflow-hidden">
-                        <View className={`absolute left-0 top-0 bottom-0 w-1.5 ${item.status === 'Present' ? 'bg-[#2A9A46]' : 'bg-[#E61026]'}`} />
-                        <View className="ml-2 mr-4 items-center border-r border-[#E2E8F0] pr-4">
-                            <Text className="text-[12px] font-medium text-[#8C8E90]">{item.code}</Text>
-                            <Text className="text-[14px] font-medium text-[#1E1E2D] mt-1">{item.time}</Text>
-                        </View>
-                        <View className="flex-1">
-                            <Text className="text-[14px] font-medium text-[#1E1E2D] mb-3">{item.title}</Text>
-                            <Text className="text-[12px] text-[#8C8E90]">{item.duration}</Text>
-                        </View>
-                        <View className={`px-3 py-1 rounded-full ml-2 ${item.status === 'Present' ? 'bg-[#2A9A46]/10' : 'bg-[#E61026]/10'}`}>
-                            <Text className={`text-[12px] font-medium text-center ${item.status === 'Present' ? 'text-[#2A9A46]' : 'text-[#E61026]'}`}>
-                                {item.status}
-                            </Text>
-                        </View>
+                  <View key={item.id} className="bg-white min-h-[88px] px-4 py-4 rounded-[16px] border border-[#F2EEF4] mb-3 flex-row items-center shadow-sm shadow-black/5 overflow-hidden">
+                    <View className={`absolute left-0 top-0 bottom-0 w-1.5 ${item.status === 'Present' ? 'bg-[#2A9A46]' : 'bg-[#E61026]'}`} />
+                    <View className="ml-2 mr-4 items-center border-r border-[#E2E8F0] pr-4">
+                      <Text className="text-[12px] font-medium text-[#8C8E90]">{item.code}</Text>
+                      <Text className="text-[14px] font-medium text-[#1E1E2D] mt-1">{item.time}</Text>
                     </View>
+                    <View className="flex-1">
+                      <Text className="text-[14px] font-medium text-[#1E1E2D] mb-3">{item.title}</Text>
+                      <Text className="text-[12px] text-[#8C8E90]">{item.duration}</Text>
+                    </View>
+                    <View className={`px-3 py-1 rounded-full ml-2 ${item.status === 'Present' ? 'bg-[#2A9A46]/10' : 'bg-[#E61026]/10'}`}>
+                      <Text className={`text-[12px] font-medium text-center ${item.status === 'Present' ? 'text-[#2A9A46]' : 'text-[#E61026]'}`}>
+                        {item.status}
+                      </Text>
+                    </View>
+                  </View>
                 ))
               ) : (
                 <View className="bg-white rounded-[16px] border border-[#F2EEF4] py-8 items-center shadow-sm shadow-black/5">
-                   <Text className="text-[#8C8E90] text-[14px] font-medium">No classes scheduled for this day.</Text>
+                  <Text className="text-[#8C8E90] text-[14px] font-medium">No classes scheduled for this day.</Text>
                 </View>
               )}
             </View>

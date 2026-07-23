@@ -47,7 +47,7 @@ export default function ViewSubmissionModal({
 
     const panResponder = useRef(
         PanResponder.create({
-            onStartShouldSetPanResponder: () => false,
+            onStartShouldSetPanResponder: () => true,
             onStartShouldSetPanResponderCapture: () => false,
             onMoveShouldSetPanResponder: (_, gestureState) => {
                 return Math.abs(gestureState.dy) > 2 && Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
@@ -64,7 +64,24 @@ export default function ViewSubmissionModal({
             },
             onPanResponderRelease: (_, gestureState) => {
                 if (gestureState.dy > 60 || gestureState.vy > 0.3) {
-                    closeModal();
+                    Animated.parallel([
+                        Animated.spring(slideAnim, {
+                            toValue: height,
+                            useNativeDriver: true,
+                            velocity: gestureState.vy,
+                            damping: 20,
+                            mass: 0.6,
+                            stiffness: 100,
+                        }),
+                        Animated.timing(fadeAnim, {
+                            toValue: 0,
+                            duration: 150,
+                            useNativeDriver: true,
+                        })
+                    ]).start(() => {
+                        setShowModal(false);
+                        onClose();
+                    });
                 } else {
                     Animated.parallel([
                         Animated.spring(slideAnim, {
@@ -74,7 +91,7 @@ export default function ViewSubmissionModal({
                         }),
                         Animated.timing(fadeAnim, {
                             toValue: 1,
-                            duration: 150,
+                            duration: 200,
                             useNativeDriver: true,
                         })
                     ]).start();
@@ -88,21 +105,35 @@ export default function ViewSubmissionModal({
             setShowModal(true);
             setMarks(submission?.grade ? String(submission.grade) : '90');
             setFeedback('');
+            slideAnim.setValue(height);
+            fadeAnim.setValue(0);
             Animated.parallel([
                 Animated.spring(slideAnim, {
                     toValue: 0,
                     useNativeDriver: true,
-                    tension: 65,
-                    friction: 11,
+                    damping: 20,
+                    mass: 0.8,
+                    stiffness: 100,
                 }),
                 Animated.timing(fadeAnim, {
                     toValue: 1,
-                    duration: 300,
+                    duration: 250,
                     useNativeDriver: true,
                 })
             ]).start();
         } else if (showModal) {
-            closeModal();
+            Animated.parallel([
+                Animated.timing(slideAnim, {
+                    toValue: height,
+                    duration: 250,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(fadeAnim, {
+                    toValue: 0,
+                    duration: 250,
+                    useNativeDriver: true,
+                })
+            ]).start(() => setShowModal(false));
         }
     }, [visible, submission]);
 
@@ -111,8 +142,9 @@ export default function ViewSubmissionModal({
             Animated.spring(slideAnim, {
                 toValue: height,
                 useNativeDriver: true,
-                tension: 65,
-                friction: 11,
+                damping: 20,
+                mass: 0.6,
+                stiffness: 100,
             }),
             Animated.timing(fadeAnim, {
                 toValue: 0,
@@ -141,29 +173,26 @@ export default function ViewSubmissionModal({
             animationType="none"
             onRequestClose={closeModal}
         >
-            <Animated.View style={[StyleSheet.absoluteFill, { opacity: fadeAnim }]}>
-                <BlurView intensity={20} tint="dark" style={StyleSheet.absoluteFill}>
-                    <TouchableOpacity
-                        style={StyleSheet.absoluteFill}
-                        activeOpacity={1}
-                        onPress={closeModal}
-                    />
-                </BlurView>
-            </Animated.View>
+            <View style={styles.overlay}>
+                <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]}>
+                    <BlurView intensity={20} tint="dark" style={StyleSheet.absoluteFill}>
+                        <TouchableOpacity
+                            style={StyleSheet.absoluteFill}
+                            activeOpacity={1}
+                            onPress={closeModal}
+                        />
+                    </BlurView>
+                </Animated.View>
 
-            <Animated.View
-                style={[
-                    styles.drawerContainer,
-                    { transform: [{ translateY: slideAnim }] }
-                ]}
-                {...panResponder.panHandlers}
-            >
-                <TouchableOpacity
-                    style={{ flex: 1 }}
-                    activeOpacity={1}
-                    onPress={closeModal}
-                />
-                <View className="bg-white rounded-t-[30px] p-7 w-full max-h-[70%] shadow-2xl">
+                <Animated.View
+                    style={[
+                        styles.modalContainer,
+                        { transform: [{ translateY: slideAnim }] }
+                    ]}
+                >
+                    <View style={styles.dragArea} {...panResponder.panHandlers}>
+                        <View style={styles.dragHandle} />
+                    </View>
 
                     <ScrollView showsVerticalScrollIndicator={false}>
                         <View className="border-b border-[#F3F4F6] pb-6 mb-6">
@@ -194,63 +223,65 @@ export default function ViewSubmissionModal({
                         {/* Submitted Files Section */}
                         <View className="mb-5">
                             <Text className="text-[18px] font-semibold text-[#333333] mb-4">Submitted Files</Text>
-                            <View className="bg-white border border-[#F2EEF4] rounded-[20px] py-1 px-1 flex-row items-center justify-between">
-                                <View className="flex-row items-center flex-1 mr-3">
-                                    <View className="w-16 h-13 p-4 rounded-[20px] bg-[#FFF0F0] items-center justify-center mr-3">
+                            <View className="flex-row items-center justify-between bg-white border border-[#E5E7EB] rounded-[16px] p-4">
+                                <View className="flex-row items-center gap-3">
+                                    <View className="bg-[#FFF5ED] p-2.5 rounded-[12px]">
                                         <ExpoImage
-                                            source={require('../../../../../assets/images/pdficon.svg')}
+                                            source={require('@/assets/images/pdficon.svg')}
                                             style={{ width: 24, height: 24 }}
                                             contentFit="contain"
                                         />
                                     </View>
-                                    <View className="flex-1">
-                                        <Text className="text-[14px] font-medium text-[#4D4D4D]" numberOfLines={1}>
+                                    <View>
+                                        <Text className="text-[14px] font-semibold text-[#1A1A1A] max-w-[200px]" numberOfLines={1}>
                                             {fileName}
                                         </Text>
-
+                                        <Text className="text-[12px] text-[#808080]">PDF File</Text>
                                     </View>
                                 </View>
-                                <TouchableOpacity className="p-3 mr-1">
-                                    <Download size={20} color="#808080" />
+
+                                <TouchableOpacity
+                                    className="bg-[#FFF5ED] p-2.5 rounded-full"
+                                    activeOpacity={0.7}
+                                >
+                                    <Download size={20} color="#F67300" />
                                 </TouchableOpacity>
                             </View>
                         </View>
 
-                        {/* Grading & Feedback Section */}
-                        <View className="mb-2">
-                            <Text className="text-[18px] font-semibold text-[#333333] mb-3">Grading & Feedback</Text>
+                        {/* Evaluation Form */}
+                        <View className="mb-6">
+                            <Text className="text-[18px] font-semibold text-[#333333] mb-4">Evaluation</Text>
 
-                            {/* Marks awarded */}
-                            <Text className="text-[14px] text-[#626262] font-medium mb-2.5">Marks awarded (out of 100)</Text>
-                            <View className="bg-[#F9F9F9] rounded-[12px] px-4 py-2.5 flex-row items-center w-[160px] mb-4">
+                            {/* Grade Input */}
+                            <View className="mb-4">
+                                <Text className="text-[14px] font-medium text-[#4D4D4D] mb-2">Grade (out of 100)</Text>
                                 <TextInput
                                     value={marks}
                                     onChangeText={setMarks}
                                     keyboardType="numeric"
-                                    className="flex-1 text-[16px] font-medium text-[#1A1A1A] p-0"
+                                    className="bg-white border border-[#E5E7EB] rounded-[12px] px-4 h-12 text-[15px] text-[#1A1A1A] font-medium focus:border-[#F67300]"
+                                    placeholder="Enter grade"
                                 />
-                                <View className="border-l border-[#E5E7EB] pl-3 ml-2">
-                                    <Text className="text-[14px] text-[#9CA3AF] font-medium">/100</Text>
-                                </View>
                             </View>
 
-                            {/* Instructor Feedback */}
-                            <Text className="text-[14px] text-[#333333] font-medium mb-3">Instructor Feedback</Text>
-                            <View className="bg-white border border-[#EEEEEE] rounded-[16px] p-3.5 min-h-[110px]">
+                            {/* Feedback Input */}
+                            <View>
+                                <Text className="text-[14px] font-medium text-[#4D4D4D] mb-2">Feedback Notes</Text>
                                 <TextInput
                                     value={feedback}
                                     onChangeText={setFeedback}
-                                    placeholder="Write your context and feedback here..."
-                                    placeholderTextColor="#939393"
                                     multiline
+                                    numberOfLines={4}
                                     textAlignVertical="top"
-                                    className="flex-1 text-[13px] text-[#333333] p-0 leading-relaxed text-left"
+                                    className="bg-white border border-[#E5E7EB] rounded-[12px] p-4 min-h-[100px] text-[15px] text-[#1A1A1A] focus:border-[#F67300]"
+                                    placeholder="Add feedback notes for the student..."
                                 />
                             </View>
                         </View>
 
                         {/* Action Buttons */}
-                        <View className="flex-row items-center justify-end gap-3 mt-6 pt-4 border-t border-[#F3F4F6]">
+                        <View className="flex-row items-center justify-end gap-3 mt-2 mb-10 pt-4 border-t border-[#F3F4F6]">
                             <TouchableOpacity
                                 onPress={closeModal}
                                 className="bg-white border border-[#E5E7EB] px-6 h-11 rounded-[12px] items-center justify-center"
@@ -268,15 +299,47 @@ export default function ViewSubmissionModal({
                             </TouchableOpacity>
                         </View>
                     </ScrollView>
-                </View>
-            </Animated.View>
+                </Animated.View>
+            </View>
         </Modal>
     );
 }
 
 const styles = StyleSheet.create({
-    drawerContainer: {
+    overlay: {
         flex: 1,
         justifyContent: 'flex-end',
-    }
+    },
+    backdrop: {
+        ...StyleSheet.absoluteFill,
+    },
+    modalContainer: {
+        backgroundColor: '#FFFFFF',
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        paddingTop: 4,
+        paddingHorizontal: 28, // matches p-7 (28px)
+        height: height * 0.7, // matches max-h-[70%]
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: -4,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 12,
+        elevation: 20,
+    },
+    dragArea: {
+        width: '100%',
+        paddingVertical: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'transparent',
+    },
+    dragHandle: {
+        width: 48,
+        height: 5,
+        borderRadius: 3,
+        backgroundColor: '#E5E7EB',
+    },
 });

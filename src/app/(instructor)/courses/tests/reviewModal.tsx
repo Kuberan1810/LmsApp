@@ -39,7 +39,7 @@ export default function ReviewModal({ visible, onClose, student }: ReviewModalPr
 
     const panResponder = useRef(
         PanResponder.create({
-            onStartShouldSetPanResponder: () => false,
+            onStartShouldSetPanResponder: () => true,
             onStartShouldSetPanResponderCapture: () => false,
             onMoveShouldSetPanResponder: (_, gestureState) => {
                 return Math.abs(gestureState.dy) > 2 && Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
@@ -56,7 +56,24 @@ export default function ReviewModal({ visible, onClose, student }: ReviewModalPr
             },
             onPanResponderRelease: (_, gestureState) => {
                 if (gestureState.dy > 60 || gestureState.vy > 0.3) {
-                    closeModal();
+                    Animated.parallel([
+                        Animated.spring(slideAnim, {
+                            toValue: SCREEN_HEIGHT,
+                            useNativeDriver: true,
+                            velocity: gestureState.vy,
+                            damping: 20,
+                            mass: 0.6,
+                            stiffness: 100,
+                        }),
+                        Animated.timing(fadeAnim, {
+                            toValue: 0,
+                            duration: 150,
+                            useNativeDriver: true,
+                        })
+                    ]).start(() => {
+                        setShowModal(false);
+                        onClose();
+                    });
                 } else {
                     Animated.parallel([
                         Animated.spring(slideAnim, {
@@ -66,7 +83,7 @@ export default function ReviewModal({ visible, onClose, student }: ReviewModalPr
                         }),
                         Animated.timing(fadeAnim, {
                             toValue: 1,
-                            duration: 150,
+                            duration: 200,
                             useNativeDriver: true,
                         })
                     ]).start();
@@ -78,21 +95,35 @@ export default function ReviewModal({ visible, onClose, student }: ReviewModalPr
     useEffect(() => {
         if (visible) {
             setShowModal(true);
+            slideAnim.setValue(SCREEN_HEIGHT);
+            fadeAnim.setValue(0);
             Animated.parallel([
                 Animated.spring(slideAnim, {
                     toValue: 0,
                     useNativeDriver: true,
-                    tension: 65,
-                    friction: 11,
+                    damping: 20,
+                    mass: 0.8,
+                    stiffness: 100,
                 }),
                 Animated.timing(fadeAnim, {
                     toValue: 1,
-                    duration: 300,
+                    duration: 250,
                     useNativeDriver: true,
                 })
             ]).start();
         } else if (showModal) {
-            closeModal();
+            Animated.parallel([
+                Animated.timing(slideAnim, {
+                    toValue: SCREEN_HEIGHT,
+                    duration: 250,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(fadeAnim, {
+                    toValue: 0,
+                    duration: 250,
+                    useNativeDriver: true,
+                })
+            ]).start(() => setShowModal(false));
         }
     }, [visible]);
 
@@ -101,8 +132,9 @@ export default function ReviewModal({ visible, onClose, student }: ReviewModalPr
             Animated.spring(slideAnim, {
                 toValue: SCREEN_HEIGHT,
                 useNativeDriver: true,
-                tension: 65,
-                friction: 11,
+                damping: 20,
+                mass: 0.6,
+                stiffness: 100,
             }),
             Animated.timing(fadeAnim, {
                 toValue: 0,
@@ -124,29 +156,27 @@ export default function ReviewModal({ visible, onClose, student }: ReviewModalPr
             animationType="none"
             onRequestClose={closeModal}
         >
-            <Animated.View style={[StyleSheet.absoluteFill, { opacity: fadeAnim }]}>
-                <BlurView intensity={20} tint="dark" style={StyleSheet.absoluteFill}>
-                    <TouchableOpacity
-                        style={StyleSheet.absoluteFill}
-                        activeOpacity={1}
-                        onPress={closeModal}
-                    />
-                </BlurView>
-            </Animated.View>
+            <View style={styles.overlay}>
+                <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]}>
+                    <BlurView intensity={20} tint="dark" style={StyleSheet.absoluteFill}>
+                        <TouchableOpacity
+                            style={StyleSheet.absoluteFill}
+                            activeOpacity={1}
+                            onPress={closeModal}
+                        />
+                    </BlurView>
+                </Animated.View>
 
-            <Animated.View
-                style={[
-                    styles.drawerContainer,
-                    { transform: [{ translateY: slideAnim }] }
-                ]}
-                {...panResponder.panHandlers}
-            >
-                <TouchableOpacity
-                    style={{ flex: 1 }}
-                    activeOpacity={1}
-                    onPress={closeModal}
-                />
-                <View className="bg-white rounded-t-[30px] p-7 w-full max-h-[80%] shadow-2xl">
+                <Animated.View
+                    style={[
+                        styles.modalContainer,
+                        { transform: [{ translateY: slideAnim }] }
+                    ]}
+                >
+                    <View style={styles.dragArea} {...panResponder.panHandlers}>
+                        <View style={styles.dragHandle} />
+                    </View>
+
                     {/* Modal Header */}
                     <View className="flex-row items-center justify-between pb-5 border-b border-[#E2E8F0] bg-white rounded-t-[24px]">
                         <View className="flex-row items-center">
@@ -251,15 +281,47 @@ export default function ReviewModal({ visible, onClose, student }: ReviewModalPr
                         </TouchableOpacity>
 
                     </ScrollView>
-                </View>
-            </Animated.View>
+                </Animated.View>
+            </View>
         </Modal>
     );
 }
 
 const styles = StyleSheet.create({
-    drawerContainer: {
+    overlay: {
         flex: 1,
         justifyContent: 'flex-end',
+    },
+    backdrop: {
+        ...StyleSheet.absoluteFill,
+    },
+    modalContainer: {
+        backgroundColor: '#FFFFFF',
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        paddingTop: 4,
+        paddingHorizontal: 28, // matches p-7 (28px)
+        height: SCREEN_HEIGHT * 0.8, // matches max-h-[80%]
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: -4,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 12,
+        elevation: 20,
+    },
+    dragArea: {
+        width: '100%',
+        paddingVertical: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'transparent',
+    },
+    dragHandle: {
+        width: 48,
+        height: 5,
+        borderRadius: 3,
+        backgroundColor: '#E5E7EB',
     },
 });

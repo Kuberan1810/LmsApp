@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ReviewAssignment from './reviewAssignment';
+import EditAssignment from './editassignment';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { Image as ExpoImage } from 'expo-image';
 import InstructorHeader from '@/components/Instructor/InstructorHeader';
@@ -77,12 +78,14 @@ export interface AssignmentData {
 
 interface AssignmentsProps {
     assignment?: AssignmentData;
+    initialIsEditing?: boolean;
     onBack?: () => void;
     onSave?: (data: AssignmentData) => void;
 }
 
-export default function Assignments({ assignment, onBack, onSave }: AssignmentsProps) {
+export default function Assignments({ assignment, initialIsEditing = false, onBack, onSave }: AssignmentsProps) {
     const [isReviewing, setIsReviewing] = useState(false);
+    const [isEditing, setIsEditing] = useState(initialIsEditing);
     const [title, setTitle] = useState(assignment?.title || 'Build Q&A system using RAG');
     const [status] = useState(assignment?.status || 'In Progress');
     const [dueDate, setDueDate] = useState(assignment?.dueDate || 'Jan 26');
@@ -94,30 +97,62 @@ export default function Assignments({ assignment, onBack, onSave }: AssignmentsP
 
     // Description
     const [description, setDescription] = useState(
-        assignment?.description !== undefined
+        assignment?.description !== undefined && assignment.description !== ''
             ? assignment.description
-            : 'Build a complete Question & Answering (Q&A) system using Retrieval-Augmented Generation (RAG) architecture with LangChain and vector databases.'
+            : (initialIsEditing ? '' : 'Build a complete Question & Answering (Q&A) system using Retrieval-Augmented Generation (RAG) architecture with LangChain and vector databases.')
     );
     const [objective, setObjective] = useState(
-        assignment?.objective !== undefined
+        assignment?.objective !== undefined && assignment.objective !== ''
             ? assignment.objective
-            : 'Understand and implement vector embeddings, document chunking, semantic retrieval, and LLM prompt orchestration.'
+            : (initialIsEditing ? '' : 'Understand and implement vector embeddings, document chunking, semantic retrieval, and LLM prompt orchestration.')
     );
     const [expectedOutcome, setExpectedOutcome] = useState(
-        assignment?.expectedOutcome !== undefined
+        assignment?.expectedOutcome !== undefined && assignment.expectedOutcome !== ''
             ? assignment.expectedOutcome
-            : 'A functional Python notebook or script demonstrating end-to-end RAG pipeline querying custom documents with accurate answers.'
+            : (initialIsEditing ? '' : 'A functional Python notebook or script demonstrating end-to-end RAG pipeline querying custom documents with accurate answers.')
     );
     const [resources, setResources] = useState<ResourceItem[]>(
-        assignment?.resources !== undefined
+        assignment?.resources !== undefined && assignment.resources.length > 0
             ? assignment.resources
-            : [
+            : (initialIsEditing ? [] : [
                 { id: '1', name: 'RAG_Architecture_Guide.pdf', size: '3.1 MB', status: 'Ready to submit' },
                 { id: '2', name: 'Dataset_Sample_Docs.zip', size: '12.5 MB', status: 'Ready to submit' },
-            ]
+            ])
     );
 
     const fullDueDateStr = `${dueDate}${dueTime ? `, ${dueTime}` : ''}`;
+
+    if (isEditing) {
+        return (
+            <EditAssignment
+                assignment={{
+                    id: assignment?.id,
+                    title,
+                    batch,
+                    dueDate,
+                    dueTime,
+                    description,
+                    objective,
+                    expectedOutcome,
+                    resources,
+                }}
+                onBack={() => setIsEditing(false)}
+                onSave={(data) => {
+                    if (data.title) setTitle(data.title);
+                    if (data.dueDate) setDueDate(data.dueDate);
+                    if (data.dueTime) setDueTime(data.dueTime);
+                    if (data.description !== undefined) setDescription(data.description);
+                    if (data.objective !== undefined) setObjective(data.objective);
+                    if (data.expectedOutcome !== undefined) setExpectedOutcome(data.expectedOutcome);
+                    if (data.resources !== undefined) setResources(data.resources);
+                    setIsEditing(false);
+                    if (onSave) {
+                        onSave(data);
+                    }
+                }}
+            />
+        );
+    }
 
     if (isReviewing) {
         return (
@@ -131,6 +166,7 @@ export default function Assignments({ assignment, onBack, onSave }: AssignmentsP
         );
     }
 
+
     return (
         <View className="flex-1 bg-[#FAFAFA]">
             {/* Navigation Header */}
@@ -143,7 +179,7 @@ export default function Assignments({ assignment, onBack, onSave }: AssignmentsP
                 titleAlign="center"
             />
 
-            <ScrollView className="flex-1 px-5 pt-2" contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
+            <ScrollView className="flex-1 px-5 pt-2" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
                 {/* Assignment Overview Card */}
                 <View className="bg-white rounded-[16px] p-3 mb-4 border border-[#F2EEF4]">
                     <Text className="text-[20px] font-medium text-[#333333] mb-2">{title}</Text>
@@ -274,7 +310,7 @@ export default function Assignments({ assignment, onBack, onSave }: AssignmentsP
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => { }}
+                    onPress={() => setIsEditing(true)}
                     className="flex-1 h-12 rounded-[15px] bg-[#F67300] items-center justify-center"
                     activeOpacity={0.8}
                 >
