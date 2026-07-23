@@ -204,7 +204,6 @@ export default function InstructorLayout() {
         <Tabs.Screen name="dashboard/dashboard" options={{ title: 'Home' }} />
         <Tabs.Screen name="courses" options={{ title: 'Courses' }} />
         <Tabs.Screen name="students" options={{ title: 'Students' }} />
-        <Tabs.Screen name="tests/index" options={{ href: null }} />
         <Tabs.Screen name="test-details" options={{ href: null }} />
         <Tabs.Screen name="review" options={{ href: null }} />
 
