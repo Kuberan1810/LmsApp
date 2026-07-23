@@ -2,6 +2,7 @@ import { View, Text, ScrollView } from 'react-native';
 import React from 'react';
 import EnrollCourseCard, { EnrollCourseType } from '../../../components/Student/EnrollCourseCard';
 import BtnCom from '../../../components/BtnCom';
+import { router } from 'expo-router';
 
 const COURSES: EnrollCourseType[] = [
   {
@@ -9,7 +10,7 @@ const COURSES: EnrollCourseType[] = [
     name: 'AI / ML Frontier AI Engineer',
     duration: '3 Months',
     lessons: '05 Lessons',
-    bgColor: 'bg-[#DDF0EB]',
+    bgColor: 'bg-[#D2E4E2]',
     textColor: 'text-slate-800',
   },
   {
@@ -17,7 +18,7 @@ const COURSES: EnrollCourseType[] = [
     name: 'System and Software System Pro',
     duration: '2 Months',
     lessons: '12 Lessons',
-    bgColor: 'bg-[#E6DCF6]',
+    bgColor: 'bg-[#D8CAE8]',
     textColor: 'text-slate-800',
   },
 ];
@@ -27,7 +28,7 @@ export default function RecentCoursesSection() {
     <View className="mt-6">
       <View className="flex-row justify-between items-center px-5 mb-4">
         <Text className="text-[20px] font-semibold text-[#333333]">Recent enrolled courses</Text>
-        <BtnCom label="View all" />
+        <BtnCom label="View all" onClick={() => router.push('/(student)/courses')} />
       </View>
 
       <ScrollView 
@@ -39,6 +40,7 @@ export default function RecentCoursesSection() {
           <EnrollCourseCard 
             key={idx}
             course={course}
+            onCoursePress={(code) => router.push(`/(student)/courses/${code}`)}
           />
         ))}
       </ScrollView>

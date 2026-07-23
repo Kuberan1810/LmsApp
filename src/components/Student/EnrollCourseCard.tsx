@@ -18,6 +18,17 @@ export type EnrollCourseCardProps = {
     onCoursePress?: (code: string) => void;
 };
 
+const getBorderColor = (bgColor: string) => {
+    const bg = bgColor.toLowerCase();
+    if (bg.includes('ddf0eb') || bg.includes('d2e4e2')) {
+        return '#C0D9D6';
+    }
+    if (bg.includes('D8CAE8') || bg.includes('d8cae8')) {
+        return '#C5B1DD';
+    }
+    return '#E5E7EB';
+};
+
 export default function EnrollCourseCard({ course, isSelected = false, onCoursePress }: EnrollCourseCardProps) {
     return (
         <TouchableOpacity
@@ -27,7 +38,7 @@ export default function EnrollCourseCard({ course, isSelected = false, onCourseP
             style={
                 isSelected
                     ? { borderColor: '#e6e5e4ff', borderWidth: 2 }
-                    : { borderColor: '#E5E7EB', borderWidth: 1 }
+                    : { borderColor: getBorderColor(course.bgColor), borderWidth: 1 }
             }
         >
             <Ionicons

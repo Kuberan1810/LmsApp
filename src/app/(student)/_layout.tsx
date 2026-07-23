@@ -5,7 +5,7 @@ import { Tabs, usePathname } from 'expo-router';
 import { CalendarTick, ClipboardText, DocumentText, DocumentText1, Home2, NoteText } from 'iconsax-react-native';
 import React, { useState } from 'react';
 import { LayoutAnimation, LogBox, Platform, Text, TouchableOpacity, UIManager, View } from 'react-native';
-import Animated, { useAnimatedStyle, LinearTransition, FadeIn, FadeOut, withTiming, Easing } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, LinearTransition, FadeIn, FadeOut, withTiming, Easing, useSharedValue } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { useHaptics } from '@/context/HapticsContext';
 
@@ -18,6 +18,11 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
     // Ignore in New Architecture
   }
 }
+
+// Must be created OUTSIDE the component so it is never recreated on each render.
+// Creating animated components inside render reinitializes Reanimated shared
+// values on every render, which is the source of the strict-mode warning.
+const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
 function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const { tabBarOffset, isTabBarVisible } = useTabBarVisibility();
@@ -37,19 +42,36 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const activeRouteKey = state.routes[state.index]?.key;
   const activeLayout = tabLayouts[activeRouteKey];
 
-  const indicatorStyle = useAnimatedStyle(() => {
-    if (!activeLayout) return { opacity: 0 };
-    return {
-      position: 'absolute',
-      left: withTiming(activeLayout.x, { duration: 350, easing: Easing.out(Easing.exp) }),
-      top: withTiming(activeLayout.y, { duration: 350, easing: Easing.out(Easing.exp) }),
-      width: withTiming(activeLayout.width, { duration: 350, easing: Easing.out(Easing.exp) }),
-      height: withTiming(activeLayout.height, { duration: 350, easing: Easing.out(Easing.exp) }),
-      backgroundColor: 'rgba(255, 255, 255, 0.15)',
-      borderRadius: 30,
-      opacity: 1,
-    };
+  // Shared values for the sliding indicator — avoids Reanimated strict-mode
+  // warning about JS-thread values being read inside a worklet
+  const indicatorX = useSharedValue(0);
+  const indicatorY = useSharedValue(0);
+  const indicatorW = useSharedValue(0);
+  const indicatorH = useSharedValue(0);
+  const indicatorOpacity = useSharedValue(0);
+
+  React.useEffect(() => {
+    if (activeLayout) {
+      indicatorX.value = withTiming(activeLayout.x, { duration: 350, easing: Easing.out(Easing.exp) });
+      indicatorY.value = withTiming(activeLayout.y, { duration: 350, easing: Easing.out(Easing.exp) });
+      indicatorW.value = withTiming(activeLayout.width, { duration: 350, easing: Easing.out(Easing.exp) });
+      indicatorH.value = withTiming(activeLayout.height, { duration: 350, easing: Easing.out(Easing.exp) });
+      indicatorOpacity.value = withTiming(1, { duration: 200 });
+    } else {
+      indicatorOpacity.value = withTiming(0, { duration: 150 });
+    }
   }, [activeLayout]);
+
+  const indicatorStyle = useAnimatedStyle(() => ({
+    position: 'absolute',
+    left: indicatorX.value,
+    top: indicatorY.value,
+    width: indicatorW.value,
+    height: indicatorH.value,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 30,
+    opacity: indicatorOpacity.value,
+  }));
 
   const mainRoutes = [
     '/dashboard', '/dashboard/dashboard', 
@@ -111,8 +133,6 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     if (route.name === 'assignments') IconComponent = NoteText;
     if (route.name === 'attendance/attendance') IconComponent = CalendarTick;
     if (route.name === 'tests/index') IconComponent = ClipboardText;
-
-    const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
     const onLayout = (event: any) => {
       const { x, y, width, height } = event.nativeEvent.layout;
@@ -211,6 +231,7 @@ export default function StudentLayout() {
         <Tabs.Screen name="attendance/attendance" options={{ href: null }} />
         <Tabs.Screen name="tests/index" options={{ title: 'Tests' }} />
         <Tabs.Screen name="profile/profile" options={{ href: null }} />
+        <Tabs.Screen name="meet/index" options={{ href: null }} />
 
       </Tabs>
     </TabBarVisibilityProvider>

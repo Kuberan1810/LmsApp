@@ -65,7 +65,7 @@ export default function AttendanceCalendarSection() {
   const getStatusStyles = (status: Status) => {
     switch (status) {
       case 'present': 
-        return { bg: '#DCFCE780', day: '#3EA465', date: '#3EA465', border: 'transparent' };
+        return { bg: '#2A9A4620', day: '#2A9A46', date: '#2A9A46', border: 'transparent' };
       case 'absent': 
         return { bg: '#FEE2E280', day: '#CE1919', date: '#CE1919', border: 'transparent' };
       case 'holiday': 
@@ -147,7 +147,7 @@ export default function AttendanceCalendarSection() {
       {/* Legend */}
       <View className="flex-row justify-center items-center mt-8 gap-5">
         <View className="flex-row items-center">
-          <View className="w-3.5 h-3.5 rounded-[4px] bg-[#3EA465] mr-2" />
+          <View className="w-3.5 h-3.5 rounded-[4px] bg-[#2A9A46] mr-2" />
           <Text className="text-[14px] text-[#626262] font-medium">Present</Text>
         </View>
         <View className="flex-row items-center">

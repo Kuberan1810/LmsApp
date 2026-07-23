@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
+import { router } from 'expo-router';
 import { Calendar, Clock } from 'iconsax-react-native';
 
 interface ScheduleCardProps {
@@ -49,9 +50,10 @@ export default function ScheduleCard({ title, time, date, instructorName, status
       {/* CTA Button */}
       <TouchableOpacity 
         style={{ width: 80, height: 34 }}
-        className={`rounded-[14px] justify-center items-center ${isJoin ? 'bg-[#F67300]' : 'bg-[#E5E5E5]'}`}
+        onPress={() => isJoin && router.push('/(student)/meet' as any)}
+        className={`rounded-[14px] justify-center items-center ${isJoin ? 'bg-[#F67300]' : 'bg-[#E7E7E7]'}`}
       >
-        <Text className={`text-[14px] font-semibold ${isJoin ? 'text-white' : 'text-[#626262]'}`}>
+        <Text className={`text-[14px] font-semibold ${isJoin ? 'text-white' : 'text-[#909090]'}`}>
           {isJoin ? 'Join' : 'Soon'}
         </Text>
       </TouchableOpacity>

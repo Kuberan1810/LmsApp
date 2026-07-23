@@ -1,4 +1,15 @@
 import '../global.css';
+import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
+
+// Disable the strict-mode "Writing to value during render" warning.
+// This fires as a false-positive when React Native's LayoutAnimation is used
+// alongside Reanimated — both systems co-exist fine at runtime.
+// See: https://docs.swmansion.com/react-native-reanimated/docs/debugging/logger-configuration
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false,
+});
+
 import { DefaultTheme, ThemeProvider } from 'expo-router';
 import { Stack } from 'expo-router';
 import { useFonts, Urbanist_400Regular, Urbanist_500Medium, Urbanist_600SemiBold, Urbanist_700Bold, Urbanist_800ExtraBold } from '@expo-google-fonts/urbanist';

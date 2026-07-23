@@ -21,7 +21,7 @@ export default function CourseDetailScreen() {
                 onBackPress={() => router.back()} 
             />
 
-            <ScrollView
+            <ScrollView                       
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 120 }}
             >

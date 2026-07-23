@@ -1,10 +1,10 @@
-import { View, Text, TouchableOpacity, ScrollView, StatusBar, BackHandler } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { Clock } from 'iconsax-react-native';
 import { router } from 'expo-router';
+import { Clock } from 'iconsax-react-native';
+import { useEffect, useState } from 'react';
+import { BackHandler, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import Animated, { Easing, useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Circle, G } from 'react-native-svg';
-import Animated, { useSharedValue, withTiming, useAnimatedProps, Easing } from 'react-native-reanimated';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -33,9 +33,9 @@ export default function FinishTestScreen() {
   const progress = useSharedValue(0);
 
   useEffect(() => {
-    progress.value = withTiming(1, { 
-      duration: 1500, 
-      easing: Easing.out(Easing.cubic) 
+    progress.value = withTiming(1, {
+      duration: 1500,
+      easing: Easing.out(Easing.cubic)
     });
   }, []);
 
@@ -55,25 +55,28 @@ export default function FinishTestScreen() {
   const markedPct = marked / total;
   const notAnsweredPct = notAnswered / total;
 
-  const gap = 8; 
+  const gap = 8;
   const getDash = (pct: number) => Math.max(0, (pct * circumference) - gap);
 
-  const answeredLength = getDash(answeredPct);
-  const markedLength = getDash(markedPct);
-  const notAnsweredLength = getDash(notAnsweredPct);
+  // Store as shared values so useAnimatedProps worklets never read
+  // plain JS-thread variables — fixes Reanimated strict-mode warning
+  const svAnsweredLen = useSharedValue(getDash(answeredPct));
+  const svMarkedLen = useSharedValue(getDash(markedPct));
+  const svNotAnsweredLen = useSharedValue(getDash(notAnsweredPct));
+  const svCircumference = useSharedValue(circumference);
 
   const answeredOffset = 0;
   const markedOffset = -(answeredPct * circumference);
   const notAnsweredOffset = -((answeredPct + markedPct) * circumference);
 
   const answeredAnimatedProps = useAnimatedProps(() => ({
-    strokeDasharray: `${progress.value * answeredLength} ${circumference}`
+    strokeDasharray: `${progress.value * svAnsweredLen.value} ${svCircumference.value}`
   }));
   const markedAnimatedProps = useAnimatedProps(() => ({
-    strokeDasharray: `${progress.value * markedLength} ${circumference}`
+    strokeDasharray: `${progress.value * svMarkedLen.value} ${svCircumference.value}`
   }));
   const notAnsweredAnimatedProps = useAnimatedProps(() => ({
-    strokeDasharray: `${progress.value * notAnsweredLength} ${circumference}`
+    strokeDasharray: `${progress.value * svNotAnsweredLen.value} ${svCircumference.value}`
   }));
 
   return (
@@ -89,13 +92,13 @@ export default function FinishTestScreen() {
         </View>
       </View>
 
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={{ padding: 20, paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
       >
         {/* ── SUMMARY CARD ── */}
         <View className="bg-white rounded-[24px] p-6 border border-[#F2EEF4] mb-6 shadow-sm">
-          
+
           {/* Animated Donut Chart */}
           <View className="items-center mb-8 relative">
             <View className="w-[140px] h-[140px] items-center justify-center">
@@ -103,7 +106,7 @@ export default function FinishTestScreen() {
                 <G rotation="-90" origin={`${cx}, ${cy}`}>
                   {/* Track */}
                   <Circle cx={cx} cy={cy} r={radius} stroke="#F5F5F5" strokeWidth={strokeWidth} fill="transparent" />
-                  
+
                   {/* Not Answered */}
                   <AnimatedCircle
                     cx={cx} cy={cy} r={radius} stroke="#E61026" strokeWidth={strokeWidth} fill="transparent"
@@ -165,7 +168,7 @@ export default function FinishTestScreen() {
 
         {/* ── SECTION DETAILS ── */}
         <Text className="text-[18px] font-semibold text-[#1E1E2D] mb-4">Section Details</Text>
-        
+
         <View className="bg-white rounded-[24px] p-5 border border-[#F2EEF4] shadow-sm">
           <View className="border-b border-[#F2EEF4] pb-4 mb-4">
             <Text className="text-[15px] font-semibold text-[#333] mb-1">New Test</Text>
@@ -200,14 +203,14 @@ export default function FinishTestScreen() {
 
       {/* ── BOTTOM ACTION BAR ── */}
       <View className="absolute bottom-0 left-0 right-0 bg-white border-t border-[#F2EEF4] p-4 flex-row gap-3">
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={() => router.back()}
           className="flex-1 py-3.5 border border-[#E5E5E5] rounded-[12px] items-center justify-center bg-white"
         >
           <Text className="text-[15px] font-medium text-[#444]">Cancel, return to test</Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           onPress={() => {
             // Placeholder: Go back to dashboard after submitting
             router.replace('/(student)/tests');

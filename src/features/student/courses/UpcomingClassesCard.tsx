@@ -9,6 +9,7 @@ type UpcomingClassesCardProps = {
   lessonName: string;
   time: string;
   reminderSet?: boolean;
+  onReminderPress?: () => void;
 };
 
 export const UpcomingClassesCard = ({
@@ -18,13 +19,14 @@ export const UpcomingClassesCard = ({
   lessonName,
   time,
   reminderSet = false,
+  onReminderPress,
 }: UpcomingClassesCardProps) => {
   return (
-    <View className="flex-row items-center rounded-2xl border border-gray-200 bg-white p-4 mb-4">
+    <View className="flex-row items-center rounded-3xl border border-gray-200 bg-white p-4 mb-4">
       {/* Date Badge */}
       <View className="w-16 h-16 items-center justify-center rounded-xl bg-orange-50 mr-4">
         <Text className="text-gray-500 text-xs font-semibold">{month}</Text>
-        <Text className="text-black text-xl font-bold">{day}</Text>
+        <Text className="text-[#333] text-xl font-bold">{day}</Text>
       </View>
 
       {/* Content */}
@@ -41,7 +43,7 @@ export const UpcomingClassesCard = ({
           <Text className="text-gray-400 text-xs ml-1">{time}</Text>
         </View>
 
-        <TouchableOpacity className="flex-row items-center">
+        <TouchableOpacity className="flex-row items-center" onPress={onReminderPress}>
           <Ionicons
             name={reminderSet ? "notifications-off-outline" : "notifications-outline"}
             size={14}

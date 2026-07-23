@@ -1,11 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Animated } from 'react-native';
 import { Image } from 'expo-image';
 import { Feather } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
 export const LiveNowCard = () => {
   const [timeLeft, setTimeLeft] = useState(5); // 5 seconds for demonstration
   const [isLive, setIsLive] = useState(false);
+  const fadeAnim = React.useRef(new Animated.Value(0.3)).current;
+
+  React.useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 0.3,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, [fadeAnim]);
 
   useEffect(() => {
     if (timeLeft <= 0) {
@@ -30,8 +49,11 @@ export const LiveNowCard = () => {
   return (
     <View className="mb-6">
       <View className="flex-row items-center mb-3 px-1">
-        <View className="w-2.5 h-2.5 rounded-full bg-blue-500 mr-2" />
-        <Text className="text-black font-semibold text-lg">Live Now</Text>
+        <Animated.View 
+          style={{ opacity: fadeAnim }}
+          className="w-2.5 h-2.5 rounded-full bg-orange-500 mr-2" 
+        />
+        <Text className="text-[#333333] font-semibold text-lg">Live Now</Text>
       </View>
 
       <View className="rounded-3xl overflow-hidden bg-orange-400 h-44 relative justify-center">
@@ -67,7 +89,7 @@ export const LiveNowCard = () => {
                   <Text className="text-white font-bold text-2xl mb-1">Starting Soon</Text>
                   <Text className="text-white/90 text-sm">Time : 10:00 AM</Text>
                 </View>
-                <TouchableOpacity className="bg-orange-600 px-4 py-2 rounded-xl">
+                <TouchableOpacity className="bg-orange-600 px-4 py-2 rounded-xl" onPress={() => router.push('/(student)/meet' as any)}>
                   <Text className="text-white font-medium text-sm">Join Class</Text>
                 </TouchableOpacity>
               </View>
@@ -82,7 +104,7 @@ export const LiveNowCard = () => {
                   <Text className="text-white text-xs ml-2">200 Students attending</Text>
                 </View>
               </View>
-              <TouchableOpacity className="bg-orange-600 px-5 py-2.5 rounded-xl">
+              <TouchableOpacity className="bg-orange-600 px-5 py-2.5 rounded-xl" onPress={() => router.push('/(student)/meet' as any)}>
                 <Text className="text-white font-medium text-sm">Join Now</Text>
               </TouchableOpacity>
             </View>

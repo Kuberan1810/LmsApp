@@ -84,7 +84,7 @@ export default function ClassesProgressCard() {
                 cx={cx}
                 cy={cy}
                 r={radius}
-                stroke="#1DD75B"
+                stroke="#21C45D"
                 strokeWidth={strokeWidth}
                 fill="transparent"
                 strokeDasharray={`${attendedDash} ${circumference}`}
@@ -96,7 +96,7 @@ export default function ClassesProgressCard() {
                 cx={cx}
                 cy={cy}
                 r={radius}
-                stroke="#E61026"
+                stroke="#D90015"
                 strokeWidth={strokeWidth}
                 fill="transparent"
                 strokeDasharray={`${absentDash} ${circumference}`}
@@ -108,7 +108,7 @@ export default function ClassesProgressCard() {
                 cx={cx}
                 cy={cy}
                 r={radius}
-                stroke="#EBEBEB"
+                stroke="#E7E7E7"
                 strokeWidth={strokeWidth}
                 fill="transparent"
                 strokeDasharray={`${upcomingDash} ${circumference}`}
@@ -128,15 +128,15 @@ export default function ClassesProgressCard() {
       {/* Legend */}
       <View className="flex-row justify-center items-center gap-4">
         <View className="flex-row items-center">
-          <View className="w-3.5 h-3.5 rounded-[4px] bg-[#1DD75B] mr-1.5" />
+          <View className="w-3.5 h-3.5 rounded-[4px] bg-[#21C45D] mr-1.5" />
           <Text className="text-[12px] font-medium text-[#626262]">Attended: {attended}</Text>
         </View>
         <View className="flex-row items-center">
-          <View className="w-3.5 h-3.5 rounded-[4px] bg-[#E61026] mr-1.5" />
+          <View className="w-3.5 h-3.5 rounded-[4px] bg-[#D90015] mr-1.5" />
           <Text className="text-[12px] font-medium text-[#626262]">Absent: {absent.toString().padStart(2, '0')}</Text>
         </View>
         <View className="flex-row items-center">
-          <View className="w-3.5 h-3.5 rounded-[4px] bg-[#EBEBEB] mr-1.5" />
+          <View className="w-3.5 h-3.5 rounded-[4px] bg-[#E7E7E7] mr-1.5" />
           <Text className="text-[12px] font-medium text-[#626262]">Upcoming: {upcoming}</Text>
         </View>
       </View>

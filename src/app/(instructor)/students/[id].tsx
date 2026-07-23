@@ -142,7 +142,7 @@ export default function StudentProfileScreen() {
               <Image 
                 source={{ uri: 'https://i.pravatar.cc/150?u=' + id }} 
                 className="w-full h-full rounded-full"
-                contentFit="cover"
+               
               />
               <View className="absolute bottom-0 right-1 w-4 h-4 bg-[#2BB290] border-2 border-white rounded-full" />
             </View>

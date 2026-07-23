@@ -3,5 +3,5 @@ import React from 'react';
 
 export default function Index() {
     // Redirect to the onboarding page initially
-    return <Redirect href="/(instructor)/dashboard/dashboard" />;
-}
+    return <Redirect href="/(student)/dashboard/dashboard" />;
+}                                                                                                                                                                                                                                                                                                                                                                                   
