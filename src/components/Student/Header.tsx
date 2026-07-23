@@ -1,8 +1,10 @@
+import { useHaptics } from '@/context/HapticsContext';
 import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { NotificationBing, SearchNormal1 } from 'iconsax-react-native';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
@@ -25,6 +27,7 @@ export default function Header({
   showProfile = true,
   titleAlign = 'left'
 }: HeaderProps = {}) {
+  const { hapticsEnabled } = useHaptics();
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
   return (
@@ -109,11 +112,15 @@ export default function Header({
               {showNotification && (
                 <TouchableOpacity
                   activeOpacity={0.7}
-                  onPress={() => router.push("/(student)/notification/notifications")}
+                  onPress={() => {
+                    if (hapticsEnabled) {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    }
+                    router.push("/(student)/notification/notifications");
+                  }}
                   className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-white items-center justify-center relative"
                 >
                   <NotificationBing
-                    onPress={() => router.push('/(student)/notification/notifications')}
                     size={18} color="#1E1E2D" />
                   {/* Notification Dot */}
                   <View className="absolute top-[10px] right-[10px] w-2.5 h-2.5 bg-[#EE8B3A] rounded-full border-[1.5px] border-white" />
@@ -124,7 +131,12 @@ export default function Header({
               {showProfile && (
                 <TouchableOpacity
                   activeOpacity={0.7}
-                  onPress={() => router.push('/(student)/profile/profileScreen')}
+                  onPress={() => {
+                    if (hapticsEnabled) {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    }
+                    router.push('/(student)/profile/profileScreen');
+                  }}
                   className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-[#F67300] items-center justify-center ml-1"
                 >
                   <Text className="text-[14px] font-bold text-white tracking-wider">PS</Text>

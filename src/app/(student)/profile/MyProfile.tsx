@@ -16,6 +16,7 @@ export default function MyProfile() {
                 onBackPress={() => router.back()}
                 showProfile={false}
                 showSearch={false}
+                showNotification={false}
                 titleAlign="center"
             />
             <ScrollView className="flex-1 px-5" showsVerticalScrollIndicator={false}>

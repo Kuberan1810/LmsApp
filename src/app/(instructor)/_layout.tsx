@@ -6,10 +6,10 @@ import { Tabs, useRouter, useSegments } from 'expo-router';
 import { Add, DocumentText, DocumentText1, Home2, Profile2User } from 'iconsax-react-native';
 import { useState } from 'react';
 
+import { useHaptics } from '@/context/HapticsContext';
+import * as Haptics from 'expo-haptics';
 import { LayoutAnimation, LogBox, Platform, Text, TouchableOpacity, UIManager, View } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
-import * as Haptics from 'expo-haptics';
-import { useHaptics } from '@/context/HapticsContext';
 
 
 LogBox.ignoreLogs(['setLayoutAnimationEnabledExperimental is currently a no-op']);
@@ -36,7 +36,7 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
   const segments = useSegments();
 
   // Only show tab bar on root routes: /(instructor)/courses, /(instructor)/students, /(instructor)/dashboard/dashboard
-  const isMainRoute = 
+  const isMainRoute =
     (segments.length === 3 && segments[1] === 'dashboard' && segments[2] === 'dashboard') ||
     (segments.length === 2 && (segments[1] === 'courses' || segments[1] === 'students'));
 
@@ -199,7 +199,11 @@ export default function InstructorLayout() {
     <TabBarVisibilityProvider>
       <Tabs
         tabBar={props => <CustomInstructorTabBar {...props as any} onAddPress={() => setQuickActionsVisible(true)} />}
-        screenOptions={{ headerShown: false }}
+        screenOptions={{
+          headerShown: false,
+          gestureEnabled: true,
+          fullScreenGestureEnabled: true,
+        }}
       >
         <Tabs.Screen name="dashboard/dashboard" options={{ title: 'Home' }} />
         <Tabs.Screen name="courses" options={{ title: 'Courses' }} />

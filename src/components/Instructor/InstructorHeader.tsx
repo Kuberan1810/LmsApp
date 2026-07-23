@@ -1,4 +1,6 @@
+import { useHaptics } from '@/context/HapticsContext';
 import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { NotificationBing, SearchNormal1 } from 'iconsax-react-native';
@@ -29,6 +31,7 @@ export default function InstructorHeader({
   titleAlign = 'left',
   rightContent
 }: HeaderProps = {}) {
+  const { hapticsEnabled } = useHaptics();
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
   return (
@@ -129,7 +132,12 @@ export default function InstructorHeader({
                   {showNotification && (
                     <TouchableOpacity
                       activeOpacity={0.7}
-                      onPress={() => router.push("/(student)/notification/notifications")}
+                      onPress={() => {
+                        if (hapticsEnabled) {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        }
+                        router.push("/(instructor)/notification/notification" as any);
+                      }}
                       className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-white items-center justify-center relative"
                     >
                       <NotificationBing
@@ -143,7 +151,12 @@ export default function InstructorHeader({
                   {showProfile && (
                     <TouchableOpacity
                       activeOpacity={0.7}
-                      onPress={() => router.push('/(instructor)/profile')}
+                      onPress={() => {
+                        if (hapticsEnabled) {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        }
+                        router.push('/(instructor)/profile');
+                      }}
                       className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-[#F67300] items-center justify-center ml-1"
                     >
                       <Text className="text-[14px] font-bold text-white tracking-wider">PS</Text>

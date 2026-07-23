@@ -1,8 +1,10 @@
+import { useHaptics } from '@/context/HapticsContext';
 import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { NotificationBing, SearchNormal1 } from 'iconsax-react-native';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
@@ -15,6 +17,7 @@ export interface HeaderProps {
 }
 
 export default function InstructorHeader({ title, subtitle, onBackPress }: HeaderProps = {}) {
+  const { hapticsEnabled } = useHaptics();
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
   return (
@@ -89,6 +92,12 @@ export default function InstructorHeader({ title, subtitle, onBackPress }: Heade
               {/* Notifications Button */}
               <TouchableOpacity
                 activeOpacity={0.7}
+                onPress={() => {
+                  if (hapticsEnabled) {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }
+                  router.push("/(instructor)/notification/notification" as any);
+                }}
                 className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-white items-center justify-center relative"
               >
                 <NotificationBing size={18} color="#1E1E2D" />
@@ -99,7 +108,12 @@ export default function InstructorHeader({ title, subtitle, onBackPress }: Heade
               {/* Profile Button */}
               <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={() => router.push('/(student)/profile/profile')}
+                onPress={() => {
+                  if (hapticsEnabled) {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }
+                  router.push('/(instructor)/profile');
+                }}
                 className="w-11 h-11 rounded-[14px] border-[1.5px] border-[#F2EEF4] bg-[#F67300] items-center justify-center ml-1"
               >
                 <Text className="text-[14px] font-bold text-white tracking-wider">PS</Text>

@@ -1,11 +1,10 @@
+import { useHaptics } from '@/context/HapticsContext';
 import { Feather } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Animated, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-import { useHaptics } from '@/context/HapticsContext';
-import * as Haptics from 'expo-haptics';
 
 const CustomSwitch = ({ value, onValueChange }: { value: boolean, onValueChange: (val: boolean) => void }) => {
   const animatedValue = useRef(new Animated.Value(value ? 1 : 0)).current;
@@ -67,20 +66,10 @@ const CustomSwitch = ({ value, onValueChange }: { value: boolean, onValueChange:
   );
 };
 
-export default function SettingsScreen() {
+export default function InstructorSettingsScreen() {
   const router = useRouter();
   const [pushEnabled, setPushEnabled] = useState(true);
-  const [emailEnabled, setEmailEnabled] = useState(false);
   const { hapticsEnabled, setHapticsEnabled } = useHaptics();
-
-  const studentName = "lynx";
-  const getInitials = (name: string) => {
-    const parts = name.trim().split(' ').filter(Boolean);
-    if (parts.length === 0) return 'NA';
-    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
-    return (parts[0][0] + parts[1][0]).toUpperCase();
-  };
-  const initials = getInitials(studentName);
 
   return (
     <SafeAreaView className="flex-1 bg-[#F9FAFB]">
@@ -94,8 +83,6 @@ export default function SettingsScreen() {
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
-
-
           {/* Notifications Section */}
           <Text className="text-[20px] font-medium text-[#64748B] mb-3">Notifications</Text>
           <View className="bg-white rounded-xl border border-[#F1F5F9] mb-8 shadow-sm shadow-gray-100">
@@ -110,6 +97,8 @@ export default function SettingsScreen() {
               />
             </View>
           </View>
+
+          {/* Haptics Section */}
           <Text className="text-[20px] font-medium text-[#64748B] mb-3">Haptics</Text>
           <View className="bg-white rounded-xl border border-[#F1F5F9] mb-8 shadow-sm shadow-gray-100">
             <View className="flex-row items-center justify-between p-4 border-b border-[#F1F5F9]">
@@ -151,10 +140,6 @@ export default function SettingsScreen() {
               <Feather name="chevron-right" size={18} color="#94A3B8" />
             </TouchableOpacity>
           </View>
-
-
-
-
         </ScrollView>
       </View>
     </SafeAreaView>

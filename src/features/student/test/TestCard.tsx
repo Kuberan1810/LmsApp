@@ -1,3 +1,9 @@
+import GoBack from '@/components/GoBack';
+import { useHaptics } from '@/context/HapticsContext';
+import { Feather } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
+import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
 import {
     ScrollView,
     StatusBar,
@@ -6,11 +12,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import { Feather } from '@expo/vector-icons';
-import React, { useState, useEffect } from 'react';
-import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import GoBack from '@/components/GoBack';
 
 // ─── Sub-components ─────────────────────────────────────────────────────────
 
@@ -75,6 +77,7 @@ const INSTRUCTIONS_SLIDES = [
 // ─── Main Component ──────────────────────────────────────────────────────────
 
 export default function TestCard() {
+    const { hapticsEnabled } = useHaptics();
     const [slide, setSlide] = useState(0);
     const [timeLeft, setTimeLeft] = useState(5);
 
@@ -105,7 +108,7 @@ export default function TestCard() {
                 {/* ── HEADER ── */}
                 <View className="px-6 pt-2 pb-14">
                     <View className="mt-1 mb-6 items-start">
-                        <GoBack color="white" variant='card'  />
+                        <GoBack color="white" variant='card' />
                     </View>
 
                     <Text className="text-white text-[22px] font-medium mb-5">
@@ -216,7 +219,12 @@ export default function TestCard() {
                         <TouchableOpacity
                             style={isTimerDone ? btn.active : btn.disabled}
                             disabled={!isTimerDone}
-                            onPress={() => router.push('/(student)/tests/question-one')}
+                            onPress={() => {
+                                if (hapticsEnabled) {
+                                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                                }
+                                router.push('/(student)/tests/question-one');
+                            }}
                             activeOpacity={0.85}
                         >
                             <Text style={isTimerDone ? btn.textActive : btn.textDisabled}>
@@ -253,19 +261,19 @@ const hidden = StyleSheet.create({ h: { display: 'none' } }).h;
 const styles = StyleSheet.create({
     // Wrapper: full-height strip pinned to left/right edge, centered vertically
     chevronRightWrap: { position: 'absolute', right: 12, top: 0, bottom: 0, justifyContent: 'center' },
-    chevronLeftWrap:  { position: 'absolute', left: 12,  top: 0, bottom: 0, justifyContent: 'center' },
+    chevronLeftWrap: { position: 'absolute', left: 12, top: 0, bottom: 0, justifyContent: 'center' },
     // The actual tappable icon box
     chevronBtn: { padding: 6, borderRadius: 8, borderWidth: 1, borderColor: '#F2EEF4', backgroundColor: '#FAFAFA' },
 });
 
 const btn = StyleSheet.create({
-    active:       { backgroundColor: '#F67300', borderRadius: 12, alignSelf: 'center' },
-    disabled:     { backgroundColor: '#F4F4F4', borderRadius: 12, alignSelf: 'center' },
-    textActive:   { color: '#FFFFFF', fontSize: 15, fontWeight: '400', paddingHorizontal: 40, paddingVertical: 12 },
+    active: { backgroundColor: '#F67300', borderRadius: 12, alignSelf: 'center' },
+    disabled: { backgroundColor: '#F4F4F4', borderRadius: 12, alignSelf: 'center' },
+    textActive: { color: '#FFFFFF', fontSize: 15, fontWeight: '400', paddingHorizontal: 40, paddingVertical: 12 },
     textDisabled: { color: '#999999', fontSize: 15, fontWeight: '400', paddingHorizontal: 40, paddingVertical: 12 },
 });
 
 const dot = StyleSheet.create({
-    active:   { width: 24, height: 8, backgroundColor: '#FF7A00', borderRadius: 999 },
-    inactive: { width: 8,  height: 8, backgroundColor: '#444',    borderRadius: 999 },
+    active: { width: 24, height: 8, backgroundColor: '#FF7A00', borderRadius: 999 },
+    inactive: { width: 8, height: 8, backgroundColor: '#444', borderRadius: 999 },
 });

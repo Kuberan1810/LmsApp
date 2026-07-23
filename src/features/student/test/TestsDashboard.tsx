@@ -1,5 +1,7 @@
 import Header from '@/components/Student/Header';
+import { useHaptics } from '@/context/HapticsContext';
 import { useTabBarScroll } from '@/context/TabBarVisibilityContext';
+import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { Calendar, Clock, DocumentText1, SearchNormal1, Setting4, TickCircle } from 'iconsax-react-native';
 import React, { useState } from 'react';
@@ -10,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function TestsDashboard() {
   const router = useRouter();
   const scrollHandler = useTabBarScroll();
+  const { hapticsEnabled } = useHaptics();
   const [activeFilter, setActiveFilter] = useState('All Tests');
 
   const filters = ['All Tests', 'Available', 'Not Attended', 'Completed'];
@@ -188,60 +191,66 @@ export default function TestsDashboard() {
         {MOCK_TESTS.map((test) => {
           const isSubmitted = test.status === 'Submitted';
           const isAvailable = test.status === 'Available';
-          
-          return (
-          <TouchableOpacity
-            key={test.id}
-            onPress={() => router.push(isSubmitted ? '/(student)/tests/test-result' : '/(student)/tests/test-intro')}
-            className="bg-white border border-[#F2EEF4] rounded-[24px] p-5 mb-5 shadow-xs"
-          >
-            <View className="flex-row justify-between items-start mb-4">
-              <View className="flex-1 ">
 
-                <View className='flex-row justify-between items-start'>
-                  <Text
-                    className="flex-1 text-[12px] font-medium text-[#909090] mb-1 mr-2"
-                    numberOfLines={1}
-                  >
-                    {test.courseName}
-                  </Text>
-                  <View className={`px-3 py-1 rounded-full ${isAvailable || isSubmitted ? 'bg-[#2A9A46]/10' : 'bg-[#F67300]/10'}`}>
-                    <Text className={`text-[12px] font-medium ${isAvailable || isSubmitted ? 'text-[#2A9A46]' : 'text-[#F67300]'}`}>{test.status}</Text>
+          return (
+            <TouchableOpacity
+              key={test.id}
+              onPress={() => router.push(isSubmitted ? '/(student)/tests/test-result' : '/(student)/tests/test-intro')}
+              className="bg-white border border-[#F2EEF4] rounded-[24px] p-5 mb-5 shadow-xs"
+            >
+              <View className="flex-row justify-between items-start mb-4">
+                <View className="flex-1 ">
+
+                  <View className='flex-row justify-between items-start'>
+                    <Text
+                      className="flex-1 text-[12px] font-medium text-[#909090] mb-1 mr-2"
+                      numberOfLines={1}
+                    >
+                      {test.courseName}
+                    </Text>
+                    <View className={`px-3 py-1 rounded-full ${isAvailable || isSubmitted ? 'bg-[#2A9A46]/10' : 'bg-[#F67300]/10'}`}>
+                      <Text className={`text-[12px] font-medium ${isAvailable || isSubmitted ? 'text-[#2A9A46]' : 'text-[#F67300]'}`}>{test.status}</Text>
+                    </View>
                   </View>
+                  <Text className="text-[18px] font-semibold text-[#333333] leading-6">{test.title}</Text>
+                  {/* <Text className="text-[14px] text-[#808080] leading-5 mt-2 line-clamp-1">{test.desc}</Text> */}
                 </View>
-                <Text className="text-[18px] font-semibold text-[#333333] leading-6">{test.title}</Text>
-                {/* <Text className="text-[14px] text-[#808080] leading-5 mt-2 line-clamp-1">{test.desc}</Text> */}
+
               </View>
 
-            </View>
+              <View className="flex-row flex-wrap justify-between ">
+                <IconBox text={test.date}>
+                  <Calendar size={16} color="#6B7280" variant="Linear" />
+                </IconBox>
+                <IconBox text={test.time}>
+                  <Clock size={16} color="#6B7280" variant="Linear" />
+                </IconBox>
+                <IconBox text={`${test.questions} Questions`}>
+                  <DocumentText1 size={16} color="#6B7280" variant="Linear" />
+                </IconBox>
+                <IconBox text={test.marks}>
+                  <TickCircle size={16} color="#6B7280" variant="Linear" />
+                </IconBox>
+              </View>
 
-            <View className="flex-row flex-wrap justify-between ">
-              <IconBox text={test.date}>
-                <Calendar size={16} color="#6B7280" variant="Linear" />
-              </IconBox>
-              <IconBox text={test.time}>
-                <Clock size={16} color="#6B7280" variant="Linear" />
-              </IconBox>
-              <IconBox text={`${test.questions} Questions`}>
-                <DocumentText1 size={16} color="#6B7280" variant="Linear" />
-              </IconBox>
-              <IconBox text={test.marks}>
-                <TickCircle size={16} color="#6B7280" variant="Linear" />
-              </IconBox>
-            </View>
-
-            {(isAvailable || isSubmitted) && (
-              <TouchableOpacity 
-                className={`mt-4 py-3 rounded-xl items-center ${isSubmitted ? 'bg-[#F9FAFB] border border-[#E5E7EB]' : 'bg-[#EE8B3A]'}`}
-                onPress={() => router.push(isSubmitted ? '/(student)/tests/test-result' : '/(student)/tests/test-intro')}
-              >
-                <Text className={`font-semibold text-[15px] ${isSubmitted ? 'text-[#4B5563]' : 'text-white'}`}>
-                  {isSubmitted ? 'View Details' : 'Start Test'}
-                </Text>
-              </TouchableOpacity>
-            )}
-          </TouchableOpacity>
-        )})}
+              {(isAvailable || isSubmitted) && (
+                <TouchableOpacity
+                  className={`mt-4 py-3 rounded-xl items-center ${isSubmitted ? 'bg-[#F9FAFB] border border-[#E5E7EB]' : 'bg-[#EE8B3A]'}`}
+                  onPress={() => {
+                    if (hapticsEnabled) {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                    }
+                    router.push(isSubmitted ? '/(student)/tests/test-result' : '/(student)/tests/test-intro');
+                  }}
+                >
+                  <Text className={`font-semibold text-[15px] ${isSubmitted ? 'text-[#4B5563]' : 'text-white'}`}>
+                    {isSubmitted ? 'View Details' : 'Start Test'}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </TouchableOpacity>
+          )
+        })}
       </Animated.ScrollView>
     </SafeAreaView>
   );

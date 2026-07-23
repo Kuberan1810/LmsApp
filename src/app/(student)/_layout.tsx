@@ -1,13 +1,13 @@
+import { useHaptics } from '@/context/HapticsContext';
 import { TabBarVisibilityProvider, useTabBarVisibility } from '@/context/TabBarVisibilityContext';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { BlurView } from 'expo-blur';
+import * as Haptics from 'expo-haptics';
 import { Tabs, usePathname } from 'expo-router';
 import { CalendarTick, ClipboardText, DocumentText, DocumentText1, Home2, NoteText } from 'iconsax-react-native';
-import React, { useState } from 'react';
-import { LayoutAnimation, LogBox, Platform, Text, TouchableOpacity, UIManager, View } from 'react-native';
-import Animated, { useAnimatedStyle, LinearTransition, FadeIn, FadeOut, withTiming, Easing } from 'react-native-reanimated';
-import * as Haptics from 'expo-haptics';
-import { useHaptics } from '@/context/HapticsContext';
+import { useState } from 'react';
+import { LayoutAnimation, LogBox, Platform, TouchableOpacity, UIManager, View } from 'react-native';
+import Animated, { Easing, FadeIn, FadeOut, LinearTransition, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 LogBox.ignoreLogs(['setLayoutAnimationEnabledExperimental is currently a no-op']);
 
@@ -52,9 +52,9 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   }, [activeLayout]);
 
   const mainRoutes = [
-    '/dashboard', '/dashboard/dashboard', 
+    '/dashboard', '/dashboard/dashboard',
     '/courses', '/courses/index',
-    '/assignments', '/assignments/assignments', 
+    '/assignments', '/assignments/assignments',
     '/tests', '/tests/index'
   ];
   const isMainRoute = mainRoutes.includes(pathname);
@@ -139,8 +139,8 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
       >
         <IconComponent size={24} color={isFocused ? "#FFFFFF" : "#8A8A8E"} variant={isFocused ? "Bold" : "Linear"} />
         {isFocused && (
-          <Animated.Text 
-            entering={FadeIn.duration(200)} 
+          <Animated.Text
+            entering={FadeIn.duration(200)}
             exiting={FadeOut.duration(200)}
             style={{ color: '#FFFFFF', fontWeight: '600', marginLeft: 8, fontSize: 15 }}
             numberOfLines={1}

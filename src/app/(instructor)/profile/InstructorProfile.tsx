@@ -33,13 +33,13 @@ export default function InstructorProfile() {
             label: 'Notifications',
             icon: <NotificationBing size={24} color="#4B5563" variant="Linear" />,
             badgeCount: 2,
-            onPress: () => console.log('Notifications'),
+            onPress: () => routerHook.push('/(instructor)/notification/notification' as any),
         },
         {
             id: 4,
             label: 'Settings',
             icon: <Setting2 size={24} color="#4B5563" variant="Linear" />,
-            onPress: () => console.log('Settings'),
+            onPress: () => routerHook.push('/(instructor)/profile/settings' as any),
         },
         {
             id: 5,
@@ -72,6 +72,7 @@ export default function InstructorProfile() {
                 onBackPress={() => routerHook.back()}
                 showProfile={false}
                 showSearch={false}
+                showNotification={false}
                 titleAlign='center'
             />
 

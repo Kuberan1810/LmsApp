@@ -1,15 +1,18 @@
+import { useHaptics } from '@/context/HapticsContext';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as DocumentPicker from 'expo-document-picker';
+import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Calendar2, Clock, CloseCircle, Refresh, TickCircle, Trash } from 'iconsax-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { Animated as RNAnimated, Easing as RNEasing, ScrollView, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomDropdown from '../../components/Instructor/CustomDropdown';
 import UploadModalHeader from '../../components/Instructor/UploadModalHeader';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function TestDetailsScreen() {
+  const { hapticsEnabled } = useHaptics();
   const params = useLocalSearchParams<{ title?: string; batch?: string }>();
   const [testTitle, setTestTitle] = useState(params.title || 'Test name');
   const [batchName, setBatchName] = useState(params.batch || 'Batch 02');
@@ -331,7 +334,12 @@ export default function TestDetailsScreen() {
                   trackColor={{ false: '#E5E7EB', true: '#FED7AA' }}
                   thumbColor={q.isRequired ? '#F67300' : '#FFFFFF'}
                   ios_backgroundColor="#E5E7EB"
-                  onValueChange={(val) => updateQuestion(q.id, { isRequired: val })}
+                  onValueChange={(val) => {
+                    if (hapticsEnabled) {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    }
+                    updateQuestion(q.id, { isRequired: val });
+                  }}
                   value={q.isRequired}
                   style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }] }}
                 />
@@ -475,9 +483,9 @@ export default function TestDetailsScreen() {
                 <Refresh size={18} color="#F67300" className="mr-2" />
               </RNAnimated.View>
               <Text className="text-[#374151] font-semibold text-sm">
-                {isUploadingDoc ? 'Generating...' :  '  Auto-generate from Doc'}
+                {isUploadingDoc ? 'Generating...' : '  Auto-generate from Doc'}
               </Text>
-            </View> 
+            </View>
           </TouchableOpacity>
         </View>
 
