@@ -10,6 +10,7 @@ import React from 'react';
 SplashScreen.preventAutoHideAsync();
 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { HapticsProvider } from '@/context/HapticsContext';
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -32,9 +33,11 @@ export default function RootLayout() {
   return (
 
     <ThemeProvider value={DefaultTheme}>
-      {/* <View className="flex-1 m-5"> */}
-        <Stack screenOptions={{ headerShown: false }} />
-      {/* </View> */}
+      <HapticsProvider>
+        {/* <View className="flex-1 m-5"> */}
+          <Stack screenOptions={{ headerShown: false }} />
+        {/* </View> */}
+      </HapticsProvider>
     </ThemeProvider>
 
   );

@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Animated as RNAnimated, Easing as RNEasing, ScrollView, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import CustomDropdown from '../../components/Instructor/CustomDropdown';
 import UploadModalHeader from '../../components/Instructor/UploadModalHeader';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function TestDetailsScreen() {
   const params = useLocalSearchParams<{ title?: string; batch?: string }>();
@@ -172,7 +173,7 @@ export default function TestDetailsScreen() {
   };
 
   return (
-    <View className="flex-1 bg-[#F9FAFB]">
+    <SafeAreaView className="flex-1 bg-[#F9FAFB]">
 
       {/* Header */}
       <UploadModalHeader
@@ -191,7 +192,7 @@ export default function TestDetailsScreen() {
           {/* Due Date */}
           <TouchableOpacity
             onPress={() => setShowDatePicker(true)}
-            className="bg-white rounded-2xl p-4 flex-1 mr-3 flex-row items-center justify-between"
+            className="bg-white border border-[#D3D3D3] rounded-2xl p-4 flex-1 mr-3 flex-row items-center justify-between"
           >
             <View>
               <Text className="text-sm font-medium text-[#4B5563] mb-1">Due date</Text>
@@ -203,7 +204,7 @@ export default function TestDetailsScreen() {
           {/* Due Time */}
           <TouchableOpacity
             onPress={() => setShowTimePicker(true)}
-            className="bg-white rounded-2xl p-4 flex-1 ml-3 flex-row items-center justify-between"
+            className="bg-white border border-[#D3D3D3] rounded-2xl p-4 flex-1 ml-3 flex-row items-center justify-between"
           >
             <View>
               <Text className="text-sm font-medium text-[#4B5563] mb-1">Due Time(IST)</Text>
@@ -232,7 +233,7 @@ export default function TestDetailsScreen() {
         )}
 
         {/* Description Card */}
-        <View className="bg-white rounded-[24px] p-5 mb-5">
+        <View className="bg-white border border-[#D3D3D3] rounded-[24px] p-5 mb-5">
           <Text className="text-[18px] text-[#1F2937] mb-4">Description:</Text>
           <View className="border border-[#E5E7EB] rounded-2xl p-4 min-h-[120px]">
             <TextInput
@@ -249,7 +250,7 @@ export default function TestDetailsScreen() {
 
         {/* Questions Loop */}
         {questions.map((q, index) => (
-          <View key={q.id} className="bg-white rounded-[24px] p-5 mb-8 border border-[#E5E5E5]">
+          <View key={q.id} className="bg-white border border-[#D3D3D3] rounded-[24px] p-5 mb-8">
             {/* NORMAL MODE (Always visible) */}
             {/* Question Header */}
             <View className="flex-row items-center justify-between mb-4">
@@ -474,9 +475,9 @@ export default function TestDetailsScreen() {
                 <Refresh size={18} color="#F67300" className="mr-2" />
               </RNAnimated.View>
               <Text className="text-[#374151] font-semibold text-sm">
-                {isUploadingDoc ? 'Generating...' : 'Auto-generate from Doc'}
+                {isUploadingDoc ? 'Generating...' :  '  Auto-generate from Doc'}
               </Text>
-            </View>
+            </View> 
           </TouchableOpacity>
         </View>
 
@@ -491,6 +492,6 @@ export default function TestDetailsScreen() {
         </View>
 
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }

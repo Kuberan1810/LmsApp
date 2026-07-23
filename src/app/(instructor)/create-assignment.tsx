@@ -38,11 +38,11 @@ export default function CreateAssignmentScreen() {
         }}
       >
         {/* Back Button */}
-        <TouchableOpacity
+             <TouchableOpacity
           onPress={() => router.back()}
-          className="absolute top-16 left-6 z-10 w-10 h-10 items-center justify-center"
+          className="absolute top-16 left-6 z-10 w-11 h-11 rounded-full items-center justify-center bg-[#FAFAFA]/10 border border-[#F2EEF4]/30 backdrop-blur-sm"
         >
-          <ArrowLeft2 size={24} color="#FFFFFF" variant="Outline" />
+          <ArrowLeft2 size={20} color="#ffffffff" variant="Linear" />
         </TouchableOpacity>
 
         {/* Icon & Title */}
@@ -58,7 +58,7 @@ export default function CreateAssignmentScreen() {
 
       {/* Form Section */}
       <ScrollView
-        className="flex-1 px-6 pt-8"
+        className="flex-1 px-6 pt-8"                                                                                                                    
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
       >
@@ -72,6 +72,7 @@ export default function CreateAssignmentScreen() {
               onChange={setCourseName}
               options={DUMMY_COURSES}
               placeholder="E.g Am101"
+              className="bg-white border border-[#D3D3D3] rounded-[10px] h-[45px] px-[15px] text-[14px] text-[#1F2937]"
             />
           </View>
 
@@ -82,6 +83,7 @@ export default function CreateAssignmentScreen() {
               onChange={setBatchId}
               options={DUMMY_BATCHES}
               placeholder="E.g. Batch-01"
+              className="bg-white border border-[#D3D3D3] rounded-[10px] h-[45px] px-[15px] text-[14px] text-[#1F2937]"
             />
           </View>
 

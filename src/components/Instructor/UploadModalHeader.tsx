@@ -64,7 +64,7 @@ export default function UploadModalHeader({
     setCurrentTitle(text);
     onTitleChange?.(text);
   };
-
+                                                                                                                                                    
   const handleBatchToggle = () => {
     const nextBatch = currentBatch === 'Batch-01' ? 'Batch-02' : currentBatch === 'Batch-02' || currentBatch === 'Batch 02' ? 'Batch-03' : 'Batch-01';
     setCurrentBatch(nextBatch);
@@ -74,7 +74,7 @@ export default function UploadModalHeader({
   const isCentered = titleAlign === 'center';
 
   return (
-    <View className="px-5 pt-12 pb-4 flex-row items-center justify-between bg-transparent relative">
+    <View className="px-5 pt-4 pb-4 flex-row items-center justify-between bg-transparent relative">
       {/* Left side: Back Button */}
       <TouchableOpacity
         onPress={handleBack}

@@ -28,9 +28,11 @@ export default function MyClasses() {
   const router = useRouter();
 
   return (
+
     <View className="mt-6">
       <View className="flex-row justify-between items-center px-5 mb-4">
         <Text className="text-[20px] font-semibold text-[#333333]">My Classes</Text>
+
       </View>
 
       <ScrollView

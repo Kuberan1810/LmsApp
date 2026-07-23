@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { Stack, router } from 'expo-router';
 import { ArrowLeft2 } from 'iconsax-react-native';
-import { Download, Edit2, Folder, Plus, Trash2, Upload } from 'lucide-react-native';
+import { Download, Edit2, Folder, MoreVertical, Plus, Trash2, Upload } from 'lucide-react-native';
 import { useState } from 'react';
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import CustomDropdown from '../../components/Instructor/CustomDropdown';
@@ -9,6 +9,7 @@ import CustomDropdown from '../../components/Instructor/CustomDropdown';
 export default function CreateResourceScreen() {
   const [courseName, setCourseName] = useState('');
   const [batchId, setBatchId] = useState('');
+  const [showResourceMenu, setShowResourceMenu] = useState(false);
 
   const DUMMY_COURSES = [
     { label: 'Aa', value: 'Aa' },
@@ -36,11 +37,11 @@ export default function CreateResourceScreen() {
           gap: 16
         }}
       >
-        <TouchableOpacity
+              <TouchableOpacity
           onPress={() => router.back()}
-          className="absolute top-16 left-6 z-10 w-10 h-10 items-center justify-center"
+          className="absolute top-16 left-6 z-10 w-11 h-11 rounded-full items-center justify-center bg-[#FAFAFA]/10 border border-[#F2EEF4]/30 backdrop-blur-sm"
         >
-          <ArrowLeft2 size={24} color="#FFFFFF" variant="Outline" />
+          <ArrowLeft2 size={20} color="#ffffffff" variant="Linear" />
         </TouchableOpacity>
 
         <View className="items-center mt-4">
@@ -110,12 +111,29 @@ export default function CreateResourceScreen() {
                 <Text className="text-[#1F2937] font-medium text-sm mb-1" numberOfLines={1}>Text_to_PDF_Onlinenotepad.pdf</Text>
                 <Text className="text-[#9CA3AF] text-xs">85.77 KB · 7/14/2026</Text>
               </View>
+              <TouchableOpacity onPress={() => setShowResourceMenu(!showResourceMenu)} className="p-2 -mr-2">
+                <MoreVertical size={20} color="#9CA3AF" />
+              </TouchableOpacity>
             </View>
-            <View className="flex-row justify-end mt-2 gap-4">
-              <TouchableOpacity><Download size={18} color="#9CA3AF" /></TouchableOpacity>
-              <TouchableOpacity><Edit2 size={18} color="#9CA3AF" /></TouchableOpacity>
-              <TouchableOpacity><Trash2 size={18} color="#EF4444" /></TouchableOpacity>
-            </View>
+            
+            {showResourceMenu && (
+              <View 
+                className="absolute right-4 top-14 bg-white border border-[#E5E7EB] rounded-xl z-50 overflow-hidden w-40"
+              >
+                <TouchableOpacity className="flex-row items-center px-4 py-3.5 border-b border-[#F3F4F6]">
+                  <Download size={16} color="#4B5563" />
+                  <Text className="text-[#4B5563] text-sm ml-3 font-medium">Download</Text>
+                </TouchableOpacity>
+                <TouchableOpacity className="flex-row items-center px-4 py-3.5 border-b border-[#F3F4F6]">
+                  <Edit2 size={16} color="#4B5563" />
+                  <Text className="text-[#4B5563] text-sm ml-3 font-medium">Edit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity className="flex-row items-center px-4 py-3.5">
+                  <Trash2 size={16} color="#EF4444" />
+                  <Text className="text-[#EF4444] text-sm ml-3 font-medium">Delete</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </View>
 

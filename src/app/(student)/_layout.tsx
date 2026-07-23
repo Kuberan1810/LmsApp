@@ -6,6 +6,8 @@ import { CalendarTick, ClipboardText, DocumentText, DocumentText1, Home2, NoteTe
 import React, { useState } from 'react';
 import { LayoutAnimation, LogBox, Platform, Text, TouchableOpacity, UIManager, View } from 'react-native';
 import Animated, { useAnimatedStyle, LinearTransition, FadeIn, FadeOut, withTiming, Easing } from 'react-native-reanimated';
+import * as Haptics from 'expo-haptics';
+import { useHaptics } from '@/context/HapticsContext';
 
 LogBox.ignoreLogs(['setLayoutAnimationEnabledExperimental is currently a no-op']);
 
@@ -20,7 +22,11 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const { tabBarOffset, isTabBarVisible } = useTabBarVisibility();
   const pathname = usePathname();
+
   const [tabLayouts, setTabLayouts] = useState<{ [key: string]: { x: number; y: number; width: number; height: number } }>({});
+
+  const { hapticsEnabled } = useHaptics();
+
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -67,6 +73,28 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     const isFocused = state.index === state.routes.findIndex(r => r.key === route.key);
 
     const onPress = () => {
+
+      if (hapticsEnabled) {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
+      LayoutAnimation.configureNext({
+        duration: 500,
+        create: {
+          type: LayoutAnimation.Types.spring,
+          property: LayoutAnimation.Properties.opacity,
+          springDamping: 0.85,
+        },
+        update: {
+          type: LayoutAnimation.Types.spring,
+          springDamping: 0.85,
+        },
+        delete: {
+          type: LayoutAnimation.Types.spring,
+          property: LayoutAnimation.Properties.opacity,
+          springDamping: 0.85,
+        },
+      });
+
       const event = navigation.emit({
         type: 'tabPress',
         target: route.key,

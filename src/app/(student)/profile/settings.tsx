@@ -1,5 +1,4 @@
 import { Feather } from '@expo/vector-icons';
-import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React, { useState, useEffect, useRef } from 'react';
 import { ScrollView, Text, TouchableOpacity, View, Animated } from 'react-native';
@@ -57,10 +56,13 @@ const CustomSwitch = ({ value, onValueChange }: { value: boolean, onValueChange:
   );
 };
 
+import { useHaptics } from '@/context/HapticsContext';
+
 export default function SettingsScreen() {
   const router = useRouter();
   const [pushEnabled, setPushEnabled] = useState(true);
   const [emailEnabled, setEmailEnabled] = useState(false);
+  const { hapticsEnabled, setHapticsEnabled } = useHaptics();
 
   const studentName = "lynx";
   const getInitials = (name: string) => {
@@ -83,19 +85,7 @@ export default function SettingsScreen() {
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
-          {/* Profile Quick Info */}
-          <View className="flex-row items-center mb-10">
-            <View className="relative mr-4">
-              <View className="w-[60px] h-[60px] rounded-full border-2 border-white bg-[#FFE4CC] items-center justify-center shadow-sm">
-                <Text className="text-[#F67300] text-[20px] font-bold">{initials}</Text>
-              </View>
-              <View className="absolute bottom-0 right-0 w-[14px] h-[14px] bg-[#10B981] border-[2.5px] border-white rounded-full z-10" />
-            </View>
-            <View>
-              <Text className="text-[16px] font-medium text-[#333333]">{studentName}</Text>
-              <Text className="text-[13px] text-[#6B7280] mt-0.5">Student Id</Text>
-            </View>
-          </View>
+      
 
           {/* Notifications Section */}
           <Text className="text-[20px] font-medium text-[#64748B] mb-3">Notifications</Text>
@@ -110,14 +100,17 @@ export default function SettingsScreen() {
                 onValueChange={setPushEnabled}
               />
             </View>
-            <View className="flex-row items-center justify-between p-4">
+          </View>
+               <Text className="text-[20px] font-medium text-[#64748B] mb-3">Haptics</Text>
+          <View className="bg-white rounded-xl border border-[#F1F5F9] mb-8 shadow-sm shadow-gray-100">
+            <View className="flex-row items-center justify-between p-4 border-b border-[#F1F5F9]">
               <View className="flex-row items-center">
-                <Feather name="mail" size={18} color="#333333" />
-                <Text className="text-[14px] text-[#333333] ml-3">Email Notification</Text>
+                <Feather name="activity" size={18} color="#333333" />
+                <Text className="text-[14px] text-[#333333] ml-3">Haptic Feedback</Text>
               </View>
               <CustomSwitch 
-                value={emailEnabled} 
-                onValueChange={setEmailEnabled}
+                value={hapticsEnabled} 
+                onValueChange={setHapticsEnabled}
               />
             </View>
           </View>
@@ -150,13 +143,8 @@ export default function SettingsScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Log Out Button */}
-          <View className="items-center">
-            <TouchableOpacity className="flex-row items-center justify-center border border-[#F67300] rounded-lg py-2.5 px-6">
-              <Feather name="log-out" size={16} color="#F67300" style={{ transform: [{ scaleX: -1 }] }} />
-              <Text className="text-[#F67300] font-medium ml-2">Log Out</Text>
-            </TouchableOpacity>
-          </View>
+   
+    
 
         </ScrollView>
       </View>

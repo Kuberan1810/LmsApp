@@ -1,6 +1,6 @@
 import CustomDropdown from '@/components/Instructor/CustomDropdown';
 import { Stack, router } from 'expo-router';
-import { ArrowLeft2 } from 'iconsax-react-native';
+import { ArrowLeft2, ArrowDown2 } from 'iconsax-react-native';
 import { Bell } from 'lucide-react-native';
 import { useState } from 'react';
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -10,6 +10,8 @@ export default function CreateAnnouncementScreen() {
   const [batchId, setBatchId] = useState('');
   const [topic, setTopic] = useState('');
   const [message, setMessage] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('New Announcement');
 
   const DUMMY_COURSES = [
     { label: 'Am101 - Math', value: 'Am101' },
@@ -35,11 +37,11 @@ export default function CreateAnnouncementScreen() {
         }}
       >
         {/* Back Button */}
-        <TouchableOpacity
+         <TouchableOpacity
           onPress={() => router.back()}
-          className="absolute top-16 left-6 z-10 w-10 h-10 items-center justify-center"
+          className="absolute top-16 left-6 z-10 w-11 h-11 rounded-full items-center justify-center bg-[#FAFAFA]/10 border border-[#F2EEF4]/30 backdrop-blur-sm"
         >
-          <ArrowLeft2 size={24} color="#FFFFFF" variant="Outline" />
+          <ArrowLeft2 size={20} color="#ffffffff" variant="Linear" />
         </TouchableOpacity>
 
         {/* Icon & Title */}
@@ -60,7 +62,28 @@ export default function CreateAnnouncementScreen() {
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
       >
         <View className="flex-1">
-          <Text className="text-xl font-bold text-[#1F2937] mb-6">New Announcement</Text>
+          <View className="mb-6 z-50">
+            <TouchableOpacity 
+              className="flex-row items-center"
+              onPress={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              <Text className="text-xl font-bold text-[#1F2937] mr-2">{activeTab}</Text>
+              <ArrowDown2 size={24} color="#1F2937" variant="Outline" />
+            </TouchableOpacity>
+
+            {isDropdownOpen && (
+              <View className="mt-3">
+                <TouchableOpacity onPress={() => {
+                  setActiveTab(activeTab === 'New Announcement' ? 'Past announcements' : 'New Announcement');
+                  setIsDropdownOpen(false);
+                }}>
+                  <Text className="text-[16px] text-[#4B5563] font-medium">
+                    {activeTab === 'New Announcement' ? 'Past announcements' : 'New Announcement'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
 
         <View className="mb-5">
           <Text className="text-sm font-medium text-[#4B5563] mb-2">Course Name / ID</Text>
@@ -69,6 +92,7 @@ export default function CreateAnnouncementScreen() {
             onChange={setCourseName}
             options={DUMMY_COURSES}
             placeholder="E.g Am101"
+            className="bg-white border border-[#D3D3D3] rounded-[10px] h-[45px] px-[15px] text-[14px] text-[#1F2937]"
           />
         </View>
 
