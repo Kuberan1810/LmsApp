@@ -36,8 +36,8 @@ export default function PerformanceReviewModal({ visible, student, onClose }: Pe
 
   const panResponder = React.useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: () => true, 
-      onStartShouldSetPanResponderCapture: () => false, 
+      onStartShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponderCapture: () => false,
       onMoveShouldSetPanResponder: (_, gestureState) => {
         return Math.abs(gestureState.dy) > 2 && Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
       },
@@ -140,13 +140,12 @@ export default function PerformanceReviewModal({ visible, student, onClose }: Pe
         </Animated.View>
 
         <Animated.View
-          {...panResponder.panHandlers}
           style={[
             styles.modalContainer,
             { transform: [{ translateY: slideAnim }] }
           ]}
         >
-          <View style={styles.dragArea}>
+          <View style={styles.dragArea} {...panResponder.panHandlers}>
             <View style={styles.dragHandle} />
           </View>
 
@@ -174,7 +173,7 @@ export default function PerformanceReviewModal({ visible, student, onClose }: Pe
                 <View className="w-1 h-1 bg-[#D1D5DB] rounded-full mx-2" />
                 <Text className="text-[12px] text-[#808080]">{MOCK_REVIEW.date} · {MOCK_REVIEW.time}</Text>
               </View>
-              
+
               <View className="bg-white border border-[#F2EEF4] rounded-[16px] py-4 items-center">
                 <Text className="text-[28px] font-black text-[#F67300]">{MOCK_REVIEW.points}</Text>
                 <Text className="text-[11px] font-black text-[#6B7280] uppercase tracking-widest mt-1">Points</Text>
@@ -183,7 +182,7 @@ export default function PerformanceReviewModal({ visible, student, onClose }: Pe
 
             {/* Q&A Section */}
             <Text className="text-[13px] font-bold text-[#6B7280] tracking-widest uppercase mb-4">Questions & Answers</Text>
-            
+
             <View className="gap-4 mb-6">
               {MOCK_REVIEW.questions.map((q, i) => {
                 const isCorrect = q.status === 'CORRECT';
@@ -194,24 +193,21 @@ export default function PerformanceReviewModal({ visible, student, onClose }: Pe
                       <Text className="flex-1 text-[15px] font-bold text-[#1E1E2D] leading-6 mr-3">
                         {i + 1}. {q.text}
                       </Text>
-                      <View className={`px-2 py-1 rounded-full flex-row items-center border ${
-                        isCorrect ? 'bg-[#2A9A46]/10 border-[#2A9A46]/20' : 'bg-[#FB2C36]/10 border-[#FB2C36]/20'
-                      }`}>
+                      <View className={`px-2 py-1 rounded-full flex-row items-center border ${isCorrect ? 'bg-[#2A9A46]/10 border-[#2A9A46]/20' : 'bg-[#FB2C36]/10 border-[#FB2C36]/20'
+                        }`}>
                         {isCorrect ? (
-                          <TickCircle size={12} color="#2A9A46" variant="Linear" style={{ marginRight: 4 }}/>
+                          <TickCircle size={12} color="#2A9A46" variant="Linear" style={{ marginRight: 4 }} />
                         ) : (
-                          <CloseCircle size={12} color="#FB2C36" variant="Linear" style={{ marginRight: 4 }}/>
+                          <CloseCircle size={12} color="#FB2C36" variant="Linear" style={{ marginRight: 4 }} />
                         )}
-                        <Text className={`text-[10px] font-black tracking-wider ${
-                          isCorrect ? 'text-[#2A9A46]' : 'text-[#FB2C36]'
-                        }`}>{q.status}</Text>
+                        <Text className={`text-[10px] font-black tracking-wider ${isCorrect ? 'text-[#2A9A46]' : 'text-[#FB2C36]'
+                          }`}>{q.status}</Text>
                       </View>
                     </View>
-                    
+
                     {/* Student Answer */}
-                    <View className={`rounded-[16px] p-4 mb-2 border flex-row items-center justify-between ${
-                      isCorrect ? 'bg-[#2A9A46]/5 border-[#2A9A46]/20' : 'bg-[#FB2C36]/5 border-[#FB2C36]/20'
-                    }`}>
+                    <View className={`rounded-[16px] p-4 mb-2 border flex-row items-center justify-between ${isCorrect ? 'bg-[#2A9A46]/5 border-[#2A9A46]/20' : 'bg-[#FB2C36]/5 border-[#FB2C36]/20'
+                      }`}>
                       <View className="flex-1">
                         <Text className="text-[10px] font-black text-[#6B7280] uppercase tracking-widest mb-1">Student Answer</Text>
                         <Text className={`text-[14px] font-semibold ${isCorrect ? 'text-[#2A9A46]' : 'text-[#E7000B]'}`}>
@@ -228,7 +224,7 @@ export default function PerformanceReviewModal({ visible, student, onClose }: Pe
                     {/* Correct Answer (if wrong) */}
                     {!isCorrect && q.correctAnswer && (
                       <View className="rounded-[16px] p-4 border bg-[#2A9A46]/5 border-[#2A9A46]/20 flex-row items-center justify-between mt-1">
-                          <View className="flex-1">
+                        <View className="flex-1">
                           <Text className="text-[10px] font-black text-[#2A9A46] uppercase tracking-widest mb-1">Correct Answer</Text>
                           <Text className="text-[14px] font-semibold text-[#2A9A46]">
                             {q.correctAnswer}
@@ -241,7 +237,7 @@ export default function PerformanceReviewModal({ visible, student, onClose }: Pe
               })}
             </View>
 
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={onClose}
               className="bg-[#F67300] py-4 rounded-2xl items-center mb-8"
             >
@@ -261,7 +257,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   backdrop: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
   backdropTouch: {

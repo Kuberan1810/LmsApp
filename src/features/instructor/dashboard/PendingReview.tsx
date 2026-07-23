@@ -59,7 +59,7 @@ export default function PendingReview() {
             <View className="flex-row justify-between items-center mb-1">
                 <Text className="text-[20px] font-semibold text-[#333333]">Pending Review</Text>
                 <TouchableOpacity
-                    onPress={() => router.push('/(instructor)/review')}
+                    onPress={() => router.push('/(instructor)/courses/review')}
                     className="border border-[#F2EEF4] rounded-[10px] px-4 py-2 bg-white"
                 >
                     <Text className="text-[14px] text-[#808080] font-medium">View all</Text>

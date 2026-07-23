@@ -134,7 +134,7 @@ export default function ReviewScreen() {
     });
 
     return (
-        <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
+        <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right', 'bottom']}>
             <InstructorHeader
                 title="Pending Review"
                 onBackPress={() => router.back()}

@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import InstructorHeader from '@/components/Instructor/InstructorHeader';
 import { SearchNormal1, Filter, Sort } from 'iconsax-react-native';
-import PerformanceReviewModal from '@/components/Instructor/PerformanceReviewModal';
+import ReviewModal from './reviewModal';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -29,13 +29,13 @@ export default function InstructorTestResultsScreen() {
   const filteredAndSortedStudents = [...MOCK_STUDENTS]
     .filter(student => {
       // Search
-      const matchesSearch = student.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            student.id.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        student.id.toLowerCase().includes(searchQuery.toLowerCase());
       // Filter
       let matchesFilter = true;
       if (filterOption === 'Passed') matchesFilter = student.passed;
       if (filterOption === 'Failed') matchesFilter = !student.passed;
-      
+
       return matchesSearch && matchesFilter;
     })
     .sort((a, b) => {
@@ -51,13 +51,13 @@ export default function InstructorTestResultsScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top', 'left', 'right']}>
-      <InstructorHeader 
-        title="Test Results" 
-        onBackPress={() => router.back()} 
+      <InstructorHeader
+        title="Test Results"
+        onBackPress={() => router.back()}
       />
 
       <ScrollView className="flex-1 px-5 pt-2" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
-        
+
         {/* Test Info Section */}
         <View className="flex-row justify-between items-start mb-6 mt-4">
           <View>
@@ -67,7 +67,10 @@ export default function InstructorTestResultsScreen() {
             <Text className="text-[13px] text-[#4B5563] leading-6">Duration: 60 mins</Text>
             <Text className="text-[13px] text-[#4B5563] leading-6">Total Submissions: {MOCK_STUDENTS.length}</Text>
           </View>
-          <TouchableOpacity className="border border-[#E2E8F0] bg-white rounded-xl px-4 py-2">
+          <TouchableOpacity
+            onPress={() => router.push('/(instructor)/test-details')}
+            className="border border-[#E2E8F0] bg-white rounded-xl px-4 py-2"
+          >
             <Text className="text-[#333333] font-medium text-[13px]">Edit Test</Text>
           </TouchableOpacity>
         </View>
@@ -84,11 +87,11 @@ export default function InstructorTestResultsScreen() {
               <Text className="text-[#E7000B] font-semibold text-[14px]">{failedCount}</Text>
             </View>
           </View>
-          
+
           <View className="flex-row items-center gap-2 relative z-50">
             <View className="flex-1 flex-row items-center border border-[#E2E8F0] rounded-xl px-3 h-11 bg-white">
               <SearchNormal1 size={18} color="#A0A0AB" />
-              <TextInput 
+              <TextInput
                 placeholder="Search by name or ID..."
                 placeholderTextColor="#A0A0AB"
                 value={searchQuery}
@@ -96,77 +99,77 @@ export default function InstructorTestResultsScreen() {
                 className="flex-1 ml-2 font-medium text-[#1E1E2D] text-[14px]"
               />
             </View>
-            
+
             {/* Filter Dropdown */}
             <View className="relative z-50">
-                <TouchableOpacity 
-                    onPress={() => {
-                        setIsFilterModalOpen(!isFilterModalOpen);
-                        setIsSortModalOpen(false);
-                    }}
-                    className={`h-11 px-3 border border-[#E2E8F0] rounded-xl flex-row items-center justify-center ${isFilterModalOpen ? 'bg-[#FFF5ED]' : 'bg-white'}`}
-                >
-                    <Filter size={16} color={isFilterModalOpen ? "#F67300" : "#6B7280"} />
-                    <Text className={`font-medium text-[13px] ml-1.5 ${isFilterModalOpen ? 'text-[#F67300]' : 'text-[#4B5563]'}`}>Filter</Text>
-                </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsFilterModalOpen(!isFilterModalOpen);
+                  setIsSortModalOpen(false);
+                }}
+                className={`h-11 px-3 border border-[#E2E8F0] rounded-xl flex-row items-center justify-center ${isFilterModalOpen ? 'bg-[#FFF5ED]' : 'bg-white'}`}
+              >
+                <Filter size={16} color={isFilterModalOpen ? "#F67300" : "#6B7280"} />
+                <Text className={`font-medium text-[13px] ml-1.5 ${isFilterModalOpen ? 'text-[#F67300]' : 'text-[#4B5563]'}`}>Filter</Text>
+              </TouchableOpacity>
 
-                {isFilterModalOpen && (
-                    <View className="absolute top-12 right-0 w-40 bg-white border border-[#F2EEF4] rounded-[14px] p-1.5 shadow-xl z-50">
-                        {['All', 'Passed', 'Failed'].map((opt) => (
-                            <TouchableOpacity
-                                key={opt}
-                                onPress={() => {
-                                    setFilterOption(opt as any);
-                                    setIsFilterModalOpen(false);
-                                }}
-                                className={`flex-row items-center justify-between px-3 py-2.5 rounded-[8px] ${filterOption === opt ? 'bg-[#FFF5ED]' : 'active:bg-[#F9FAFB]'}`}
-                            >
-                                <Text className={`text-[13px] font-medium ${filterOption === opt ? 'text-[#F67300]' : 'text-[#333333]'}`}>
-                                    {opt}
-                                </Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-                )}
+              {isFilterModalOpen && (
+                <View className="absolute top-12 right-0 w-40 bg-white border border-[#F2EEF4] rounded-[14px] p-1.5 shadow-xl z-50">
+                  {['All', 'Passed', 'Failed'].map((opt) => (
+                    <TouchableOpacity
+                      key={opt}
+                      onPress={() => {
+                        setFilterOption(opt as any);
+                        setIsFilterModalOpen(false);
+                      }}
+                      className={`flex-row items-center justify-between px-3 py-2.5 rounded-[8px] ${filterOption === opt ? 'bg-[#FFF5ED]' : 'active:bg-[#F9FAFB]'}`}
+                    >
+                      <Text className={`text-[13px] font-medium ${filterOption === opt ? 'text-[#F67300]' : 'text-[#333333]'}`}>
+                        {opt}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
             </View>
 
             {/* Sort Dropdown */}
             <View className="relative z-50">
-                <TouchableOpacity 
-                    onPress={() => {
-                        setIsSortModalOpen(!isSortModalOpen);
-                        setIsFilterModalOpen(false);
-                    }}
-                    className={`h-11 px-3 border border-[#E2E8F0] rounded-xl flex-row items-center justify-center ${isSortModalOpen ? 'bg-[#FFF5ED]' : 'bg-white'}`}
-                >
-                    <Sort size={16} color={isSortModalOpen ? "#F67300" : "#6B7280"} />
-                    <Text className={`font-medium text-[13px] ml-1.5 ${isSortModalOpen ? 'text-[#F67300]' : 'text-[#4B5563]'}`}>Sort</Text>
-                </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsSortModalOpen(!isSortModalOpen);
+                  setIsFilterModalOpen(false);
+                }}
+                className={`h-11 px-3 border border-[#E2E8F0] rounded-xl flex-row items-center justify-center ${isSortModalOpen ? 'bg-[#FFF5ED]' : 'bg-white'}`}
+              >
+                <Sort size={16} color={isSortModalOpen ? "#F67300" : "#6B7280"} />
+                <Text className={`font-medium text-[13px] ml-1.5 ${isSortModalOpen ? 'text-[#F67300]' : 'text-[#4B5563]'}`}>Sort</Text>
+              </TouchableOpacity>
 
-                {isSortModalOpen && (
-                    <View className="absolute top-12 right-0 w-48 bg-white border border-[#F2EEF4] rounded-[14px] p-1.5 shadow-xl z-50">
-                        {[
-                            { label: 'Default', value: 'Default' },
-                            { label: 'Name (A - Z)', value: 'Name-ASC' },
-                            { label: 'Name (Z - A)', value: 'Name-DESC' },
-                            { label: 'Marks (High to Low)', value: 'Mark-HIGH' },
-                            { label: 'Marks (Low to High)', value: 'Mark-LOW' },
-                        ].map((opt) => (
-                            <TouchableOpacity
-                                key={opt.value}
-                                onPress={() => {
-                                    setSortOption(opt.value as any);
-                                    setIsSortModalOpen(false);
-                                }}
-                                className={`flex-row items-center justify-between px-3 py-2.5 rounded-[8px] ${sortOption === opt.value ? 'bg-[#FFF5ED]' : 'active:bg-[#F9FAFB]'}`}
-                            >
-                                <Text className={`text-[13px] font-medium ${sortOption === opt.value ? 'text-[#F67300]' : 'text-[#333333]'}`}>
-                                    {opt.label}
-                                </Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-                )}
+              {isSortModalOpen && (
+                <View className="absolute top-12 right-0 w-48 bg-white border border-[#F2EEF4] rounded-[14px] p-1.5 shadow-xl z-50">
+                  {[
+                    { label: 'Default', value: 'Default' },
+                    { label: 'Name (A - Z)', value: 'Name-ASC' },
+                    { label: 'Name (Z - A)', value: 'Name-DESC' },
+                    { label: 'Marks (High to Low)', value: 'Mark-HIGH' },
+                    { label: 'Marks (Low to High)', value: 'Mark-LOW' },
+                  ].map((opt) => (
+                    <TouchableOpacity
+                      key={opt.value}
+                      onPress={() => {
+                        setSortOption(opt.value as any);
+                        setIsSortModalOpen(false);
+                      }}
+                      className={`flex-row items-center justify-between px-3 py-2.5 rounded-[8px] ${sortOption === opt.value ? 'bg-[#FFF5ED]' : 'active:bg-[#F9FAFB]'}`}
+                    >
+                      <Text className={`text-[13px] font-medium ${sortOption === opt.value ? 'text-[#F67300]' : 'text-[#333333]'}`}>
+                        {opt.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
             </View>
           </View>
         </View>
@@ -186,14 +189,14 @@ export default function InstructorTestResultsScreen() {
                 <Text className="w-[80px] font-semibold text-[13px] text-[#333333]">Mark</Text>
                 <Text className="flex-1 font-semibold text-[13px] text-[#333333] text-center">Action</Text>
               </View>
-              
+
               {/* Rows */}
               {filteredAndSortedStudents.map((student, index) => (
-                <TouchableOpacity 
-                    key={student.id}
-                    onPress={() => setSelectedStudent(student)}
-                    activeOpacity={0.7}
-                    className="flex-row items-center px-4 py-4 min-w-[750px] border-b border-[#F2EEF4] bg-white"
+                <TouchableOpacity
+                  key={student.id}
+                  onPress={() => setSelectedStudent(student)}
+                  activeOpacity={0.7}
+                  className="flex-row items-center px-4 py-4 min-w-[750px] border-b border-[#F2EEF4] bg-white"
                 >
                   <Text className="w-[50px] text-[13px] text-[#4B5563]">{student.sNo}</Text>
                   <Text className="w-[80px] text-[13px] text-[#4B5563]">{student.id}</Text>
@@ -206,7 +209,7 @@ export default function InstructorTestResultsScreen() {
                     </View>
                   </View>
                   <Text className={`w-[80px] font-semibold text-[13px] ${student.passed ? 'text-[#2A9A46]' : 'text-[#E7000B]'}`}>
-                      {student.mark}
+                    {student.mark}
                   </Text>
                   <View className="flex-1 flex-row justify-center">
                     <View className="bg-[#FFF5ED] px-4 py-1.5 rounded-full">
@@ -218,7 +221,7 @@ export default function InstructorTestResultsScreen() {
 
               {filteredAndSortedStudents.length === 0 && (
                 <View className="py-10 items-center justify-center min-w-[750px]">
-                    <Text className="text-[#8C8E90] text-[14px] font-medium">No students found matching filters.</Text>
+                  <Text className="text-[#8C8E90] text-[14px] font-medium">No students found matching filters.</Text>
                 </View>
               )}
             </View>
@@ -226,10 +229,10 @@ export default function InstructorTestResultsScreen() {
         </View>
       </ScrollView>
 
-      <PerformanceReviewModal
+      <ReviewModal
         visible={!!selectedStudent}
-        student={selectedStudent ? { name: selectedStudent.name, id: selectedStudent.id } : null}
         onClose={() => setSelectedStudent(null)}
+        student={selectedStudent}
       />
     </SafeAreaView>
   );
