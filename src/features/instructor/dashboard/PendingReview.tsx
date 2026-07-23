@@ -1,6 +1,9 @@
 import { View, Text, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { ArrowRight2 } from 'iconsax-react-native';
+import { router } from 'expo-router';
+import ReviewModal from '@/app/(instructor)/courses/tests/reviewModal';
+import ViewSubmissionModal from '@/features/instructor/Courses/assignment/viewSubmissionModal';
 
 const ITEMS = [
     {
@@ -42,12 +45,23 @@ const ITEMS = [
 ];
 
 export default function PendingReview() {
+    const [selectedStudent, setSelectedStudent] = useState<any>(null);
+    const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+    const [selectedSubmission, setSelectedSubmission] = useState<any>(null);
+
+    const handleUpdateGrade = (grade: string, feedback: string) => {
+        console.log('Update grade', grade, feedback);
+    };
+
     return (
         <View className="bg-white rounded-[28px] p-6 mb-3 border border-[#F2EEF4] mt-5 mx-4">
             {/* Header */}
             <View className="flex-row justify-between items-center mb-1">
                 <Text className="text-[20px] font-semibold text-[#333333]">Pending Review</Text>
-                <TouchableOpacity className="border border-[#F2EEF4] rounded-[10px] px-4 py-2 bg-white">
+                <TouchableOpacity
+                    onPress={() => router.push('/(instructor)/review')}
+                    className="border border-[#F2EEF4] rounded-[10px] px-4 py-2 bg-white"
+                >
                     <Text className="text-[14px] text-[#808080] font-medium">View all</Text>
                 </TouchableOpacity>
             </View>
@@ -103,6 +117,24 @@ export default function PendingReview() {
 
                         {/* Review Button */}
                         <TouchableOpacity
+                            onPress={() => {
+                                if (item.type === 'ASSIGNMENT') {
+                                    setSelectedSubmission({
+                                        studentId: '10',
+                                        studentName: item.studentName,
+                                        submittedOn: item.submittedAt,
+                                        notes: 'Attached is the completed assignment for your review.',
+                                        fileName: 'Text_to_PDF_Onlinenotpad',
+                                    });
+                                    setIsViewModalOpen(true);
+                                } else if (item.type === 'TEST') {
+                                    setSelectedStudent({
+                                        name: item.studentName,
+                                        id: '10',
+                                        status: 'Submitted',
+                                    });
+                                }
+                            }}
                             className="w-full bg-[#F67300] h-12 rounded-[12px] items-center justify-center flex-row"
                             activeOpacity={0.8}
                         >
@@ -112,6 +144,21 @@ export default function PendingReview() {
                     </View>
                 ))}
             </View>
+
+            <ReviewModal
+                visible={!!selectedStudent}
+                onClose={() => setSelectedStudent(null)}
+                student={selectedStudent}
+            />
+
+
+
+            <ViewSubmissionModal
+                visible={isViewModalOpen}
+                submission={selectedSubmission}
+                onClose={() => setIsViewModalOpen(false)}
+                onUpdateGrade={handleUpdateGrade}
+            />
         </View>
     );
 }

@@ -5,6 +5,7 @@ import { BlurView } from 'expo-blur';
 import { Tabs, useRouter, useSegments } from 'expo-router';
 import { Add, DocumentText, DocumentText1, Home2, Profile2User } from 'iconsax-react-native';
 import { useState } from 'react';
+
 import { LayoutAnimation, LogBox, Platform, Text, TouchableOpacity, UIManager, View } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
@@ -38,6 +39,7 @@ function CustomInstructorTabBar({ state, descriptors, navigation, onAddPress }: 
   const isMainRoute = 
     (segments.length === 3 && segments[1] === 'dashboard' && segments[2] === 'dashboard') ||
     (segments.length === 2 && (segments[1] === 'courses' || segments[1] === 'students'));
+
 
   if (!isMainRoute || !isTabBarVisible) {
     return null;
@@ -202,6 +204,11 @@ export default function InstructorLayout() {
         <Tabs.Screen name="dashboard/dashboard" options={{ title: 'Home' }} />
         <Tabs.Screen name="courses" options={{ title: 'Courses' }} />
         <Tabs.Screen name="students" options={{ title: 'Students' }} />
+        <Tabs.Screen name="tests/index" options={{ href: null }} />
+        <Tabs.Screen name="test-details" options={{ href: null }} />
+        <Tabs.Screen name="review" options={{ href: null }} />
+
+
 
       </Tabs>
 
