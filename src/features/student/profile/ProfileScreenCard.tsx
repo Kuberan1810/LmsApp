@@ -1,3 +1,5 @@
+import { useHaptics } from '@/context/HapticsContext';
+import * as Haptics from 'expo-haptics';
 import { ArrowRight2 } from 'iconsax-react-native';
 import React, { useState } from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
@@ -39,10 +41,19 @@ const MenuItem: React.FC<MenuItemProps> = ({
     badgeCount,
     isLogout = false,
 }) => {
+    const { hapticsEnabled } = useHaptics();
+
+    const handlePress = () => {
+        if (hapticsEnabled) {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }
+        onPress?.();
+    };
+
     return (
         <TouchableOpacity
             activeOpacity={0.7}
-            onPress={onPress}
+            onPress={handlePress}
             className="flex-row items-center py-7"
         >
             <View className="w-10 items-center justify-center mr-3">
@@ -134,9 +145,9 @@ export default function ProfileScreenCard({ user, menuItems, onLogoutConfirm }: 
                 ))}
             </View>
 
-            <LogoutModal 
-                visible={showLogoutModal} 
-                onClose={() => setShowLogoutModal(false)} 
+            <LogoutModal
+                visible={showLogoutModal}
+                onClose={() => setShowLogoutModal(false)}
                 onConfirm={onLogoutConfirm}
             />
         </View>

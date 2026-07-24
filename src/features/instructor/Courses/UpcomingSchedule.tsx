@@ -1,6 +1,7 @@
-import { View, Text, TouchableOpacity, ScrollView, Modal, TextInput } from 'react-native';
-import React, { useState } from 'react';
-import { ArrowLeft2, ArrowRight2, Clock, Calendar, Edit2, Edit } from 'iconsax-react-native';
+import { ArrowLeft2, ArrowRight2, Calendar, Clock, Edit } from 'iconsax-react-native';
+import { useState } from 'react';
+import { Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import StartSessionModal from '../../../components/Instructor/StartSessionModal';
 
 const getDaysOfWeek = (offset: number) => {
     const baseDate = new Date(2026, 6, 12); // Sunday, Jul 12, 2026
@@ -46,8 +47,20 @@ export default function UpcomingSchedule() {
     const [batchType, setBatchType] = useState<'Weekend' | 'Weekdays'>('Weekend');
     const [scheduleData, setScheduleData] = useState<Record<string, any>>(INITIAL_SCHEDULE_DATA);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isStartSessionModalOpen, setIsStartSessionModalOpen] = useState(false);
     const [editDate, setEditDate] = useState('18-07-2026');
     const [editTimeRange, setEditTimeRange] = useState('10:00 AM - 11:00 AM');
+    const [startedDates, setStartedDates] = useState<Record<string, boolean>>({});
+
+    const isStarted = !!startedDates[selectedDate];
+
+    const handleStartSession = () => {
+        setStartedDates(prev => ({ ...prev, [selectedDate]: true }));
+    };
+
+    const handleEndSession = () => {
+        setStartedDates(prev => ({ ...prev, [selectedDate]: false }));
+    };
 
     const days = getDaysOfWeek(weekOffset);
     const selectedDayInfo = days.find(d => d.date === selectedDate);
@@ -196,14 +209,16 @@ export default function UpcomingSchedule() {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            className="flex-1 h-10 bg-[#F67300] rounded-[12px] items-center justify-center"
+                            onPress={() => setIsStartSessionModalOpen(true)}
+                            className={`flex-1 h-10 ${isStarted ? 'bg-[#F67300]/60' : 'bg-[#F67300]'} rounded-[12px] items-center justify-center`}
                             activeOpacity={0.8}
                         >
                             <Text className="text-white text-[14px] font-semibold">Start</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            className="flex-1 h-10 bg-[#FFA2A2] rounded-[12px] items-center justify-center"
+                            onPress={handleEndSession}
+                            className={`flex-1 h-10 ${isStarted ? 'bg-[#F60800]' : 'bg-[#FFA2A2]'} rounded-[12px] items-center justify-center`}
                             activeOpacity={0.8}
                         >
                             <Text className="text-white text-[14px] font-semibold">End</Text>
@@ -217,6 +232,13 @@ export default function UpcomingSchedule() {
                     </Text>
                 </View>
             )}
+
+            {/* Start Session Modal */}
+            <StartSessionModal
+                visible={isStartSessionModalOpen}
+                onClose={() => setIsStartSessionModalOpen(false)}
+                onStart={handleStartSession}
+            />
 
             {/* Edit Schedule Modal */}
             <Modal
